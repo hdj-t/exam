@@ -1,0 +1,90 @@
+{
+  "title": "exam",
+  "subtitle": "Midterm material · 4th stage · Cybersecurity Engineering",
+  "courses": [
+    {
+      "id": "cloud",
+      "code": "CSTE4103",
+      "name": "Cloud Computing",
+      "ar": "الحوسبة السحابية",
+      "exam": "2026-11-17",
+      "scope": { "confirmed": true, "lectures": [1, 2, 3, 4, 5], "labs": false, "note": "Lectures 1–5. No labs." },
+      "docs": [
+        { "kind": "lecture", "n": 1, "title": "The Era of Cloud Computing", "file": "lecture-1-era-of-cloud-computing" },
+        { "kind": "lecture", "n": 2, "title": "Types of Clouds, Providers & Data Centers", "file": "lecture-2-types-of-clouds" },
+        { "kind": "lecture", "n": 3, "title": "Virtual Machines & Containers", "file": "lecture-3-vms-and-containers" },
+        { "kind": "lecture", "n": 4, "title": "Virtual Networks & Virtual Storage", "file": "lecture-4-virtual-networks-and-storage" },
+        { "kind": "lecture", "n": 5, "title": "Distributed Systems & Cloud-Native", "file": "lecture-5-distributed-systems-and-cloud-native" },
+        { "kind": "lab", "n": 1, "title": "Exploring Cloud Hosting Platforms", "file": "lab-1-hosting-platforms" },
+        { "kind": "lab", "n": 2, "title": "Hosting Specs & Pricing", "file": "lab-2-hosting-specs-and-pricing" },
+        { "kind": "lab", "n": 3, "title": "Ubuntu Server VM Tutorial (Parts 1–6)", "file": "lab-3-ubuntu-server-vm-tutorial" },
+        { "kind": "lab", "n": 4, "title": "Clone, Export & Import VMs", "file": "lab-4-clone-export-import-vms" }
+      ]
+    },
+    {
+      "id": "web",
+      "code": "CSTE4107",
+      "name": "Web Applications Security",
+      "ar": "أمن تطبيقات الويب",
+      "exam": "2026-11-18",
+      "scope": { "confirmed": false, "note": "Exam scope not announced yet." },
+      "docs": [
+        { "kind": "lecture", "n": "1–2", "title": "Introduction & HTTP Deep Dive", "file": "lecture-1-2-intro-and-http", "nums": [1, 2] },
+        { "kind": "lecture", "n": 3, "title": "Authentication & Session Management", "file": "lecture-3-authentication-and-sessions" },
+        { "kind": "lecture", "n": 4, "title": "Web Application Architecture", "file": "lecture-4-web-app-architecture" },
+        { "kind": "lecture", "n": 5, "title": "Securing Web Application Data", "file": "lecture-5-securing-web-app-data" },
+        { "kind": "lecture", "n": 6, "title": "Cross-Site Scripting (XSS)", "file": "lecture-6-xss" },
+        { "kind": "lecture", "n": 7, "title": "Cross-Site Request Forgery (CSRF)", "file": "lecture-7-csrf" }
+      ]
+    },
+    {
+      "id": "advanced",
+      "code": "CSTE4101",
+      "name": "Advanced Cybersecurity",
+      "ar": "الأمن السيبراني المتقدم",
+      "exam": "2026-11-25",
+      "scope": { "confirmed": true, "lectures": [1, 2, 3], "note": "Lectures 1–3." },
+      "docs": [
+        { "kind": "lecture", "n": 1, "title": "Application Security", "file": "lecture-1-application-security" },
+        { "kind": "lecture", "n": 2, "title": "Application Security Testing (SAST / DAST)", "file": "lecture-2-application-security-testing" },
+        { "kind": "lecture", "n": 3, "title": "Virtualization Security", "file": "lecture-3-virtualization-security" },
+        { "kind": "lecture", "n": 4, "title": "Wireless Network Security", "file": "lecture-4-wireless-network-security" },
+        { "kind": "lab", "n": 1, "title": "Application Whitelisting with AppLocker", "file": "lab-1-applocker-whitelisting" },
+        { "kind": "lab", "n": 2, "title": "Application Blacklisting with ManageEngine", "file": "lab-2-manageengine-blacklisting" },
+        { "kind": "assignment", "n": 1, "title": "Lecture 1 Assignments", "file": "assignment-lecture-1", "for": 1 },
+        { "kind": "assignment", "n": 3, "title": "Lecture 3 Assignments", "file": "assignment-lecture-3", "for": 3 }
+      ]
+    },
+    {
+      "id": "network",
+      "code": "CSTE4102",
+      "name": "Network Security",
+      "ar": "أمن الشبكات",
+      "exam": "2026-11-26",
+      "scope": { "confirmed": true, "lectures": [1, 2, 3, 4], "note": "Lectures 1–4.", "missing": "Lecture 4 isn't uploaded yet." },
+      "docs": [
+        { "kind": "lecture", "n": 1, "title": "Principles & Core Concepts", "file": "lecture-1-principles-and-core-concepts" },
+        { "kind": "lecture", "n": 2, "title": "Layer 2 (Ethernet) Security", "file": "lecture-2-layer-2-security" },
+        { "kind": "lecture", "n": 3, "title": "Layer 3: IPv4 & IPsec Security", "file": "lecture-3-layer-3-ipv4-and-ipsec" },
+        { "kind": "lab", "n": 1, "title": "Lab Tools & Simulators", "file": "lab-1-tools-and-simulators" },
+        { "kind": "lab", "n": 2, "title": "Switch Port Security", "file": "lab-2-switch-port-security" },
+        { "kind": "lab", "n": 3, "title": "Site-to-Site IPsec VPN", "file": "lab-3-site-to-site-ipsec-vpn" },
+        { "kind": "lab", "n": 4, "title": "Access Control Lists (ACLs)", "file": "lab-4-access-control-lists" },
+        { "kind": "lab", "n": 5, "title": "ARP Spoofing & Detection", "file": "lab-5-arp-spoofing-and-detection" },
+        { "kind": "lab", "n": 6, "title": "Network Scanning with Nmap", "file": "lab-6-nmap-scanning" }
+      ]
+    },
+    {
+      "id": "governance",
+      "code": "CSTE4104",
+      "name": "Cybersecurity Governance",
+      "ar": "حوكمة الأمن السيبراني",
+      "exam": "2026-12-03",
+      "scope": { "confirmed": false, "note": "Exam scope not announced yet. Lectures only." },
+      "docs": [
+        { "kind": "lecture", "n": 1, "title": "Cybersecurity Governance: CIA, AAA & Controls", "file": "lecture-1-cybersecurity-governance" },
+        { "kind": "lecture", "n": 2, "title": "Governance & Risk Management (L1 continued)", "file": "lecture-2-governance-and-risk-management" }
+      ]
+    }
+  ]
+}

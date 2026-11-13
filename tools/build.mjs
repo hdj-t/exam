@@ -74,6 +74,8 @@ for (const c of site.courses) {
     d.size = fs.statSync(pdf).size;
     d.pages = parseInt(run("pdfinfo", [pdf]).match(/^Pages:\s+(\d+)/m)[1], 10);
     d.exam = inScope(c, d);
+    if (d.lab && !fs.existsSync(path.join(ROOT, "labs", c.id, d.file + ".js"))) { console.warn(`lab script missing for ${d.id}`); d.lab = null; }
+    if (d.lab) d.labUrl = `labs/${d.id}.html`;
     const dir = path.join(ROOT, "pages", c.id, d.file);
     process.stdout.write(`render ${d.id} (${d.pages}p)\n`);
     render(pdf, dir);
@@ -135,6 +137,7 @@ for (const c of site.courses) {
 <div class="hits" id="hits" hidden></div>
 <main class="pages" id="main">
 <p class="rinfo">${tag}<span>${d.pages} pages · ${kb(d.size)}</span> <a href="${rel}${d.pdf}">Open original PDF ↗</a></p>
+${d.lab ? `<a class="labcta" href="${rel}${d.labUrl}"><b>▶ Try it as an interactive lab</b><span>Run the commands in a simulator, check each step, then take the quiz</span></a>` : ""}
 ${pages}
 </main>
 <nav class="pager" aria-label="More in ${esc(c.name)}">${navLink(prev, "prev")}${navLink(next, "next")}</nav>
@@ -145,6 +148,32 @@ ${pages}
     fs.mkdirSync(path.join(ROOT, "read", c.id), { recursive: true });
     fs.writeFileSync(path.join(ROOT, "read", c.id, d.file + ".html"), html);
   });
+}
+
+// ---------------------------------------------------------------- interactive labs
+// A doc with "lab": [...modules] has labs/<course>/<file>.js; this writes its page.
+for (const c of site.courses) for (const d of c.docs) {
+  if (!d.lab) continue;
+  const rel = "../../";
+  const mods = ["engine", ...d.lab].map((m) => `<script src="../${m}.js" defer></script>`).join("\n");
+  const html = `${head(`Interactive ${docLabel(d)} · ${d.title} — ${c.name}`, rel, `Interactive lab: ${d.title} (${c.name})`).replace("</head>", `<link rel="stylesheet" href="../lab.css">\n</head>`)}
+<body class="lab" data-lab="${esc(d.id)}" data-guide="${rel}read/${d.id}.html">
+<header class="rbar">
+  <a class="icon-btn" href="${rel}index.html#${c.id}" aria-label="Back to ${esc(c.name)}"><span aria-hidden="true">←</span></a>
+  <div class="rbar-t">
+    <span class="rbar-c">${esc(c.name)} · Interactive ${esc(docLabel(d))}</span>
+    <b>${esc(d.title)}</b>
+  </div>
+  <a class="icon-btn icon-btn--pdf" href="${rel}read/${d.id}.html" aria-label="Open the handout">Guide</a>
+</header>
+<nav class="tabs" id="tabs" role="tablist" aria-label="Lab sections"></nav>
+<main id="app"><p class="noscript">This interactive lab needs JavaScript. You can still <a href="${rel}read/${d.id}.html">read the handout</a>.</p></main>
+${mods}
+<script src="${esc(d.file)}.js" defer></script>
+</body>
+</html>
+`;
+  fs.writeFileSync(path.join(ROOT, "labs", c.id, d.file + ".html"), html);
 }
 
 // ---------------------------------------------------------------- home
@@ -166,6 +195,7 @@ const courseHtml = sorted
           .map(
             (d) => `<li class="doc${d.exam === true ? " is-exam" : d.exam === false ? " is-out" : ""}" data-exam="${d.exam}">
 <a class="doc-a" href="read/${d.id}.html"><span class="num">${esc(docLabel(d))}</span><span class="doc-t"><b>${esc(d.title)}</b><small>${d.pages} pages${d.exam === true ? ' · <em class="tag tag--exam">In exam</em>' : d.exam === false ? ' · <em class="tag tag--out">Not in exam</em>' : ""}</small></span></a>
+${d.lab ? `<a class="doc-lab" href="${d.labUrl}" aria-label="Interactive lab: ${esc(d.title)}"><span aria-hidden="true">▶</span><small>LAB</small></a>` : ""}
 <a class="doc-dl" href="${d.pdf}" download aria-label="Download ${esc(d.title)} PDF, ${kb(d.size)}"><span aria-hidden="true">↓</span><small>PDF</small></a>
 </li>`
           )

@@ -382,3 +382,22 @@
     .pbox, .search input, .course, .chip, .toggle, .pn, .hit, .continue { border: 1px solid CanvasText; }
   }
 }
+
+/* Interactive lab entry points (home row button + reader banner) */
+@layer components {
+  .doc-lab {
+    flex: none; display: grid; place-content: center; justify-items: center; inline-size: 3.25rem;
+    text-decoration: none; line-height: 1; color: var(--c-accent);
+    transition: background-color var(--dur) steps(2, end);
+  }
+  .doc-lab span { font-family: var(--font-pixel); font-size: 1rem; }
+  .doc-lab small { font-family: var(--font-pixel); font-size: 0.62rem; margin-block-start: 0.2rem; }
+  @media (hover: hover) { .doc-lab:hover { background: var(--c-well); } }
+  .doc-lab:active { background: var(--c-mark); }
+  .labcta {
+    display: grid; gap: 0.15rem; padding: 0.75rem 0.9rem; text-decoration: none;
+    background: var(--c-accent); color: var(--c-on-accent);
+  }
+  .labcta b { font-family: var(--font-pixel); font-weight: 400; font-size: 0.95rem; }
+  .labcta span { font-size: 0.82rem; opacity: 0.9; }
+}

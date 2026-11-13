@@ -131,6 +131,7 @@
         const tag = n.tagName.toLowerCase();
         if (tag === "script") { pending.push(() => simulate(n.textContent, ctx)); continue; }
         if (tag === "style" || tag === "link") continue;
+        if (tag === "meta" && /^referrer$/i.test(n.getAttribute("name") || "") && /no-referrer/i.test(n.getAttribute("content") || "")) { ctx.noReferrer?.(); continue; }
         if (tag === "meta") { const c = n.getAttribute("content") || ""; const r = /url=(.+)$/i.exec(c); if (/refresh/i.test(n.getAttribute("http-equiv") || "") && r) pending.push(() => ctx.navigate?.(r[1].replace(/^['"]|['"]$/g, ""))); continue; }
         if (tag === "head" || tag === "title") { walk(n, parent); continue; }
         const el = document.createElement(OK_TAGS.has(tag) && !["html", "body", "head", "svg", "animate", "iframe", "img"].includes(tag) ? tag : tag === "img" || tag === "iframe" ? "span" : "div");
@@ -252,6 +253,7 @@
       const ctxFor = (host) => ({
         host,
         cookieStr: () => jar.jsCookie(host),
+        noReferrer: () => (st.noRef = true),
         dialog: (fn, v) => {
           def.onDialog?.(fn, v, { who, url: st.url, host }, srv);
           if (who === "you") dialogEl.replaceChildren(h("div", { class: "dialog wb-dialog" }, h("p", { class: "dialog-t" }, `${host} says`), h("p", { class: "mono-box" }, String(v)), h("button", { class: "btn btn--s", type: "button", onclick: () => dialogEl.replaceChildren() }, "OK")));
@@ -274,7 +276,7 @@
         const cookie = jar.header(u.host, { cross, method, nav });
         const headers = { Host: u.host, ...(cookie ? { Cookie: cookie } : {}), "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/131.0 Safari/537.36", Accept: "text/html,application/xhtml+xml,*/*;q=0.8", ...(st.url ? { Referer: st.url } : {}), ...(cross && st.url ? { Origin: new URL(st.url).origin, "Sec-Fetch-Site": "cross-site" } : { "Sec-Fetch-Site": st.url ? "same-origin" : "none" }), ...extraHeaders };
         if (method === "POST") { headers["Content-Type"] = "application/x-www-form-urlencoded"; headers["Content-Length"] = String(body.length); }
-        if (def.referrerPolicyNone?.(st.url)) delete headers.Referer;
+        if (st.noRef) delete headers.Referer;
         const raw = reqToRaw({ method, target: u.pathname + u.search, headers, body });
         const req = rawToReq(raw, u.host);
         req.from = who; req.cross = cross; req.nav = nav;
@@ -291,6 +293,7 @@
           break;
         }
         st.url = u;
+        st.noRef = false;
         if (who === "you") { addr.value = u; drawHistory(); }
         const host = new URL(u).host;
         const isHtml = (res.type || "text/html").includes("html");
@@ -391,7 +394,7 @@
     const decode = (kind) => {
       const v = decIn.value;
       try {
-        decOut.textContent = { b64d: () => b64.dec(v.trim()), b64e: () => b64.enc(v), urld: () => decodeURIComponent(v.replace(/\+/g, " ")), urle: () => encodeURIComponent(v), htmle: () => esc(v), htmld: () => new DOMParser().parseFromString(v, "text/html").documentElement.textContent, md5: () => md5(v), jwt: () => v.trim().split(".").slice(0, 2).map((p) => JSON.stringify(JSON.parse(b64.dec(p)), null, 2)).join("\n.\n") + "\n.\n" + (v.split(".")[2] || "(no signature)") }[kind]();
+        decOut.textContent = { b64d: () => b64.dec(v.trim()), b64e: () => b64.enc(v), b64ue: () => b64url(v), urld: () => decodeURIComponent(v.replace(/\+/g, " ")), urle: () => encodeURIComponent(v), htmle: () => esc(v), htmld: () => new DOMParser().parseFromString(v, "text/html").documentElement.textContent, md5: () => md5(v), jwt: () => v.trim().split(".").slice(0, 2).map((p) => JSON.stringify(JSON.parse(b64.dec(p)), null, 2)).join("\n.\n") + "\n.\n" + (v.split(".")[2] || "(no signature)") }[kind]();
         def.onDecode?.(kind, v, decOut.textContent, srv);
         refresh?.();
       } catch { decOut.textContent = "Can't decode that as " + kind.replace(/[de]$/, ""); }
@@ -403,7 +406,7 @@
         h("p", { class: "panel-k" }, "Payloads (Sniper)"), inPay, h("p", { class: "panel-k" }, "Payload processing (in order: hash, prefix, encode)"),
         h("div", { class: "row" }, h("label", { class: "row" }, inProc.md5, h("small", null, "Hash: MD5")), inProc.prefix, h("label", { class: "row" }, inProc.b64, h("small", null, "Encode: Base64"))),
         Kit.field("Settings › Grep - Match", inGrep), h("button", { class: "btn btn--s", type: "button", onclick: intrude }, "Start attack"), inRes),
-      decoder: h("div", { class: "win-b" }, decIn, h("div", { class: "row" }, ...[["b64d", "Decode Base64"], ["b64e", "Encode Base64"], ["urld", "Decode URL"], ["urle", "Encode URL"], ["htmle", "Encode HTML"], ["htmld", "Decode HTML"], ["md5", "Hash MD5"], ["jwt", "Decode JWT"]].map(([k, t]) => h("button", { class: "btn btn--ghost btn--s", type: "button", onclick: () => decode(k) }, t))), decOut),
+      decoder: h("div", { class: "win-b" }, decIn, h("div", { class: "row" }, ...[["b64d", "Decode Base64"], ["b64e", "Encode Base64"], ["b64ue", "Encode Base64URL"], ["urld", "Decode URL"], ["urle", "Encode URL"], ["htmle", "Encode HTML"], ["htmld", "Decode HTML"], ["md5", "Hash MD5"], ["jwt", "Decode JWT"]].map(([k, t]) => h("button", { class: "btn btn--ghost btn--s", type: "button", onclick: () => decode(k) }, t))), decOut),
     };
     burpPanes.repeater.children[1].replaceWith(rpReq);
     const burpSeg = h("div", { class: "seg" });

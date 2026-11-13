@@ -290,8 +290,8 @@
 
 @layer components {
   @media (max-width: 34rem) {
-    .ws-table th:nth-child(2), .ws-table td:nth-child(2), .ws-table th:nth-child(6), .ws-table td:nth-child(6) { display: none; }
-    .ws-table td:nth-child(3), .ws-table td:nth-child(4) { max-inline-size: 7.5rem; overflow: hidden; text-overflow: ellipsis; }
+    .ws .ws-table th:nth-child(2), .ws .ws-table td:nth-child(2), .ws .ws-table th:nth-child(6), .ws .ws-table td:nth-child(6) { display: none; }
+    .ws .ws-table td:nth-child(3), .ws .ws-table td:nth-child(4) { max-inline-size: 7.5rem; overflow: hidden; text-overflow: ellipsis; }
   }
 }
 

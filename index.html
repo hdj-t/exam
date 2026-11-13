@@ -10,6 +10,9 @@
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preload" href="fonts/GeistPixel-Square.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="styles.css">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<script>if ("serviceWorker" in navigator) addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));</script>
 </head>
 <body class="home">
 <a class="skip-link" href="#courses">Skip to courses</a>
@@ -36,45 +39,50 @@
 <div class="lists" id="lists">
 <a class="continue" id="continue" hidden></a>
 <p class="next" id="next" hidden></p>
-<section class="course" id="cloud" data-exam="2026-11-17" aria-labelledby="h-cloud">
+<section class="course" id="cloud" data-exam="2026-11-17" data-cards="141" aria-labelledby="h-cloud">
 <header class="course-h">
   <p class="course-date"><time datetime="2026-11-17">Tue 17 Nov</time> <span class="countdown" data-date="2026-11-17"></span></p>
   <h2 id="h-cloud">Cloud Computing</h2>
   <p class="course-meta"><span class="code">CSTE4103</span> <span lang="ar" dir="rtl">الحوسبة السحابية</span></p>
   <p class="scope scope--ok"><span class="scope-k">Exam scope</span> Lectures 1–5. No labs.</p>
-  <a class="labcta labcta--mock" href="mock/cloud/midterm.html"><b>✎ Mock midterm · 40 questions · 60 min</b><span>Drawn from 5 lecture banks, timed, marked by section · new questions every attempt</span></a>
+  <div class="practice">
+  <a class="labcta labcta--mock" href="mock/cloud/midterm.html"><b>✎ Mock midterm</b><span>40 questions · 60 min · new set every attempt</span></a>
+  <a class="labcta labcta--cards" href="cards/cloud.html"><b>▣ Flashcards</b><span>141 cards from the summaries</span></a>
+  </div>
+  <p class="mine" hidden></p>
+  <p class="off" hidden><button class="off-btn" type="button" data-course="cloud">⤓ Save offline</button> <span class="off-s"></span></p>
 </header>
 <h3 class="group">Lectures <span>5</span></h3>
 <ol class="docs" role="list">
-<li class="doc is-exam" data-exam="true">
+<li class="doc is-exam" data-exam="true" data-doc="cloud/lecture-1-era-of-cloud-computing" data-pages="7" data-kind="lecture">
 <a class="doc-a" href="read/cloud/lecture-1-era-of-cloud-computing.html"><span class="num">L1</span><span class="doc-t"><b>The Era of Cloud Computing</b><small>7 pages · <em class="tag tag--exam">In exam</em></small></span></a>
 <a class="doc-lab doc-sum" href="summary/cloud/lecture-1-era-of-cloud-computing.html" aria-label="Summary: The Era of Cloud Computing"><span aria-hidden="true">Σ</span><small>SUM</small></a>
 <a class="doc-lab doc-mock" href="mock/cloud/lecture-1-era-of-cloud-computing.html" aria-label="Mock exam: The Era of Cloud Computing"><span aria-hidden="true">✎</span><small>MOCK</small></a>
 
 <a class="doc-dl" href="files/cloud/lecture-1-era-of-cloud-computing.pdf" download aria-label="Download The Era of Cloud Computing PDF, 143 KB"><span aria-hidden="true">↓</span><small>PDF</small></a>
 </li>
-<li class="doc is-exam" data-exam="true">
+<li class="doc is-exam" data-exam="true" data-doc="cloud/lecture-2-types-of-clouds" data-pages="9" data-kind="lecture">
 <a class="doc-a" href="read/cloud/lecture-2-types-of-clouds.html"><span class="num">L2</span><span class="doc-t"><b>Types of Clouds, Providers &amp; Data Centers</b><small>9 pages · <em class="tag tag--exam">In exam</em></small></span></a>
 <a class="doc-lab doc-sum" href="summary/cloud/lecture-2-types-of-clouds.html" aria-label="Summary: Types of Clouds, Providers &amp; Data Centers"><span aria-hidden="true">Σ</span><small>SUM</small></a>
 <a class="doc-lab doc-mock" href="mock/cloud/lecture-2-types-of-clouds.html" aria-label="Mock exam: Types of Clouds, Providers &amp; Data Centers"><span aria-hidden="true">✎</span><small>MOCK</small></a>
 
 <a class="doc-dl" href="files/cloud/lecture-2-types-of-clouds.pdf" download aria-label="Download Types of Clouds, Providers &amp; Data Centers PDF, 183 KB"><span aria-hidden="true">↓</span><small>PDF</small></a>
 </li>
-<li class="doc is-exam" data-exam="true">
+<li class="doc is-exam" data-exam="true" data-doc="cloud/lecture-3-vms-and-containers" data-pages="8" data-kind="lecture">
 <a class="doc-a" href="read/cloud/lecture-3-vms-and-containers.html"><span class="num">L3</span><span class="doc-t"><b>Virtual Machines &amp; Containers</b><small>8 pages · <em class="tag tag--exam">In exam</em></small></span></a>
 <a class="doc-lab doc-sum" href="summary/cloud/lecture-3-vms-and-containers.html" aria-label="Summary: Virtual Machines &amp; Containers"><span aria-hidden="true">Σ</span><small>SUM</small></a>
 <a class="doc-lab doc-mock" href="mock/cloud/lecture-3-vms-and-containers.html" aria-label="Mock exam: Virtual Machines &amp; Containers"><span aria-hidden="true">✎</span><small>MOCK</small></a>
 
 <a class="doc-dl" href="files/cloud/lecture-3-vms-and-containers.pdf" download aria-label="Download Virtual Machines &amp; Containers PDF, 165 KB"><span aria-hidden="true">↓</span><small>PDF</small></a>
 </li>
-<li class="doc is-exam" data-exam="true">
+<li class="doc is-exam" data-exam="true" data-doc="cloud/lecture-4-virtual-networks-and-storage" data-pages="9" data-kind="lecture">
 <a class="doc-a" href="read/cloud/lecture-4-virtual-networks-and-storage.html"><span class="num">L4</span><span class="doc-t"><b>Virtual Networks &amp; Virtual Storage</b><small>9 pages · <em class="tag tag--exam">In exam</em></small></span></a>
 <a class="doc-lab doc-sum" href="summary/cloud/lecture-4-virtual-networks-and-storage.html" aria-label="Summary: Virtual Networks &amp; Virtual Storage"><span aria-hidden="true">Σ</span><small>SUM</small></a>
 <a class="doc-lab doc-mock" href="mock/cloud/lecture-4-virtual-networks-and-storage.html" aria-label="Mock exam: Virtual Networks &amp; Virtual Storage"><span aria-hidden="true">✎</span><small>MOCK</small></a>
 
 <a class="doc-dl" href="files/cloud/lecture-4-virtual-networks-and-storage.pdf" download aria-label="Download Virtual Networks &amp; Virtual Storage PDF, 168 KB"><span aria-hidden="true">↓</span><small>PDF</small></a>
 </li>
-<li class="doc is-exam" data-exam="true">
+<li class="doc is-exam" data-exam="true" data-doc="cloud/lecture-5-distributed-systems-and-cloud-native" data-pages="11" data-kind="lecture">
 <a class="doc-a" href="read/cloud/lecture-5-distributed-systems-and-cloud-native.html"><span class="num">L5</span><span class="doc-t"><b>Distributed Systems &amp; Cloud-Native</b><small>11 pages · <em class="tag tag--exam">In exam</em></small></span></a>
 <a class="doc-lab doc-sum" href="summary/cloud/lecture-5-distributed-systems-and-cloud-native.html" aria-label="Summary: Distributed Systems &amp; Cloud-Native"><span aria-hidden="true">Σ</span><small>SUM</small></a>
 <a class="doc-lab doc-mock" href="mock/cloud/lecture-5-distributed-systems-and-cloud-native.html" aria-label="Mock exam: Distributed Systems &amp; Cloud-Native"><span aria-hidden="true">✎</span><small>MOCK</small></a>
@@ -84,88 +92,93 @@
 </ol>
 <h3 class="group">Labs <span>4</span></h3>
 <ol class="docs" role="list">
-<li class="doc is-out" data-exam="false">
+<li class="doc is-out" data-exam="false" data-doc="cloud/lab-1-hosting-platforms" data-pages="10" data-kind="lab">
 <a class="doc-a" href="read/cloud/lab-1-hosting-platforms.html"><span class="num">Lab 1</span><span class="doc-t"><b>Exploring Cloud Hosting Platforms</b><small>10 pages · <em class="tag tag--out">Not in exam</em></small></span></a>
 
 
-<a class="doc-lab" href="labs/cloud/lab-1-hosting-platforms.html" aria-label="Interactive lab: Exploring Cloud Hosting Platforms"><span aria-hidden="true">▶</span><small>LAB</small></a>
+<a class="doc-lab doc-run" href="labs/cloud/lab-1-hosting-platforms.html" aria-label="Interactive lab: Exploring Cloud Hosting Platforms"><span aria-hidden="true">▶</span><small>LAB</small></a>
 <a class="doc-dl" href="files/cloud/lab-1-hosting-platforms.pdf" download aria-label="Download Exploring Cloud Hosting Platforms PDF, 176 KB"><span aria-hidden="true">↓</span><small>PDF</small></a>
 </li>
-<li class="doc is-out" data-exam="false">
+<li class="doc is-out" data-exam="false" data-doc="cloud/lab-2-hosting-specs-and-pricing" data-pages="9" data-kind="lab">
 <a class="doc-a" href="read/cloud/lab-2-hosting-specs-and-pricing.html"><span class="num">Lab 2</span><span class="doc-t"><b>Hosting Specs &amp; Pricing</b><small>9 pages · <em class="tag tag--out">Not in exam</em></small></span></a>
 
 
-<a class="doc-lab" href="labs/cloud/lab-2-hosting-specs-and-pricing.html" aria-label="Interactive lab: Hosting Specs &amp; Pricing"><span aria-hidden="true">▶</span><small>LAB</small></a>
+<a class="doc-lab doc-run" href="labs/cloud/lab-2-hosting-specs-and-pricing.html" aria-label="Interactive lab: Hosting Specs &amp; Pricing"><span aria-hidden="true">▶</span><small>LAB</small></a>
 <a class="doc-dl" href="files/cloud/lab-2-hosting-specs-and-pricing.pdf" download aria-label="Download Hosting Specs &amp; Pricing PDF, 115 KB"><span aria-hidden="true">↓</span><small>PDF</small></a>
 </li>
-<li class="doc is-out" data-exam="false">
+<li class="doc is-out" data-exam="false" data-doc="cloud/lab-3-ubuntu-server-vm-tutorial" data-pages="135" data-kind="lab">
 <a class="doc-a" href="read/cloud/lab-3-ubuntu-server-vm-tutorial.html"><span class="num">Lab 3</span><span class="doc-t"><b>Ubuntu Server VM Tutorial (Parts 1–6)</b><small>135 pages · <em class="tag tag--out">Not in exam</em></small></span></a>
 
 
-<a class="doc-lab" href="labs/cloud/lab-3-ubuntu-server-vm-tutorial.html" aria-label="Interactive lab: Ubuntu Server VM Tutorial (Parts 1–6)"><span aria-hidden="true">▶</span><small>LAB</small></a>
+<a class="doc-lab doc-run" href="labs/cloud/lab-3-ubuntu-server-vm-tutorial.html" aria-label="Interactive lab: Ubuntu Server VM Tutorial (Parts 1–6)"><span aria-hidden="true">▶</span><small>LAB</small></a>
 <a class="doc-dl" href="files/cloud/lab-3-ubuntu-server-vm-tutorial.pdf" download aria-label="Download Ubuntu Server VM Tutorial (Parts 1–6) PDF, 9.2 MB"><span aria-hidden="true">↓</span><small>PDF</small></a>
 </li>
-<li class="doc is-out" data-exam="false">
+<li class="doc is-out" data-exam="false" data-doc="cloud/lab-4-clone-export-import-vms" data-pages="14" data-kind="lab">
 <a class="doc-a" href="read/cloud/lab-4-clone-export-import-vms.html"><span class="num">Lab 4</span><span class="doc-t"><b>Clone, Export &amp; Import VMs</b><small>14 pages · <em class="tag tag--out">Not in exam</em></small></span></a>
 
 
-<a class="doc-lab" href="labs/cloud/lab-4-clone-export-import-vms.html" aria-label="Interactive lab: Clone, Export &amp; Import VMs"><span aria-hidden="true">▶</span><small>LAB</small></a>
+<a class="doc-lab doc-run" href="labs/cloud/lab-4-clone-export-import-vms.html" aria-label="Interactive lab: Clone, Export &amp; Import VMs"><span aria-hidden="true">▶</span><small>LAB</small></a>
 <a class="doc-dl" href="files/cloud/lab-4-clone-export-import-vms.pdf" download aria-label="Download Clone, Export &amp; Import VMs PDF, 2.6 MB"><span aria-hidden="true">↓</span><small>PDF</small></a>
 </li>
 </ol>
 
 
 </section>
-<section class="course" id="web" data-exam="2026-11-18" aria-labelledby="h-web">
+<section class="course" id="web" data-exam="2026-11-18" data-cards="115" aria-labelledby="h-web">
 <header class="course-h">
   <p class="course-date"><time datetime="2026-11-18">Wed 18 Nov</time> <span class="countdown" data-date="2026-11-18"></span></p>
   <h2 id="h-web">Web Applications Security</h2>
   <p class="course-meta"><span class="code">CSTE4107</span> <span lang="ar" dir="rtl">أمن تطبيقات الويب</span></p>
   <p class="scope scope--tba"><span class="scope-k">Scope</span> Exam scope not announced yet.</p>
-  <a class="labcta labcta--mock" href="mock/web/midterm.html"><b>✎ Mock midterm · 42 questions · 60 min</b><span>Drawn from 6 lecture banks, timed, marked by section · new questions every attempt</span></a>
+  <div class="practice">
+  <a class="labcta labcta--mock" href="mock/web/midterm.html"><b>✎ Mock midterm</b><span>42 questions · 60 min · new set every attempt</span></a>
+  <a class="labcta labcta--cards" href="cards/web.html"><b>▣ Flashcards</b><span>115 cards from the summaries</span></a>
+  </div>
+  <p class="mine" hidden></p>
+  <p class="off" hidden><button class="off-btn" type="button" data-course="web">⤓ Save offline</button> <span class="off-s"></span></p>
 </header>
 <h3 class="group">Lectures <span>6</span></h3>
 <ol class="docs" role="list">
-<li class="doc" data-exam="null">
+<li class="doc" data-exam="null" data-doc="web/lecture-1-2-intro-and-http" data-pages="13" data-kind="lecture">
 <a class="doc-a" href="read/web/lecture-1-2-intro-and-http.html"><span class="num">L1–2</span><span class="doc-t"><b>Introduction &amp; HTTP Deep Dive</b><small>13 pages</small></span></a>
 <a class="doc-lab doc-sum" href="summary/web/lecture-1-2-intro-and-http.html" aria-label="Summary: Introduction &amp; HTTP Deep Dive"><span aria-hidden="true">Σ</span><small>SUM</small></a>
 <a class="doc-lab doc-mock" href="mock/web/lecture-1-2-intro-and-http.html" aria-label="Mock exam: Introduction &amp; HTTP Deep Dive"><span aria-hidden="true">✎</span><small>MOCK</small></a>
-<a class="doc-lab" href="labs/web/lecture-1-2-intro-and-http.html" aria-label="Interactive lab: Introduction &amp; HTTP Deep Dive"><span aria-hidden="true">▶</span><small>LAB</small></a>
+<a class="doc-lab doc-run" href="labs/web/lecture-1-2-intro-and-http.html" aria-label="Interactive lab: Introduction &amp; HTTP Deep Dive"><span aria-hidden="true">▶</span><small>LAB</small></a>
 <a class="doc-dl" href="files/web/lecture-1-2-intro-and-http.pdf" download aria-label="Download Introduction &amp; HTTP Deep Dive PDF, 997 KB"><span aria-hidden="true">↓</span><small>PDF</small></a>
 </li>
-<li class="doc" data-exam="null">
+<li class="doc" data-exam="null" data-doc="web/lecture-3-authentication-and-sessions" data-pages="4" data-kind="lecture">
 <a class="doc-a" href="read/web/lecture-3-authentication-and-sessions.html"><span class="num">L3</span><span class="doc-t"><b>Authentication &amp; Session Management</b><small>4 pages</small></span></a>
 <a class="doc-lab doc-sum" href="summary/web/lecture-3-authentication-and-sessions.html" aria-label="Summary: Authentication &amp; Session Management"><span aria-hidden="true">Σ</span><small>SUM</small></a>
 <a class="doc-lab doc-mock" href="mock/web/lecture-3-authentication-and-sessions.html" aria-label="Mock exam: Authentication &amp; Session Management"><span aria-hidden="true">✎</span><small>MOCK</small></a>
-<a class="doc-lab" href="labs/web/lecture-3-authentication-and-sessions.html" aria-label="Interactive lab: Authentication &amp; Session Management"><span aria-hidden="true">▶</span><small>LAB</small></a>
+<a class="doc-lab doc-run" href="labs/web/lecture-3-authentication-and-sessions.html" aria-label="Interactive lab: Authentication &amp; Session Management"><span aria-hidden="true">▶</span><small>LAB</small></a>
 <a class="doc-dl" href="files/web/lecture-3-authentication-and-sessions.pdf" download aria-label="Download Authentication &amp; Session Management PDF, 485 KB"><span aria-hidden="true">↓</span><small>PDF</small></a>
 </li>
-<li class="doc" data-exam="null">
+<li class="doc" data-exam="null" data-doc="web/lecture-4-web-app-architecture" data-pages="7" data-kind="lecture">
 <a class="doc-a" href="read/web/lecture-4-web-app-architecture.html"><span class="num">L4</span><span class="doc-t"><b>Web Application Architecture</b><small>7 pages</small></span></a>
 <a class="doc-lab doc-sum" href="summary/web/lecture-4-web-app-architecture.html" aria-label="Summary: Web Application Architecture"><span aria-hidden="true">Σ</span><small>SUM</small></a>
 <a class="doc-lab doc-mock" href="mock/web/lecture-4-web-app-architecture.html" aria-label="Mock exam: Web Application Architecture"><span aria-hidden="true">✎</span><small>MOCK</small></a>
-<a class="doc-lab" href="labs/web/lecture-4-web-app-architecture.html" aria-label="Interactive lab: Web Application Architecture"><span aria-hidden="true">▶</span><small>LAB</small></a>
+<a class="doc-lab doc-run" href="labs/web/lecture-4-web-app-architecture.html" aria-label="Interactive lab: Web Application Architecture"><span aria-hidden="true">▶</span><small>LAB</small></a>
 <a class="doc-dl" href="files/web/lecture-4-web-app-architecture.pdf" download aria-label="Download Web Application Architecture PDF, 760 KB"><span aria-hidden="true">↓</span><small>PDF</small></a>
 </li>
-<li class="doc" data-exam="null">
+<li class="doc" data-exam="null" data-doc="web/lecture-5-securing-web-app-data" data-pages="5" data-kind="lecture">
 <a class="doc-a" href="read/web/lecture-5-securing-web-app-data.html"><span class="num">L5</span><span class="doc-t"><b>Securing Web Application Data</b><small>5 pages</small></span></a>
 <a class="doc-lab doc-sum" href="summary/web/lecture-5-securing-web-app-data.html" aria-label="Summary: Securing Web Application Data"><span aria-hidden="true">Σ</span><small>SUM</small></a>
 <a class="doc-lab doc-mock" href="mock/web/lecture-5-securing-web-app-data.html" aria-label="Mock exam: Securing Web Application Data"><span aria-hidden="true">✎</span><small>MOCK</small></a>
-<a class="doc-lab" href="labs/web/lecture-5-securing-web-app-data.html" aria-label="Interactive lab: Securing Web Application Data"><span aria-hidden="true">▶</span><small>LAB</small></a>
+<a class="doc-lab doc-run" href="labs/web/lecture-5-securing-web-app-data.html" aria-label="Interactive lab: Securing Web Application Data"><span aria-hidden="true">▶</span><small>LAB</small></a>
 <a class="doc-dl" href="files/web/lecture-5-securing-web-app-data.pdf" download aria-label="Download Securing Web Application Data PDF, 660 KB"><span aria-hidden="true">↓</span><small>PDF</small></a>
 </li>
-<li class="doc" data-exam="null">
+<li class="doc" data-exam="null" data-doc="web/lecture-6-xss" data-pages="6" data-kind="lecture">
 <a class="doc-a" href="read/web/lecture-6-xss.html"><span class="num">L6</span><span class="doc-t"><b>Cross-Site Scripting (XSS)</b><small>6 pages</small></span></a>
 <a class="doc-lab doc-sum" href="summary/web/lecture-6-xss.html" aria-label="Summary: Cross-Site Scripting (XSS)"><span aria-hidden="true">Σ</span><small>SUM</small></a>
 <a class="doc-lab doc-mock" href="mock/web/lecture-6-xss.html" aria-label="Mock exam: Cross-Site Scripting (XSS)"><span aria-hidden="true">✎</span><small>MOCK</small></a>
-<a class="doc-lab" href="labs/web/lecture-6-xss.html" aria-label="Interactive lab: Cross-Site Scripting (XSS)"><span aria-hidden="true">▶</span><small>LAB</small></a>
+<a class="doc-lab doc-run" href="labs/web/lecture-6-xss.html" aria-label="Interactive lab: Cross-Site Scripting (XSS)"><span aria-hidden="true">▶</span><small>LAB</small></a>
 <a class="doc-dl" href="files/web/lecture-6-xss.pdf" download aria-label="Download Cross-Site Scripting (XSS) PDF, 487 KB"><span aria-hidden="true">↓</span><small>PDF</small></a>
 </li>
-<li class="doc" data-exam="null">
+<li class="doc" data-exam="null" data-doc="web/lecture-7-csrf" data-pages="5" data-kind="lecture">
 <a class="doc-a" href="read/web/lecture-7-csrf.html"><span class="num">L7</span><span class="doc-t"><b>Cross-Site Request Forgery (CSRF)</b><small>5 pages</small></span></a>
 <a class="doc-lab doc-sum" href="summary/web/lecture-7-csrf.html" aria-label="Summary: Cross-Site Request Forgery (CSRF)"><span aria-hidden="true">Σ</span><small>SUM</small></a>
 <a class="doc-lab doc-mock" href="mock/web/lecture-7-csrf.html" aria-label="Mock exam: Cross-Site Request Forgery (CSRF)"><span aria-hidden="true">✎</span><small>MOCK</small></a>
-<a class="doc-lab" href="labs/web/lecture-7-csrf.html" aria-label="Interactive lab: Cross-Site Request Forgery (CSRF)"><span aria-hidden="true">▶</span><small>LAB</small></a>
+<a class="doc-lab doc-run" href="labs/web/lecture-7-csrf.html" aria-label="Interactive lab: Cross-Site Request Forgery (CSRF)"><span aria-hidden="true">▶</span><small>LAB</small></a>
 <a class="doc-dl" href="files/web/lecture-7-csrf.pdf" download aria-label="Download Cross-Site Request Forgery (CSRF) PDF, 488 KB"><span aria-hidden="true">↓</span><small>PDF</small></a>
 </li>
 </ol>
@@ -173,38 +186,43 @@
 
 
 </section>
-<section class="course" id="advanced" data-exam="2026-11-25" aria-labelledby="h-advanced">
+<section class="course" id="advanced" data-exam="2026-11-25" data-cards="116" aria-labelledby="h-advanced">
 <header class="course-h">
   <p class="course-date"><time datetime="2026-11-25">Wed 25 Nov</time> <span class="countdown" data-date="2026-11-25"></span></p>
   <h2 id="h-advanced">Advanced Cybersecurity</h2>
   <p class="course-meta"><span class="code">CSTE4101</span> <span lang="ar" dir="rtl">الأمن السيبراني المتقدم</span></p>
   <p class="scope scope--ok"><span class="scope-k">Exam scope</span> Lectures 1–3.</p>
-  <a class="labcta labcta--mock" href="mock/advanced/midterm.html"><b>✎ Mock midterm · 42 questions · 60 min</b><span>Drawn from 3 lecture banks, timed, marked by section · new questions every attempt</span></a>
+  <div class="practice">
+  <a class="labcta labcta--mock" href="mock/advanced/midterm.html"><b>✎ Mock midterm</b><span>42 questions · 60 min · new set every attempt</span></a>
+  <a class="labcta labcta--cards" href="cards/advanced.html"><b>▣ Flashcards</b><span>116 cards from the summaries</span></a>
+  </div>
+  <p class="mine" hidden></p>
+  <p class="off" hidden><button class="off-btn" type="button" data-course="advanced">⤓ Save offline</button> <span class="off-s"></span></p>
 </header>
 <h3 class="group">Lectures <span>4</span></h3>
 <ol class="docs" role="list">
-<li class="doc is-exam" data-exam="true">
+<li class="doc is-exam" data-exam="true" data-doc="advanced/lecture-1-application-security" data-pages="17" data-kind="lecture">
 <a class="doc-a" href="read/advanced/lecture-1-application-security.html"><span class="num">L1</span><span class="doc-t"><b>Application Security</b><small>17 pages · <em class="tag tag--exam">In exam</em></small></span></a>
 <a class="doc-lab doc-sum" href="summary/advanced/lecture-1-application-security.html" aria-label="Summary: Application Security"><span aria-hidden="true">Σ</span><small>SUM</small></a>
 <a class="doc-lab doc-mock" href="mock/advanced/lecture-1-application-security.html" aria-label="Mock exam: Application Security"><span aria-hidden="true">✎</span><small>MOCK</small></a>
 
 <a class="doc-dl" href="files/advanced/lecture-1-application-security.pdf" download aria-label="Download Application Security PDF, 1.4 MB"><span aria-hidden="true">↓</span><small>PDF</small></a>
 </li>
-<li class="doc is-exam" data-exam="true">
+<li class="doc is-exam" data-exam="true" data-doc="advanced/lecture-2-application-security-testing" data-pages="9" data-kind="lecture">
 <a class="doc-a" href="read/advanced/lecture-2-application-security-testing.html"><span class="num">L2</span><span class="doc-t"><b>Application Security Testing (SAST / DAST)</b><small>9 pages · <em class="tag tag--exam">In exam</em></small></span></a>
 <a class="doc-lab doc-sum" href="summary/advanced/lecture-2-application-security-testing.html" aria-label="Summary: Application Security Testing (SAST / DAST)"><span aria-hidden="true">Σ</span><small>SUM</small></a>
 <a class="doc-lab doc-mock" href="mock/advanced/lecture-2-application-security-testing.html" aria-label="Mock exam: Application Security Testing (SAST / DAST)"><span aria-hidden="true">✎</span><small>MOCK</small></a>
 
 <a class="doc-dl" href="files/advanced/lecture-2-application-security-testing.pdf" download aria-label="Download Application Security Testing (SAST / DAST) PDF, 907 KB"><span aria-hidden="true">↓</span><small>PDF</small></a>
 </li>
-<li class="doc is-exam" data-exam="true">
+<li class="doc is-exam" data-exam="true" data-doc="advanced/lecture-3-virtualization-security" data-pages="12" data-kind="lecture">
 <a class="doc-a" href="read/advanced/lecture-3-virtualization-security.html"><span class="num">L3</span><span class="doc-t"><b>Virtualization Security</b><small>12 pages · <em class="tag tag--exam">In exam</em></small></span></a>
 <a class="doc-lab doc-sum" href="summary/advanced/lecture-3-virtualization-security.html" aria-label="Summary: Virtualization Security"><span aria-hidden="true">Σ</span><small>SUM</small></a>
 <a class="doc-lab doc-mock" href="mock/advanced/lecture-3-virtualization-security.html" aria-label="Mock exam: Virtualization Security"><span aria-hidden="true">✎</span><small>MOCK</small></a>
 
 <a class="doc-dl" href="files/advanced/lecture-3-virtualization-security.pdf" download aria-label="Download Virtualization Security PDF, 1.3 MB"><span aria-hidden="true">↓</span><small>PDF</small></a>
 </li>
-<li class="doc is-out" data-exam="false">
+<li class="doc is-out" data-exam="false" data-doc="advanced/lecture-4-wireless-network-security" data-pages="14" data-kind="lecture">
 <a class="doc-a" href="read/advanced/lecture-4-wireless-network-security.html"><span class="num">L4</span><span class="doc-t"><b>Wireless Network Security</b><small>14 pages · <em class="tag tag--out">Not in exam</em></small></span></a>
 <a class="doc-lab doc-sum" href="summary/advanced/lecture-4-wireless-network-security.html" aria-label="Summary: Wireless Network Security"><span aria-hidden="true">Σ</span><small>SUM</small></a>
 <a class="doc-lab doc-mock" href="mock/advanced/lecture-4-wireless-network-security.html" aria-label="Mock exam: Wireless Network Security"><span aria-hidden="true">✎</span><small>MOCK</small></a>
@@ -214,31 +232,31 @@
 </ol>
 <h3 class="group">Labs <span>2</span></h3>
 <ol class="docs" role="list">
-<li class="doc" data-exam="null">
+<li class="doc" data-exam="null" data-doc="advanced/lab-1-applocker-whitelisting" data-pages="3" data-kind="lab">
 <a class="doc-a" href="read/advanced/lab-1-applocker-whitelisting.html"><span class="num">Lab 1</span><span class="doc-t"><b>Application Whitelisting with AppLocker</b><small>3 pages</small></span></a>
 
 
-<a class="doc-lab" href="labs/advanced/lab-1-applocker-whitelisting.html" aria-label="Interactive lab: Application Whitelisting with AppLocker"><span aria-hidden="true">▶</span><small>LAB</small></a>
+<a class="doc-lab doc-run" href="labs/advanced/lab-1-applocker-whitelisting.html" aria-label="Interactive lab: Application Whitelisting with AppLocker"><span aria-hidden="true">▶</span><small>LAB</small></a>
 <a class="doc-dl" href="files/advanced/lab-1-applocker-whitelisting.pdf" download aria-label="Download Application Whitelisting with AppLocker PDF, 445 KB"><span aria-hidden="true">↓</span><small>PDF</small></a>
 </li>
-<li class="doc" data-exam="null">
+<li class="doc" data-exam="null" data-doc="advanced/lab-2-manageengine-blacklisting" data-pages="3" data-kind="lab">
 <a class="doc-a" href="read/advanced/lab-2-manageengine-blacklisting.html"><span class="num">Lab 2</span><span class="doc-t"><b>Application Blacklisting with ManageEngine</b><small>3 pages</small></span></a>
 
 
-<a class="doc-lab" href="labs/advanced/lab-2-manageengine-blacklisting.html" aria-label="Interactive lab: Application Blacklisting with ManageEngine"><span aria-hidden="true">▶</span><small>LAB</small></a>
+<a class="doc-lab doc-run" href="labs/advanced/lab-2-manageengine-blacklisting.html" aria-label="Interactive lab: Application Blacklisting with ManageEngine"><span aria-hidden="true">▶</span><small>LAB</small></a>
 <a class="doc-dl" href="files/advanced/lab-2-manageengine-blacklisting.pdf" download aria-label="Download Application Blacklisting with ManageEngine PDF, 488 KB"><span aria-hidden="true">↓</span><small>PDF</small></a>
 </li>
 </ol>
 <h3 class="group">Assignments <span>2</span></h3>
 <ol class="docs" role="list">
-<li class="doc is-exam" data-exam="true">
+<li class="doc is-exam" data-exam="true" data-doc="advanced/assignment-lecture-1" data-pages="8" data-kind="assignment">
 <a class="doc-a" href="read/advanced/assignment-lecture-1.html"><span class="num">A1</span><span class="doc-t"><b>Lecture 1 Assignments</b><small>8 pages · <em class="tag tag--exam">In exam</em></small></span></a>
 
 
 
 <a class="doc-dl" href="files/advanced/assignment-lecture-1.pdf" download aria-label="Download Lecture 1 Assignments PDF, 607 KB"><span aria-hidden="true">↓</span><small>PDF</small></a>
 </li>
-<li class="doc is-exam" data-exam="true">
+<li class="doc is-exam" data-exam="true" data-doc="advanced/assignment-lecture-3" data-pages="1" data-kind="assignment">
 <a class="doc-a" href="read/advanced/assignment-lecture-3.html"><span class="num">A3</span><span class="doc-t"><b>Lecture 3 Assignments</b><small>1 pages · <em class="tag tag--exam">In exam</em></small></span></a>
 
 
@@ -248,31 +266,36 @@
 </ol>
 
 </section>
-<section class="course" id="network" data-exam="2026-11-26" aria-labelledby="h-network">
+<section class="course" id="network" data-exam="2026-11-26" data-cards="77" aria-labelledby="h-network">
 <header class="course-h">
   <p class="course-date"><time datetime="2026-11-26">Thu 26 Nov</time> <span class="countdown" data-date="2026-11-26"></span></p>
   <h2 id="h-network">Network Security</h2>
   <p class="course-meta"><span class="code">CSTE4102</span> <span lang="ar" dir="rtl">أمن الشبكات</span></p>
   <p class="scope scope--ok"><span class="scope-k">Exam scope</span> Lectures 1–4. <strong class="missing">Lecture 4 isn&#39;t uploaded yet.</strong></p>
-  <a class="labcta labcta--mock" href="mock/network/midterm.html"><b>✎ Mock midterm · 42 questions · 60 min</b><span>Drawn from 3 lecture banks, timed, marked by section · new questions every attempt</span></a>
+  <div class="practice">
+  <a class="labcta labcta--mock" href="mock/network/midterm.html"><b>✎ Mock midterm</b><span>42 questions · 60 min · new set every attempt</span></a>
+  <a class="labcta labcta--cards" href="cards/network.html"><b>▣ Flashcards</b><span>77 cards from the summaries</span></a>
+  </div>
+  <p class="mine" hidden></p>
+  <p class="off" hidden><button class="off-btn" type="button" data-course="network">⤓ Save offline</button> <span class="off-s"></span></p>
 </header>
 <h3 class="group">Lectures <span>3</span></h3>
 <ol class="docs" role="list">
-<li class="doc is-exam" data-exam="true">
+<li class="doc is-exam" data-exam="true" data-doc="network/lecture-1-principles-and-core-concepts" data-pages="8" data-kind="lecture">
 <a class="doc-a" href="read/network/lecture-1-principles-and-core-concepts.html"><span class="num">L1</span><span class="doc-t"><b>Principles &amp; Core Concepts</b><small>8 pages · <em class="tag tag--exam">In exam</em></small></span></a>
 <a class="doc-lab doc-sum" href="summary/network/lecture-1-principles-and-core-concepts.html" aria-label="Summary: Principles &amp; Core Concepts"><span aria-hidden="true">Σ</span><small>SUM</small></a>
 <a class="doc-lab doc-mock" href="mock/network/lecture-1-principles-and-core-concepts.html" aria-label="Mock exam: Principles &amp; Core Concepts"><span aria-hidden="true">✎</span><small>MOCK</small></a>
 
 <a class="doc-dl" href="files/network/lecture-1-principles-and-core-concepts.pdf" download aria-label="Download Principles &amp; Core Concepts PDF, 738 KB"><span aria-hidden="true">↓</span><small>PDF</small></a>
 </li>
-<li class="doc is-exam" data-exam="true">
+<li class="doc is-exam" data-exam="true" data-doc="network/lecture-2-layer-2-security" data-pages="9" data-kind="lecture">
 <a class="doc-a" href="read/network/lecture-2-layer-2-security.html"><span class="num">L2</span><span class="doc-t"><b>Layer 2 (Ethernet) Security</b><small>9 pages · <em class="tag tag--exam">In exam</em></small></span></a>
 <a class="doc-lab doc-sum" href="summary/network/lecture-2-layer-2-security.html" aria-label="Summary: Layer 2 (Ethernet) Security"><span aria-hidden="true">Σ</span><small>SUM</small></a>
 <a class="doc-lab doc-mock" href="mock/network/lecture-2-layer-2-security.html" aria-label="Mock exam: Layer 2 (Ethernet) Security"><span aria-hidden="true">✎</span><small>MOCK</small></a>
 
 <a class="doc-dl" href="files/network/lecture-2-layer-2-security.pdf" download aria-label="Download Layer 2 (Ethernet) Security PDF, 1.3 MB"><span aria-hidden="true">↓</span><small>PDF</small></a>
 </li>
-<li class="doc is-exam" data-exam="true">
+<li class="doc is-exam" data-exam="true" data-doc="network/lecture-3-layer-3-ipv4-and-ipsec" data-pages="11" data-kind="lecture">
 <a class="doc-a" href="read/network/lecture-3-layer-3-ipv4-and-ipsec.html"><span class="num">L3</span><span class="doc-t"><b>Layer 3: IPv4 &amp; IPsec Security</b><small>11 pages · <em class="tag tag--exam">In exam</em></small></span></a>
 <a class="doc-lab doc-sum" href="summary/network/lecture-3-layer-3-ipv4-and-ipsec.html" aria-label="Summary: Layer 3: IPv4 &amp; IPsec Security"><span aria-hidden="true">Σ</span><small>SUM</small></a>
 <a class="doc-lab doc-mock" href="mock/network/lecture-3-layer-3-ipv4-and-ipsec.html" aria-label="Mock exam: Layer 3: IPv4 &amp; IPsec Security"><span aria-hidden="true">✎</span><small>MOCK</small></a>
@@ -282,70 +305,75 @@
 </ol>
 <h3 class="group">Labs <span>6</span></h3>
 <ol class="docs" role="list">
-<li class="doc" data-exam="null">
+<li class="doc" data-exam="null" data-doc="network/lab-1-tools-and-simulators" data-pages="4" data-kind="lab">
 <a class="doc-a" href="read/network/lab-1-tools-and-simulators.html"><span class="num">Lab 1</span><span class="doc-t"><b>Lab Tools &amp; Simulators</b><small>4 pages</small></span></a>
 
 
-<a class="doc-lab" href="labs/network/lab-1-tools-and-simulators.html" aria-label="Interactive lab: Lab Tools &amp; Simulators"><span aria-hidden="true">▶</span><small>LAB</small></a>
+<a class="doc-lab doc-run" href="labs/network/lab-1-tools-and-simulators.html" aria-label="Interactive lab: Lab Tools &amp; Simulators"><span aria-hidden="true">▶</span><small>LAB</small></a>
 <a class="doc-dl" href="files/network/lab-1-tools-and-simulators.pdf" download aria-label="Download Lab Tools &amp; Simulators PDF, 584 KB"><span aria-hidden="true">↓</span><small>PDF</small></a>
 </li>
-<li class="doc" data-exam="null">
+<li class="doc" data-exam="null" data-doc="network/lab-2-switch-port-security" data-pages="4" data-kind="lab">
 <a class="doc-a" href="read/network/lab-2-switch-port-security.html"><span class="num">Lab 2</span><span class="doc-t"><b>Switch Port Security</b><small>4 pages</small></span></a>
 
 
-<a class="doc-lab" href="labs/network/lab-2-switch-port-security.html" aria-label="Interactive lab: Switch Port Security"><span aria-hidden="true">▶</span><small>LAB</small></a>
+<a class="doc-lab doc-run" href="labs/network/lab-2-switch-port-security.html" aria-label="Interactive lab: Switch Port Security"><span aria-hidden="true">▶</span><small>LAB</small></a>
 <a class="doc-dl" href="files/network/lab-2-switch-port-security.pdf" download aria-label="Download Switch Port Security PDF, 660 KB"><span aria-hidden="true">↓</span><small>PDF</small></a>
 </li>
-<li class="doc" data-exam="null">
+<li class="doc" data-exam="null" data-doc="network/lab-3-site-to-site-ipsec-vpn" data-pages="6" data-kind="lab">
 <a class="doc-a" href="read/network/lab-3-site-to-site-ipsec-vpn.html"><span class="num">Lab 3</span><span class="doc-t"><b>Site-to-Site IPsec VPN</b><small>6 pages</small></span></a>
 
 
-<a class="doc-lab" href="labs/network/lab-3-site-to-site-ipsec-vpn.html" aria-label="Interactive lab: Site-to-Site IPsec VPN"><span aria-hidden="true">▶</span><small>LAB</small></a>
+<a class="doc-lab doc-run" href="labs/network/lab-3-site-to-site-ipsec-vpn.html" aria-label="Interactive lab: Site-to-Site IPsec VPN"><span aria-hidden="true">▶</span><small>LAB</small></a>
 <a class="doc-dl" href="files/network/lab-3-site-to-site-ipsec-vpn.pdf" download aria-label="Download Site-to-Site IPsec VPN PDF, 785 KB"><span aria-hidden="true">↓</span><small>PDF</small></a>
 </li>
-<li class="doc" data-exam="null">
+<li class="doc" data-exam="null" data-doc="network/lab-4-access-control-lists" data-pages="5" data-kind="lab">
 <a class="doc-a" href="read/network/lab-4-access-control-lists.html"><span class="num">Lab 4</span><span class="doc-t"><b>Access Control Lists (ACLs)</b><small>5 pages</small></span></a>
 
 
-<a class="doc-lab" href="labs/network/lab-4-access-control-lists.html" aria-label="Interactive lab: Access Control Lists (ACLs)"><span aria-hidden="true">▶</span><small>LAB</small></a>
+<a class="doc-lab doc-run" href="labs/network/lab-4-access-control-lists.html" aria-label="Interactive lab: Access Control Lists (ACLs)"><span aria-hidden="true">▶</span><small>LAB</small></a>
 <a class="doc-dl" href="files/network/lab-4-access-control-lists.pdf" download aria-label="Download Access Control Lists (ACLs) PDF, 225 KB"><span aria-hidden="true">↓</span><small>PDF</small></a>
 </li>
-<li class="doc" data-exam="null">
+<li class="doc" data-exam="null" data-doc="network/lab-5-arp-spoofing-and-detection" data-pages="3" data-kind="lab">
 <a class="doc-a" href="read/network/lab-5-arp-spoofing-and-detection.html"><span class="num">Lab 5</span><span class="doc-t"><b>ARP Spoofing &amp; Detection</b><small>3 pages</small></span></a>
 
 
-<a class="doc-lab" href="labs/network/lab-5-arp-spoofing-and-detection.html" aria-label="Interactive lab: ARP Spoofing &amp; Detection"><span aria-hidden="true">▶</span><small>LAB</small></a>
+<a class="doc-lab doc-run" href="labs/network/lab-5-arp-spoofing-and-detection.html" aria-label="Interactive lab: ARP Spoofing &amp; Detection"><span aria-hidden="true">▶</span><small>LAB</small></a>
 <a class="doc-dl" href="files/network/lab-5-arp-spoofing-and-detection.pdf" download aria-label="Download ARP Spoofing &amp; Detection PDF, 312 KB"><span aria-hidden="true">↓</span><small>PDF</small></a>
 </li>
-<li class="doc" data-exam="null">
+<li class="doc" data-exam="null" data-doc="network/lab-6-nmap-scanning" data-pages="3" data-kind="lab">
 <a class="doc-a" href="read/network/lab-6-nmap-scanning.html"><span class="num">Lab 6</span><span class="doc-t"><b>Network Scanning with Nmap</b><small>3 pages</small></span></a>
 
 
-<a class="doc-lab" href="labs/network/lab-6-nmap-scanning.html" aria-label="Interactive lab: Network Scanning with Nmap"><span aria-hidden="true">▶</span><small>LAB</small></a>
+<a class="doc-lab doc-run" href="labs/network/lab-6-nmap-scanning.html" aria-label="Interactive lab: Network Scanning with Nmap"><span aria-hidden="true">▶</span><small>LAB</small></a>
 <a class="doc-dl" href="files/network/lab-6-nmap-scanning.pdf" download aria-label="Download Network Scanning with Nmap PDF, 300 KB"><span aria-hidden="true">↓</span><small>PDF</small></a>
 </li>
 </ol>
 
 
 </section>
-<section class="course" id="governance" data-exam="2026-12-03" aria-labelledby="h-governance">
+<section class="course" id="governance" data-exam="2026-12-03" data-cards="72" aria-labelledby="h-governance">
 <header class="course-h">
   <p class="course-date"><time datetime="2026-12-03">Thu 3 Dec</time> <span class="countdown" data-date="2026-12-03"></span></p>
   <h2 id="h-governance">Cybersecurity Governance</h2>
   <p class="course-meta"><span class="code">CSTE4104</span> <span lang="ar" dir="rtl">حوكمة الأمن السيبراني</span></p>
   <p class="scope scope--tba"><span class="scope-k">Scope</span> Exam scope not announced yet. Lectures only.</p>
-  <a class="labcta labcta--mock" href="mock/governance/midterm.html"><b>✎ Mock midterm · 40 questions · 60 min</b><span>Drawn from 2 lecture banks, timed, marked by section · new questions every attempt</span></a>
+  <div class="practice">
+  <a class="labcta labcta--mock" href="mock/governance/midterm.html"><b>✎ Mock midterm</b><span>40 questions · 60 min · new set every attempt</span></a>
+  <a class="labcta labcta--cards" href="cards/governance.html"><b>▣ Flashcards</b><span>72 cards from the summaries</span></a>
+  </div>
+  <p class="mine" hidden></p>
+  <p class="off" hidden><button class="off-btn" type="button" data-course="governance">⤓ Save offline</button> <span class="off-s"></span></p>
 </header>
 <h3 class="group">Lectures <span>2</span></h3>
 <ol class="docs" role="list">
-<li class="doc" data-exam="null">
+<li class="doc" data-exam="null" data-doc="governance/lecture-1-cybersecurity-governance" data-pages="9" data-kind="lecture">
 <a class="doc-a" href="read/governance/lecture-1-cybersecurity-governance.html"><span class="num">L1</span><span class="doc-t"><b>Cybersecurity Governance: CIA, AAA &amp; Controls</b><small>9 pages</small></span></a>
 <a class="doc-lab doc-sum" href="summary/governance/lecture-1-cybersecurity-governance.html" aria-label="Summary: Cybersecurity Governance: CIA, AAA &amp; Controls"><span aria-hidden="true">Σ</span><small>SUM</small></a>
 <a class="doc-lab doc-mock" href="mock/governance/lecture-1-cybersecurity-governance.html" aria-label="Mock exam: Cybersecurity Governance: CIA, AAA &amp; Controls"><span aria-hidden="true">✎</span><small>MOCK</small></a>
 
 <a class="doc-dl" href="files/governance/lecture-1-cybersecurity-governance.pdf" download aria-label="Download Cybersecurity Governance: CIA, AAA &amp; Controls PDF, 748 KB"><span aria-hidden="true">↓</span><small>PDF</small></a>
 </li>
-<li class="doc" data-exam="null">
+<li class="doc" data-exam="null" data-doc="governance/lecture-2-governance-and-risk-management" data-pages="5" data-kind="lecture">
 <a class="doc-a" href="read/governance/lecture-2-governance-and-risk-management.html"><span class="num">L2</span><span class="doc-t"><b>Governance &amp; Risk Management (L1 continued)</b><small>5 pages</small></span></a>
 <a class="doc-lab doc-sum" href="summary/governance/lecture-2-governance-and-risk-management.html" aria-label="Summary: Governance &amp; Risk Management (L1 continued)"><span aria-hidden="true">Σ</span><small>SUM</small></a>
 <a class="doc-lab doc-mock" href="mock/governance/lecture-2-governance-and-risk-management.html" aria-label="Mock exam: Governance &amp; Risk Management (L1 continued)"><span aria-hidden="true">✎</span><small>MOCK</small></a>

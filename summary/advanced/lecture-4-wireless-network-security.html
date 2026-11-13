@@ -10,9 +10,12 @@
 <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
 <link rel="preload" href="../../fonts/GeistPixel-Square.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../../styles.css">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../icons/icon-192.png">
+<script>if ("serviceWorker" in navigator) addEventListener("load", () => navigator.serviceWorker.register("../../sw.js").catch(() => {}));</script>
 <link rel="stylesheet" href="../../summary.css">
 </head>
-<body class="summary">
+<body class="summary" data-doc="advanced/lecture-4-wireless-network-security">
 <header class="rbar">
   <a class="icon-btn" href="../../index.html#advanced" aria-label="Back to Advanced Cybersecurity"><span aria-hidden="true">←</span></a>
   <div class="rbar-t"><span class="rbar-c">Advanced Cybersecurity · L4 · Summary</span><b>Wireless Network Security</b></div>
@@ -87,6 +90,10 @@
 <ol><li><b>PMF (Protected Management Frames)</b>: protects management frames from eavesdropping/forging — optional in WPA2, <b>mandatory</b> in WPA3.</li><li><b>SAE (Simultaneous Authentication of Equals)</b>: protects the four-way handshake in Personal mode.</li><li><b>Forward secrecy</b>: captured frames can&#39;t be decrypted later.</li></ol>
 <div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th></th><th>WPA</th><th>WPA2</th><th>WPA3</th></tr></thead><tbody><tr><td>Encryption &amp; integrity</td><td>TKIP</td><td>CCMP (AES-CTR + CBC-MAC)</td><td>GCMP (AES-CTR + GMAC)</td></tr><tr><td>Personal mode</td><td>PSK</td><td>PSK</td><td>PSK + <b>SAE</b></td></tr><tr><td>Enterprise mode</td><td>802.1X + EAP</td><td>802.1X + EAP</td><td>802.1X + EAP</td></tr><tr><td>Protected management frames</td><td>No</td><td>Optional</td><td><b>Mandatory</b></td></tr><tr><td>Forward secrecy</td><td>No</td><td>No</td><td><b>Yes</b></td></tr></tbody></table></div>
 </section>
+<nav class="sm-next" aria-label="Practise this lecture">
+<a class="labcta labcta--cards" href="../../cards/advanced.html?deck=lecture-4-wireless-network-security"><b>▣ Practise it as 39 flashcards</b><span>Tap to flip, swipe to sort what you know</span></a>
+<a class="labcta labcta--mock" href="../../mock/advanced/lecture-4-wireless-network-security.html"><b>✎ Take the mock exam for this lecture</b><span>Timed, sectioned, with model answers</span></a>
+</nav>
 <p class="sm-src">Summary of Advanced Cybersecurity L4: Wireless Network Security. Built only from the lecture file; check the original slides for anything you're unsure about. <a href="../../read/advanced/lecture-4-wireless-network-security.html">Open the lecture →</a></p>
 </main>
 <script src="../../reader.js" defer></script>

@@ -40,6 +40,24 @@ lectures on each attempt. Exams are sectioned (A multiple choice, B true/false, 
 D short answer), marked per question, timed against a deadline (survives a sleeping phone) and
 auto-submitted when time runs out; practice mode checks each answer as you go.
 
+## Flashcards
+
+`tools/build.mjs` turns every summary into cards (`**Term** : def` lines, `Q/` questions with the list or
+table under them, and comparison tables) and writes one page per course, `cards/<course>.html`, with a
+deck per lecture. Tap to flip, swipe right = got it, left = again; learned cards are remembered.
+
+## Progress and mistakes
+
+Everything stays in the browser (localStorage): furthest page read per file, summaries opened, labs
+finished, best mock score per exam, learned cards, and wrong mock answers (`mock:mistakes`). The home page
+shows them per row and per course; mock exams offer "Review my mistakes" to redo only those.
+
+## Offline
+
+`sw.js` (generated) serves pages network-first with the cache as fallback; page images and fonts are cache-first.
+"Save offline" on a course stores everything listed for it in `data/offline.json`. The site can be
+installed to the home screen (`manifest.webmanifest`, `icons/`).
+
 ## Adding a file
 
 1. Put the PDF in `files/<course>/` with a simple name, such as `lecture-4-....pdf`.

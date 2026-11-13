@@ -10,9 +10,12 @@
 <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
 <link rel="preload" href="../../fonts/GeistPixel-Square.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../../styles.css">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../icons/icon-192.png">
+<script>if ("serviceWorker" in navigator) addEventListener("load", () => navigator.serviceWorker.register("../../sw.js").catch(() => {}));</script>
 <link rel="stylesheet" href="../../summary.css">
 </head>
-<body class="summary">
+<body class="summary" data-doc="cloud/lecture-5-distributed-systems-and-cloud-native">
 <header class="rbar">
   <a class="icon-btn" href="../../index.html#cloud" aria-label="Back to Cloud Computing"><span aria-hidden="true">←</span></a>
   <div class="rbar-t"><span class="rbar-c">Cloud Computing · L5 · Summary</span><b>Distributed Systems &amp; Cloud-Native</b></div>
@@ -105,6 +108,10 @@
 <p class="sm-q">Q/ Mini case — exam results replicated across three sites: grades vs &quot;last login&quot; ?</p>
 <ol><li>Grades → <b>strong / CP</b> (must never be stale or conflicting).</li><li>Last login → <b>eventual / AP</b> is acceptable.</li><li>Raft with <b>3 nodes, one per site</b> (or 5 across sites): if one site is cut off, the other two keep a majority and continue; the isolated site can&#39;t commit.</li><li>Failed logins with MapReduce: <b>map</b> emits (studentId, 1) for each failed-login line; <b>reduce</b> sums per student and outputs those above a threshold.</li></ol>
 </section>
+<nav class="sm-next" aria-label="Practise this lecture">
+<a class="labcta labcta--cards" href="../../cards/cloud.html?deck=lecture-5-distributed-systems-and-cloud-native"><b>▣ Practise it as 36 flashcards</b><span>Tap to flip, swipe to sort what you know</span></a>
+<a class="labcta labcta--mock" href="../../mock/cloud/lecture-5-distributed-systems-and-cloud-native.html"><b>✎ Take the mock exam for this lecture</b><span>Timed, sectioned, with model answers</span></a>
+</nav>
 <p class="sm-src">Summary of Cloud Computing L5: Distributed Systems &amp; Cloud-Native. Built only from the lecture file; check the original slides for anything you're unsure about. <a href="../../read/cloud/lecture-5-distributed-systems-and-cloud-native.html">Open the lecture →</a></p>
 </main>
 <script src="../../reader.js" defer></script>

@@ -405,7 +405,9 @@
 @layer components {
   .doc-mock { color: var(--c-warn); }
   .labcta--mock { background: var(--c-card); color: var(--c-ink); box-shadow: inset 4px 0 0 var(--c-warn), inset 0 0 0 1px var(--c-rule); }
-  .course-h .labcta--mock { margin-block-start: 0.75rem; }
+  .labcta--cards { background: var(--c-card); color: var(--c-ink); box-shadow: inset 4px 0 0 var(--c-accent), inset 0 0 0 1px var(--c-rule); }
+  .practice { display: grid; grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr)); gap: 0.5rem; margin-block-start: 0.75rem; }
+  .practice .labcta { padding: 0.6rem 0.75rem; }
 }
 /* Phones: a row with three or more buttons puts them in a bar under the title,
    so the title keeps the full width */
@@ -422,3 +424,19 @@
   }
 }
 @layer components { .results, .empty { overflow-wrap: anywhere; } }
+/* Your progress (filled from localStorage by app.js) */
+@layer components {
+  .doc.is-read .num::after { content: " ✓"; }
+  .doc-lab.is-done { background: var(--c-mark); }
+  .doc-lab.is-done small { font-weight: 700; }
+  .mine { margin-block-start: 0.6rem; font-size: 0.85rem; color: var(--c-ink-muted); }
+  .mine b { font-family: var(--font-pixel); font-weight: 400; color: var(--c-ink); }
+  .mine-k { font-family: var(--font-pixel); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--c-accent); margin-inline-end: 0.3rem; }
+}
+@layer components {
+  .off { display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem 0.6rem; margin-block-start: 0.6rem; font-size: 0.8rem; color: var(--c-ink-muted); }
+  .off-btn { border: 0; border-radius: 0; cursor: pointer; min-block-size: 2.4rem; padding: 0.3rem 0.75rem; background: var(--c-well); color: var(--c-ink);
+    font-family: var(--font-pixel); font-size: 0.8rem; box-shadow: inset 0 0 0 1px var(--c-rule); }
+  .off-btn.is-saved { color: var(--c-accent); box-shadow: inset 0 0 0 var(--px) var(--c-accent); }
+  .off-btn:disabled { opacity: 0.7; cursor: progress; }
+}

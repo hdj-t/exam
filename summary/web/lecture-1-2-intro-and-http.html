@@ -10,9 +10,12 @@
 <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
 <link rel="preload" href="../../fonts/GeistPixel-Square.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../../styles.css">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../icons/icon-192.png">
+<script>if ("serviceWorker" in navigator) addEventListener("load", () => navigator.serviceWorker.register("../../sw.js").catch(() => {}));</script>
 <link rel="stylesheet" href="../../summary.css">
 </head>
-<body class="summary">
+<body class="summary" data-doc="web/lecture-1-2-intro-and-http">
 <header class="rbar">
   <a class="icon-btn" href="../../index.html#web" aria-label="Back to Web Applications Security"><span aria-hidden="true">←</span></a>
   <div class="rbar-t"><span class="rbar-c">Web Applications Security · L1–2 · Summary</span><b>Introduction &amp; HTTP Deep Dive</b></div>
@@ -76,6 +79,10 @@
 <p class="sm-def"><b>Password-reset poisoning</b> : the attacker requests a reset for the victim with <code>Host: attacker.com</code>; the email link points to the attacker&#39;s domain, so the victim&#39;s reset <b>token is sent to the attacker</b>. Fix: never build security-sensitive URLs from client input; <b>allow-list</b> real domains.</p>
 <p class="sm-def"><b>HTTPS = HTTP + TLS</b> : the same HTTP conversation wrapped in TLS, giving <b>confidentiality</b> (encrypted), <b>integrity</b> (can&#39;t be altered) and <b>authenticity</b> (certificate). Never dismiss a &quot;connection not secure&quot; warning.</p>
 </section>
+<nav class="sm-next" aria-label="Practise this lecture">
+<a class="labcta labcta--cards" href="../../cards/web.html?deck=lecture-1-2-intro-and-http"><b>▣ Practise it as 30 flashcards</b><span>Tap to flip, swipe to sort what you know</span></a>
+<a class="labcta labcta--mock" href="../../mock/web/lecture-1-2-intro-and-http.html"><b>✎ Take the mock exam for this lecture</b><span>Timed, sectioned, with model answers</span></a>
+</nav>
 <p class="sm-src">Summary of Web Applications Security L1–2: Introduction &amp; HTTP Deep Dive. Built only from the lecture file; check the original slides for anything you're unsure about. <a href="../../read/web/lecture-1-2-intro-and-http.html">Open the lecture →</a></p>
 </main>
 <script src="../../reader.js" defer></script>

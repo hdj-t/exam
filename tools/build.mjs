@@ -100,6 +100,40 @@ function mdToHtml(src) {
   out.push("</section>");
   return out.join("\n");
 }
+// Flashcards from a summary: "**Term** : def" lines, "Q/" questions with the list or
+// table under them, and stand-alone tables ("Compare A vs B" or "Fill in the table").
+const ATTR = /role|meaning|purpose|protection|rounds|definition|explanation|violates|targets|question|example|does|observes|starts from|behaviou?r|job|name/i;
+function mdCards(src) {
+  const L = src.replace(/\r/g, "").split("\n");
+  const block = (lines) => mdToHtml(lines.join("\n")).replace(/^<section[^>]*>\n?|\n?<\/section>$/g, "");
+  const body = (l) => /^(\d+\.\s|-\s|\||> )/.test(l);
+  const cards = [];
+  for (let i = 0; i < L.length; i++) {
+    const l = L[i];
+    const def = l.match(/^\*\*([^*]+)\*\*\s*:\s*(.+)$/);
+    if (def) { cards.push({ k: "def", f: inline(def[1]), b: inline(def[2]) }); continue; }
+    if (l.startsWith("Q/")) {
+      let j = i + 1;
+      while (j < L.length && !L[j].trim()) j++;
+      const buf = [];
+      // the answer is the block right under the question; a blank line ends it unless a "> " note follows
+      while (j < L.length && (body(L[j]) || (buf.length && !L[j].trim() && (L[j + 1] || "").startsWith("> ")))) buf.push(L[j++]);
+      if (buf.length) { cards.push({ k: "q", f: inline(l.replace(/^Q\/\s*/, "")), b: block(buf.filter((x) => x.trim())) }); i = j - 1; }
+      continue;
+    }
+    if (l.startsWith("|")) {
+      const rows = [];
+      let j = i;
+      while (j < L.length && L[j].startsWith("|")) rows.push(L[j++]);
+      i = j - 1;
+      const head = rows[0].replace(/^\||\|\s*$/g, "").split(/(?<!\\)\|/).map((x) => x.trim().replace(/\*\*/g, ""));
+      const cmp = head.length >= 3 && /^(|aspect|feature|point)$/i.test(head[0]) ? head.slice(1)
+        : head.length === 2 && !head.some((x) => ATTR.test(x)) ? head : null;
+      cards.push({ k: "tbl", f: cmp ? `Compare: ${cmp.map(inline).join(" <i>vs</i> ")}` : `Fill in the table: ${head.filter(Boolean).map(inline).join(" · ")}`, b: block(rows) });
+    }
+  }
+  return cards;
+}
 const mdText = (src) => src.replace(/\*\*|`|^#+\s|^>\s|^\|[\s:|-]+\|$/gm, "").replace(/\|/g, " ").split(/^---\s*$/m).map((x) => x.replace(/\s+/g, " ").trim());
 
 // ---------------------------------------------------------------- collect
@@ -125,6 +159,7 @@ for (const c of site.courses) {
       d.summary = fs.readFileSync(smd, "utf8");
       d.sumTitle = (d.summary.match(/^# (.+)$/m) || [])[1] || "Summary";
       d.sumUrl = `summary/${d.id}.html`;
+      d.cards = mdCards(d.summary);
       search.push({ id: "sum:" + d.id, u: d.sumUrl, c: c.id, t: `${c.name} · ${docLabel(d)} · Summary — ${d.sumTitle}`, p: mdText(d.summary) });
     }
     const text = run("pdftotext", ["-enc", "UTF-8", pdf, "-"]).split("\f").slice(0, d.pages);
@@ -151,6 +186,9 @@ const head = (title, rel, desc) => `<!doctype html>
 <link rel="icon" href="${rel}favicon.svg" type="image/svg+xml">
 <link rel="preload" href="${rel}fonts/GeistPixel-Square.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="${rel}styles.css">
+<link rel="manifest" href="${rel}manifest.webmanifest">
+<link rel="apple-touch-icon" href="${rel}icons/icon-192.png">
+<script>if ("serviceWorker" in navigator) addEventListener("load", () => navigator.serviceWorker.register("${rel}sw.js").catch(() => {}));</script>
 </head>`;
 
 const MARK = `<svg class="mark" viewBox="0 0 16 16" aria-hidden="true" shape-rendering="crispEdges">
@@ -204,7 +242,7 @@ for (const c of site.courses) for (const d of c.docs) {
   if (!d.summary) continue;
   const rel = "../../";
   const html = `${head(`${d.sumTitle} — ${docLabel(d)} summary`, rel, `${c.name} ${docLabel(d)} summary: ${d.title}`).replace("</head>", `<link rel="stylesheet" href="${rel}summary.css">\n</head>`)}
-<body class="summary">
+<body class="summary" data-doc="${esc(d.id)}">
 <header class="rbar">
   <a class="icon-btn" href="${rel}index.html#${c.id}" aria-label="Back to ${esc(c.name)}"><span aria-hidden="true">←</span></a>
   <div class="rbar-t"><span class="rbar-c">${esc(c.name)} · ${esc(docLabel(d))} · Summary</span><b>${esc(d.title)}</b></div>
@@ -213,6 +251,10 @@ for (const c of site.courses) for (const d of c.docs) {
 </header>
 <main class="sm">
 ${mdToHtml(d.summary)}
+<nav class="sm-next" aria-label="Practise this lecture">
+${d.cards?.length ? `<a class="labcta labcta--cards" href="${rel}cards/${c.id}.html?deck=${esc(d.file)}"><b>▣ Practise it as ${d.cards.length} flashcards</b><span>Tap to flip, swipe to sort what you know</span></a>` : ""}
+${d.mockUrl ? `<a class="labcta labcta--mock" href="${rel}${d.mockUrl}"><b>✎ Take the mock exam for this lecture</b><span>Timed, sectioned, with model answers</span></a>` : ""}
+</nav>
 <p class="sm-src">Summary of ${esc(c.name)} ${esc(docLabel(d))}: ${esc(d.title)}. Built only from the lecture file; check the original slides for anything you're unsure about. <a href="${rel}read/${d.id}.html">Open the lecture →</a></p>
 </main>
 <script src="${rel}reader.js" defer></script>
@@ -291,6 +333,34 @@ for (const c of site.courses) {
   }
 }
 
+// ---------------------------------------------------------------- flashcards
+// cards/<course>.html: every summary of the course as one set of decks (one per lecture)
+const hash = (t) => { let x = 5381; for (const ch of t) x = ((x * 33) ^ ch.codePointAt(0)) >>> 0; return x.toString(36); };
+fs.mkdirSync(path.join(ROOT, "cards"), { recursive: true });
+for (const c of site.courses) {
+  const decks = c.docs.filter((d) => d.cards?.length).map((d) => ({
+    id: d.file, label: docLabel(d), title: d.title,
+    cards: d.cards.map((x) => ({ id: hash(c.id + "|" + x.f), ...x })),
+  }));
+  if (!decks.length) continue;
+  c.cards = { url: `cards/${c.id}.html`, n: decks.reduce((n, d) => n + d.cards.length, 0) };
+  const rel = "../";
+  const html = `${head(`Flashcards · ${c.name}`, rel, `Flashcards for ${c.name}, built from the lecture summaries`).replace("</head>", `<link rel="stylesheet" href="${rel}labs/lab.css">\n</head>`)}
+<body class="lab cards" data-course="${esc(c.id)}">
+<header class="rbar">
+  <a class="icon-btn" href="${rel}index.html#${c.id}" aria-label="Back to ${esc(c.name)}"><span aria-hidden="true">←</span></a>
+  <div class="rbar-t"><span class="rbar-c">${esc(c.name)} · ${c.cards.n} cards</span><b>Flashcards</b></div>
+</header>
+<main id="app"><p class="noscript">The flashcards need JavaScript.</p></main>
+<script>window.DECKS = ${JSON.stringify(decks).replace(/</g, "\\u003c")};</script>
+<script src="${rel}labs/engine.js" defer></script>
+<script src="${rel}labs/cards.js" defer></script>
+</body>
+</html>
+`;
+  fs.writeFileSync(path.join(ROOT, "cards", c.id + ".html"), html);
+}
+
 // ---------------------------------------------------------------- home
 const sorted = [...site.courses].sort((a, b) => a.exam.localeCompare(b.exam));
 const chips = sorted
@@ -308,11 +378,11 @@ const courseHtml = sorted
         if (!docs.length) return "";
         const rows = docs
           .map(
-            (d) => `<li class="doc${d.exam === true ? " is-exam" : d.exam === false ? " is-out" : ""}" data-exam="${d.exam}">
+            (d) => `<li class="doc${d.exam === true ? " is-exam" : d.exam === false ? " is-out" : ""}" data-exam="${d.exam}" data-doc="${esc(d.id)}" data-pages="${d.pages}" data-kind="${d.kind}">
 <a class="doc-a" href="read/${d.id}.html"><span class="num">${esc(docLabel(d))}</span><span class="doc-t"><b>${esc(d.title)}</b><small>${d.pages} pages${d.exam === true ? ' · <em class="tag tag--exam">In exam</em>' : d.exam === false ? ' · <em class="tag tag--out">Not in exam</em>' : ""}</small></span></a>
 ${d.summary ? `<a class="doc-lab doc-sum" href="${d.sumUrl}" aria-label="Summary: ${esc(d.title)}"><span aria-hidden="true">Σ</span><small>SUM</small></a>` : ""}
 ${d.mockUrl ? `<a class="doc-lab doc-mock" href="${d.mockUrl}" aria-label="Mock exam: ${esc(d.title)}"><span aria-hidden="true">✎</span><small>MOCK</small></a>` : ""}
-${d.lab ? `<a class="doc-lab" href="${d.labUrl}" aria-label="Interactive lab: ${esc(d.title)}"><span aria-hidden="true">▶</span><small>LAB</small></a>` : ""}
+${d.lab ? `<a class="doc-lab doc-run" href="${d.labUrl}" aria-label="Interactive lab: ${esc(d.title)}"><span aria-hidden="true">▶</span><small>LAB</small></a>` : ""}
 <a class="doc-dl" href="${d.pdf}" download aria-label="Download ${esc(d.title)} PDF, ${kb(d.size)}"><span aria-hidden="true">↓</span><small>PDF</small></a>
 </li>`
           )
@@ -322,13 +392,18 @@ ${d.lab ? `<a class="doc-lab" href="${d.labUrl}" aria-label="Interactive lab: ${
       .join("\n");
     const s = c.scope;
     const scope = `<p class="scope ${s.confirmed ? "scope--ok" : "scope--tba"}"><span class="scope-k">${s.confirmed ? "Exam scope" : "Scope"}</span> ${esc(s.note)}${s.missing ? ` <strong class="missing">${esc(s.missing)}</strong>` : ""}</p>`;
-    return `<section class="course" id="${c.id}" data-exam="${c.exam}" aria-labelledby="h-${c.id}">
+    return `<section class="course" id="${c.id}" data-exam="${c.exam}" data-cards="${c.cards?.n || 0}" aria-labelledby="h-${c.id}">
 <header class="course-h">
   <p class="course-date"><time datetime="${c.exam}">${esc(fmtDate(c.exam))}</time> <span class="countdown" data-date="${c.exam}"></span></p>
   <h2 id="h-${c.id}">${esc(c.name)}</h2>
   <p class="course-meta"><span class="code">${esc(c.code)}</span> <span lang="ar" dir="rtl">${esc(c.ar)}</span></p>
   ${scope}
-  ${c.midterm ? `<a class="labcta labcta--mock" href="${c.midterm.url}"><b>✎ Mock midterm · ${c.midterm.q} questions · 60 min</b><span>Drawn from ${c.midterm.n} lecture banks, timed, marked by section · new questions every attempt</span></a>` : ""}
+  <div class="practice">
+  ${c.midterm ? `<a class="labcta labcta--mock" href="${c.midterm.url}"><b>✎ Mock midterm</b><span>${c.midterm.q} questions · 60 min · new set every attempt</span></a>` : ""}
+  ${c.cards ? `<a class="labcta labcta--cards" href="${c.cards.url}"><b>▣ Flashcards</b><span>${c.cards.n} cards from the summaries</span></a>` : ""}
+  </div>
+  <p class="mine" hidden></p>
+  <p class="off" hidden><button class="off-btn" type="button" data-course="${c.id}">⤓ Save offline</button> <span class="off-s"></span></p>
 </header>
 ${groups}
 </section>`;
@@ -369,3 +444,66 @@ ${courseHtml}
 `;
 fs.writeFileSync(path.join(ROOT, "index.html"), index);
 console.log(`done: ${totalPages} pages`);
+
+// ---------------------------------------------------------------- offline
+// sw.js: network first (so updates arrive), cache as fallback; page images, fonts and icons
+// cache first. data/offline.json lists every file a course needs, for "Save offline".
+const rels = (dir, re = /./) => fs.existsSync(path.join(ROOT, dir)) ? fs.readdirSync(path.join(ROOT, dir)).filter((f) => re.test(f)).map((f) => `${dir}/${f}`) : [];
+const SHELL = ["./", "index.html", "styles.css", "app.js", "reader.js", "summary.css", "favicon.svg", "manifest.webmanifest", "offline.html",
+  "fonts/GeistPixel-Square.woff2", "icons/icon-192.png", "data/search.json", "labs/engine.js", "labs/lab.css", "labs/mock.js", "labs/cards.js"];
+const offline = {};
+for (const c of site.courses) {
+  const urls = new Set();
+  if (c.cards) urls.add(c.cards.url);
+  if (c.midterm) urls.add(c.midterm.url);
+  for (const d of c.docs) {
+    urls.add(`read/${d.id}.html`);
+    for (const f of rels(`pages/${d.id}`, /\.webp$/)) urls.add(f);
+    if (d.summary) urls.add(d.sumUrl);
+    if (d.mockUrl) { urls.add(d.mockUrl); urls.add(`mock/${d.id}.js`); }
+    if (d.lab) { urls.add(d.labUrl); urls.add(`labs/${d.id}.js`); for (const m of d.lab) urls.add(`labs/${m}.js`); }
+  }
+  const list = [...urls];
+  offline[c.id] = { bytes: list.reduce((n, u) => n + fs.statSync(path.join(ROOT, u)).size, 0), urls: list };
+}
+fs.writeFileSync(path.join(ROOT, "data/offline.json"), JSON.stringify(offline));
+fs.writeFileSync(path.join(ROOT, "offline.html"), `${head("Offline — exam", "", "This page isn't saved on this device")}
+<body class="reader">
+<main class="pages"><div class="empty" style="margin-top:2rem"><p><b>You're offline</b> and this page isn't saved on this device yet.</p>
+<p>When you're online, open the home page and press <b>Save offline</b> on a course to keep all of it on your phone.</p>
+<p><a href="index.html">← Home</a></p></div></main>
+</body>
+</html>
+`);
+const version = hash(SHELL.filter((f) => f.includes(".")).map((f) => fs.statSync(path.join(ROOT, f)).mtimeMs + f).join("|"));
+fs.writeFileSync(path.join(ROOT, "sw.js"), `// generated by tools/build.mjs
+const VERSION = "${version}";
+const CACHE = "exam-data";
+const SHELL = ${JSON.stringify(SHELL)};
+const STATIC = /\\/(pages|fonts|icons)\\/|\\.(webp|woff2|png|svg)$/;
+
+self.addEventListener("install", (e) => {
+  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL.map((u) => new Request(u, { cache: "reload" })))).then(() => self.skipWaiting()));
+});
+self.addEventListener("activate", (e) => e.waitUntil(self.clients.claim()));
+
+const timeout = (ms) => new Promise((_, no) => setTimeout(() => no(new Error("timeout")), ms));
+self.addEventListener("fetch", (e) => {
+  const req = e.request, url = new URL(req.url);
+  if (req.method !== "GET" || url.origin !== location.origin || !url.pathname.startsWith(new URL(self.registration.scope).pathname)) return;
+  if (/\\.pdf$|\\/sw\\.js$/.test(url.pathname)) return; // big downloads and the worker itself go straight to the network
+  e.respondWith((async () => {
+    const cache = await caches.open(CACHE);
+    const cached = () => cache.match(req, { ignoreSearch: true });
+    const net = async () => { const r = await fetch(req); if (r.ok && r.type === "basic") cache.put(req, r.clone()); return r; };
+    if (STATIC.test(url.pathname)) return (await cached()) || net();
+    try { return await Promise.race([net(), timeout(6000)]); }
+    catch {
+      const hit = await cached();
+      if (hit) return hit;
+      if (req.mode === "navigate") return (await cache.match("offline.html")) || Response.error();
+      return Response.error();
+    }
+  })());
+});
+`);

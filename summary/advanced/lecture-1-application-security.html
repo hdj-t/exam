@@ -10,9 +10,12 @@
 <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
 <link rel="preload" href="../../fonts/GeistPixel-Square.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../../styles.css">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../icons/icon-192.png">
+<script>if ("serviceWorker" in navigator) addEventListener("load", () => navigator.serviceWorker.register("../../sw.js").catch(() => {}));</script>
 <link rel="stylesheet" href="../../summary.css">
 </head>
-<body class="summary">
+<body class="summary" data-doc="advanced/lecture-1-application-security">
 <header class="rbar">
   <a class="icon-btn" href="../../index.html#advanced" aria-label="Back to Advanced Cybersecurity"><span aria-hidden="true">←</span></a>
   <div class="rbar-t"><span class="rbar-c">Advanced Cybersecurity · L1 · Summary</span><b>Application Security</b></div>
@@ -68,6 +71,10 @@
 <div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Practice</th><th>Rule</th></tr></thead><tbody><tr><td>Input validation</td><td>Never trust input; check type, length, format, range; prefer <b>allow-lists</b></td></tr><tr><td>Parameterized queries</td><td>Keep SQL code separate from data (stops <code>&#39; OR &#39;1&#39;=&#39;1</code>)</td></tr><tr><td>Output encoding</td><td>Encode special characters so the browser shows text, not code (XSS)</td></tr><tr><td>Password storage</td><td>Salted, slow hash (<b>bcrypt, Argon2</b>); never MD5/SHA-1</td></tr><tr><td>Authentication &amp; sessions</td><td>MFA, lockout/slow-down, random session IDs, HttpOnly/Secure/SameSite, idle expiry</td></tr><tr><td>Authorization &amp; least privilege</td><td>Check permission on <b>every request</b>; minimum rights (DB account can&#39;t DROP TABLE)</td></tr><tr><td>Secrets management</td><td>No hard-coded keys; load from env or a secrets manager; never commit to Git</td></tr><tr><td>Error handling &amp; logging</td><td>Generic messages to users, details in protected logs, no sensitive data in logs</td></tr><tr><td>Encryption</td><td>HTTPS/TLS in transit, encryption at rest; never invent your own crypto</td></tr><tr><td>Secure defaults / fail-safe</td><td>Secure out of the box; on failure <b>fail closed</b> (deny)</td></tr><tr><td>Code review &amp; testing</td><td>Peer review, SAST (Bandit, SonarQube), DAST, penetration testing</td></tr><tr><td>CSRF protection</td><td>Stop a logged-in browser being tricked into unwanted requests (tokens, SameSite)</td></tr></tbody></table></div>
 <div class="sm-key">Fail-safe example: if <code>check_permission</code> throws, set <code>allowed = False</code>, never <code>True</code>.</div>
 </section>
+<nav class="sm-next" aria-label="Practise this lecture">
+<a class="labcta labcta--cards" href="../../cards/advanced.html?deck=lecture-1-application-security"><b>▣ Practise it as 25 flashcards</b><span>Tap to flip, swipe to sort what you know</span></a>
+<a class="labcta labcta--mock" href="../../mock/advanced/lecture-1-application-security.html"><b>✎ Take the mock exam for this lecture</b><span>Timed, sectioned, with model answers</span></a>
+</nav>
 <p class="sm-src">Summary of Advanced Cybersecurity L1: Application Security. Built only from the lecture file; check the original slides for anything you're unsure about. <a href="../../read/advanced/lecture-1-application-security.html">Open the lecture →</a></p>
 </main>
 <script src="../../reader.js" defer></script>

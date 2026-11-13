@@ -10,9 +10,12 @@
 <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
 <link rel="preload" href="../../fonts/GeistPixel-Square.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../../styles.css">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../icons/icon-192.png">
+<script>if ("serviceWorker" in navigator) addEventListener("load", () => navigator.serviceWorker.register("../../sw.js").catch(() => {}));</script>
 <link rel="stylesheet" href="../../summary.css">
 </head>
-<body class="summary">
+<body class="summary" data-doc="advanced/lecture-3-virtualization-security">
 <header class="rbar">
   <a class="icon-btn" href="../../index.html#advanced" aria-label="Back to Advanced Cybersecurity"><span aria-hidden="true">←</span></a>
   <div class="rbar-t"><span class="rbar-c">Advanced Cybersecurity · L3 · Summary</span><b>Virtualization Security</b></div>
@@ -91,6 +94,10 @@
 <ol><li>Find an app that fetches user-supplied URLs.</li><li>Supply a URL pointing to an <b>internal</b> service.</li><li>The server sends the request from <b>its own network</b>.</li><li>The internal service answers (inadequately restricted).</li><li>Abuse the metadata/credentials to reach more cloud resources.</li></ol>
 <div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Threat</th><th>Layer it targets</th></tr></thead><tbody><tr><td>VM escape</td><td>The <b>isolation boundary</b> enforced by the hypervisor</td></tr><tr><td>Side-channel</td><td><b>Shared hardware</b></td></tr><tr><td>SSRF</td><td>A <b>vulnerable application</b> reaching internal cloud services</td></tr><tr><td>Insecure configuration</td><td>Settings across the stack</td></tr></tbody></table></div>
 </section>
+<nav class="sm-next" aria-label="Practise this lecture">
+<a class="labcta labcta--cards" href="../../cards/advanced.html?deck=lecture-3-virtualization-security"><b>▣ Practise it as 38 flashcards</b><span>Tap to flip, swipe to sort what you know</span></a>
+<a class="labcta labcta--mock" href="../../mock/advanced/lecture-3-virtualization-security.html"><b>✎ Take the mock exam for this lecture</b><span>Timed, sectioned, with model answers</span></a>
+</nav>
 <p class="sm-src">Summary of Advanced Cybersecurity L3: Virtualization Security. Built only from the lecture file; check the original slides for anything you're unsure about. <a href="../../read/advanced/lecture-3-virtualization-security.html">Open the lecture →</a></p>
 </main>
 <script src="../../reader.js" defer></script>

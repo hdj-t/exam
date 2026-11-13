@@ -10,9 +10,12 @@
 <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
 <link rel="preload" href="../../fonts/GeistPixel-Square.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../../styles.css">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../icons/icon-192.png">
+<script>if ("serviceWorker" in navigator) addEventListener("load", () => navigator.serviceWorker.register("../../sw.js").catch(() => {}));</script>
 <link rel="stylesheet" href="../../summary.css">
 </head>
-<body class="summary">
+<body class="summary" data-doc="cloud/lecture-4-virtual-networks-and-storage">
 <header class="rbar">
   <a class="icon-btn" href="../../index.html#cloud" aria-label="Back to Cloud Computing"><span aria-hidden="true">←</span></a>
   <div class="rbar-t"><span class="rbar-c">Cloud Computing · L4 · Summary</span><b>Virtual Networks &amp; Virtual Storage</b></div>
@@ -90,6 +93,10 @@
 <ol><li>Exam PDFs for 2,000 students → <b>object</b> (scale, cheap, read-mostly).</li><li>Lab VM disks → <b>block</b> (low latency, one VM per disk).</li><li>Shared Linux home folder → <b>file</b> (NFS/SMB, shared).</li></ol>
 <ul><li>Keep student VMs away from admin: separate segments (VLAN/VXLAN per tenant) + default-deny firewall rules. VLANs may be enough for 3 tenants; move to <b>VXLAN</b> when tenants/segments grow or span sites.</li></ul>
 </section>
+<nav class="sm-next" aria-label="Practise this lecture">
+<a class="labcta labcta--cards" href="../../cards/cloud.html?deck=lecture-4-virtual-networks-and-storage"><b>▣ Practise it as 29 flashcards</b><span>Tap to flip, swipe to sort what you know</span></a>
+<a class="labcta labcta--mock" href="../../mock/cloud/lecture-4-virtual-networks-and-storage.html"><b>✎ Take the mock exam for this lecture</b><span>Timed, sectioned, with model answers</span></a>
+</nav>
 <p class="sm-src">Summary of Cloud Computing L4: Virtual Networks &amp; Virtual Storage. Built only from the lecture file; check the original slides for anything you're unsure about. <a href="../../read/cloud/lecture-4-virtual-networks-and-storage.html">Open the lecture →</a></p>
 </main>
 <script src="../../reader.js" defer></script>

@@ -53,6 +53,85 @@
   }, { rootMargin: "-45% 0px -50% 0px" });
   $$(".course").forEach((s) => io.observe(s));
 
+  // ---- your progress: lectures read, summaries opened, labs finished, best mock scores, cards learned
+  const json = (k) => { try { return JSON.parse(store.get(k)); } catch { return null; } };
+  for (const sec of $$(".course")) {
+    let lec = 0, lecRead = 0, any = false;
+    for (const li of $$(".doc", sec)) {
+      const id = li.dataset.doc, pages = +li.dataset.pages;
+      const seen = +store.get("read:" + id) || 0;
+      const read = seen >= Math.max(1, pages - 1); // last page, or the one before (short last slides)
+      if (li.dataset.kind === "lecture") { lec++; lecRead += read; }
+      if (seen) any = true;
+      li.classList.toggle("is-read", read);
+      $(".num", li)?.setAttribute("title", read ? "Read" : seen ? `Read up to page ${seen}` : "");
+      const sum = $(".doc-sum", li);
+      if (sum && store.get("sum:" + id)) { sum.classList.add("is-done"); any = true; }
+      const lab = $(".doc-run", li);
+      if (lab && json("lab:" + id + ":done")) { lab.classList.add("is-done"); $("small", lab).textContent = "DONE"; any = true; }
+      const mock = $(".doc-mock", li), best = json("mock:" + id + ":best");
+      if (mock && best != null) { mock.classList.add("is-done"); $("small", mock).textContent = best + "%"; any = true; }
+    }
+    const mid = json(`mock:${sec.id}/midterm:best`);
+    const cards = Object.keys(json("cards:" + sec.id) || {}).length, cardsN = +sec.dataset.cards;
+    if (mid != null || cards) any = true;
+    if (!any) continue;
+    const bits = [`<b>${lecRead}/${lec}</b> lectures read`];
+    if (mid != null) bits.push(`midterm best <b>${mid}%</b>`);
+    if (cardsN) bits.push(`<b>${cards}/${cardsN}</b> cards`);
+    const p = $(".mine", sec);
+    p.innerHTML = `<span class="mine-k">You</span> ${bits.join(" · ")}`;
+    p.hidden = false;
+  }
+
+  // ---- save a whole course for offline use (Cache API; sw.js serves it when there's no network)
+  if ("caches" in window && "serviceWorker" in navigator && isSecureContext) {
+    const mb = (n) => (n / 1048576).toFixed(n > 10485760 ? 0 : 1) + " MB";
+    let list = null;
+    const getList = () => (list ??= fetch("data/offline.json").then((r) => r.json()));
+    const state = (btn, sec) => {
+      const saved = store.get("offline:" + btn.dataset.course);
+      getList().then((l) => {
+        const info = l[btn.dataset.course];
+        btn.textContent = saved ? "✓ Saved offline" : "⤓ Save offline";
+        btn.classList.toggle("is-saved", !!saved);
+        $(".off-s", sec).textContent = saved ? `${new Date(+saved).toLocaleDateString("en-GB", { day: "numeric", month: "short" })} · tap to update` : `${mb(info.bytes)} · lectures, summaries, labs, exams`;
+        $(".off", sec).hidden = false;
+      }).catch(() => {});
+    };
+    for (const btn of $$(".off-btn")) {
+      const sec = btn.closest(".course");
+      state(btn, sec);
+      btn.addEventListener("click", async () => {
+        if (btn.disabled) return;
+        // sw.js is never cached, so this only succeeds with a real connection
+        try { await fetch("sw.js?probe=" + Date.now(), { cache: "no-store" }); }
+        catch { $(".off-s", sec).textContent = "No connection. Try again when you're online."; return; }
+        btn.disabled = true;
+        const urls = [...(await getList())[btn.dataset.course].urls], total = urls.length;
+        const cache = await caches.open("exam-data");
+        let done = 0, failed = 0;
+        const next = async () => {
+          while (urls.length) {
+            const u = urls.shift();
+            try { const r = await fetch(u, { cache: "no-cache" }); if (!r.ok) throw 0; await cache.put(u, r); } catch { failed++; }
+            done++;
+            btn.textContent = `Saving ${Math.round((done / (done + urls.length)) * 100)}%`;
+          }
+        };
+        await Promise.all([next(), next(), next(), next()]);
+        btn.disabled = false;
+        if (failed) {
+          btn.textContent = "⤓ Save offline";
+          $(".off-s", sec).textContent = `${failed} of ${total} files failed. Tap to try again.`;
+          return;
+        }
+        store.set("offline:" + btn.dataset.course, String(Date.now()));
+        state(btn, sec);
+      });
+    }
+  }
+
   // ---- exam-only filter (remembered)
   const only = $("#only");
   const setOnly = (on) => {

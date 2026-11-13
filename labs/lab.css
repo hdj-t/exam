@@ -345,6 +345,7 @@
   .mk-note { font-size: 0.85rem; color: var(--c-ink-muted); line-height: 1.45; }
   .mk-start { display: grid; gap: 0.6rem; }
   @media (min-width: 30rem) { .mk-start { grid-template-columns: 1fr 1fr; } }
+  .mk-redo { grid-column: 1 / -1; }
   .mk-head { position: sticky; top: var(--bar-h); z-index: 5; background: var(--c-page); padding-block: 0.5rem 0.6rem; }
   .mk-head-r { display: flex; align-items: center; gap: 0.75rem; }
   .mk-clock { font-family: var(--font-pixel); font-weight: 400; font-size: 1.05rem; font-variant-numeric: tabular-nums; color: var(--c-accent); }
@@ -374,4 +375,66 @@
 @media (max-height: 560px) {
   .tabs, .qz-head { position: static; }
   .qz-q, .mk-list .qz-q { scroll-margin-top: calc(var(--bar-h) + 0.75rem); }
+}
+
+/* ---- flashcards ---- */
+@layer components {
+  .cards main { padding-block-start: 0.6rem; }
+  .fc-chips { display: flex; gap: 0.4rem; overflow-x: auto; padding: 3px 3px 6px; margin-inline: -3px; scrollbar-width: none; }
+  .fc-chips::-webkit-scrollbar { display: none; }
+  .fc-chip { flex: none; display: grid; justify-items: start; min-block-size: 2.6rem; padding: 0.25rem 0.7rem; border: 0; border-radius: 0; cursor: pointer;
+    background: var(--c-card); color: inherit; line-height: 1.15; box-shadow: inset 0 0 0 1px var(--c-rule); }
+  .fc-chip b { font-family: var(--font-pixel); font-weight: 400; font-size: 0.9rem; }
+  .fc-chip small { font-size: 0.7rem; color: var(--c-ink-muted); font-variant-numeric: tabular-nums; }
+  .fc-chip[aria-selected="true"] { background: var(--c-accent); color: var(--c-on-accent); box-shadow: none; }
+  .fc-chip[aria-selected="true"] small { color: inherit; opacity: 0.85; }
+  .fc-stats { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.4rem 0.75rem; margin-block: 0.6rem; font-size: 0.88rem; color: var(--c-ink-muted); }
+  .fc-stats b { font-family: var(--font-pixel); font-weight: 400; color: var(--c-ink); }
+  .fc-mode { border: 0; border-radius: 0; background: var(--c-well); color: inherit; font: inherit; font-size: 0.8rem; padding: 0.35rem 0.6rem; min-block-size: 2.2rem; cursor: pointer; }
+  .fc-mode[aria-pressed="true"] { box-shadow: inset 0 0 0 var(--px) var(--c-accent); }
+  .fc-stage { display: grid; gap: 0.6rem; }
+  .fc-pos { font-family: var(--font-pixel); font-size: 0.78rem; color: var(--c-ink-muted); }
+  .fc-bar { margin-block: 0; }
+  .fc-card {
+    position: relative; display: grid; align-content: start; gap: 0.6rem; min-block-size: min(38vh, 19rem); padding: 1rem 1.05rem 1.2rem;
+    background: var(--c-card); cursor: pointer; touch-action: pan-y; user-select: none; -webkit-user-select: none; outline-offset: 3px;
+    box-shadow: 0 calc(-1 * var(--px)) 0 0 var(--c-ink), 0 var(--px) 0 0 var(--c-ink), calc(-1 * var(--px)) 0 0 0 var(--c-ink), var(--px) 0 0 0 var(--c-ink), calc(2 * var(--px)) calc(3 * var(--px)) 0 0 var(--c-shadow);
+    transition: transform 120ms steps(3, end);
+  }
+  .fc-card.is-flipped { cursor: grab; user-select: text; -webkit-user-select: text; }
+  .fc-card.is-right { box-shadow: inset 0 0 0 3px var(--c-accent); }
+  .fc-card.is-left { box-shadow: inset 0 0 0 3px #C0392B; }
+  .fc-kick { font-family: var(--font-pixel); font-size: 0.72rem; color: var(--c-ink-muted); text-transform: uppercase; letter-spacing: 0.03em; }
+  .fc-kick span:first-child { color: var(--c-accent); }
+  .fc-known { color: var(--c-accent); }
+  .fc-front { font-size: clamp(1.15rem, 1rem + 1vw, 1.45rem); font-weight: 650; line-height: 1.35; overflow-wrap: anywhere; }
+  .fc-front i { font-weight: 400; color: var(--c-ink-muted); }
+  .fc-hint { align-self: end; margin-block-start: auto; font-size: 0.8rem; color: var(--c-ink-muted); }
+  .fc-back { border-block-start: 2px dashed var(--c-rule); padding-block-start: 0.7rem; font-size: 0.95rem; line-height: 1.55; overflow-wrap: anywhere; min-inline-size: 0; }
+  .fc-back ol, .fc-back ul { padding-inline-start: 1.25rem; display: grid; gap: 0.25rem; }
+  .fc-back .tbl-wrap { overflow-x: auto; }
+  .fc-back table { border-collapse: collapse; font-size: 0.82rem; min-inline-size: 100%; }
+  .fc-back th, .fc-back td { border: 1px solid var(--c-rule); padding: 0.35rem 0.45rem; text-align: start; vertical-align: top; }
+  .fc-back th { background: var(--c-well); }
+  .fc-back .sm-key { margin-block-start: 0.5rem; padding: 0.5rem 0.6rem; background: var(--c-well); font-size: 0.88rem; }
+  .fc-back code, .fc-front code { font-size: 0.85em; background: var(--c-well); padding: 0 0.2em; }
+  .fc-acts { display: grid; grid-template-columns: 1fr; gap: 0.6rem; }
+  .fc-acts:has(.fc-got) { grid-template-columns: 1fr 1fr; }
+  .fc-done { display: grid; gap: 0.8rem; padding: 1rem; background: var(--c-mark); }
+}
+@layer components {
+  /* tables on a card scroll sideways instead of breaking words apart */
+  .fc-back table { overflow-wrap: normal; }
+  .fc-back th, .fc-back td { min-inline-size: 6.5rem; hyphens: auto; }
+  .fc-back th:first-child, .fc-back td:first-child { min-inline-size: 5rem; }
+}
+@layer components {
+  /* scroll shadows: a soft edge shows there is more table to the side */
+  .fc-back .tbl-wrap {
+    background:
+      linear-gradient(to right, var(--c-card) 30%, transparent) left / 1.5rem 100% no-repeat local,
+      linear-gradient(to left, var(--c-card) 30%, transparent) right / 1.5rem 100% no-repeat local,
+      radial-gradient(farthest-side at 0 50%, rgb(0 0 0 / 0.22), transparent) left / 0.7rem 100% no-repeat scroll,
+      radial-gradient(farthest-side at 100% 50%, rgb(0 0 0 / 0.22), transparent) right / 0.7rem 100% no-repeat scroll;
+  }
 }

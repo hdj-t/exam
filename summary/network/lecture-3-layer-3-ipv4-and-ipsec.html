@@ -10,9 +10,12 @@
 <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
 <link rel="preload" href="../../fonts/GeistPixel-Square.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../../styles.css">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../icons/icon-192.png">
+<script>if ("serviceWorker" in navigator) addEventListener("load", () => navigator.serviceWorker.register("../../sw.js").catch(() => {}));</script>
 <link rel="stylesheet" href="../../summary.css">
 </head>
-<body class="summary">
+<body class="summary" data-doc="network/lecture-3-layer-3-ipv4-and-ipsec">
 <header class="rbar">
   <a class="icon-btn" href="../../index.html#network" aria-label="Back to Network Security"><span aria-hidden="true">←</span></a>
   <div class="rbar-t"><span class="rbar-c">Network Security · L3 · Summary</span><b>Layer 3: IPv4 &amp; IPsec Security</b></div>
@@ -70,6 +73,10 @@
 <div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Requirement</th><th>Recommended protection</th></tr></thead><tbody><tr><td>Students must not access router management</td><td>Management ACL + segmentation</td></tr><tr><td>Internet packet claims an internal source</td><td>Ingress filtering + uRPF</td></tr><tr><td>Only required traffic to the grade server</td><td>Extended ACL</td></tr><tr><td>Two buildings exchange private data over the Internet</td><td>IPsec tunnel mode</td></tr><tr><td>Suspicious ICMP traffic</td><td>Rate limiting + logging + monitoring</td></tr><tr><td>Routing information must be protected</td><td>Routing authentication + router hardening</td></tr></tbody></table></div>
 <div class="sm-key">Key points: IPv4 has no built-in confidentiality or strong source authentication; <b>ESP</b> is the choice when confidentiality is required (AH doesn&#39;t encrypt); <b>tunnel mode</b> protects the whole packet; <b>IKEv2</b> builds and manages SAs.</div>
 </section>
+<nav class="sm-next" aria-label="Practise this lecture">
+<a class="labcta labcta--cards" href="../../cards/network.html?deck=lecture-3-layer-3-ipv4-and-ipsec"><b>▣ Practise it as 24 flashcards</b><span>Tap to flip, swipe to sort what you know</span></a>
+<a class="labcta labcta--mock" href="../../mock/network/lecture-3-layer-3-ipv4-and-ipsec.html"><b>✎ Take the mock exam for this lecture</b><span>Timed, sectioned, with model answers</span></a>
+</nav>
 <p class="sm-src">Summary of Network Security L3: Layer 3: IPv4 &amp; IPsec Security. Built only from the lecture file; check the original slides for anything you're unsure about. <a href="../../read/network/lecture-3-layer-3-ipv4-and-ipsec.html">Open the lecture →</a></p>
 </main>
 <script src="../../reader.js" defer></script>

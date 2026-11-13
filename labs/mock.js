@@ -35,8 +35,14 @@
     const missing = ids.filter((id) => !banks[id]);
     if (missing.length) { app.replaceChildren(h("p", { class: "noscript" }, "Question bank missing: " + missing.join(", "))); return; }
 
+    // every question gets a stable id (bank#index) so wrong answers can be kept for review
+    const bank = (id) => banks[id].qs.map((q, i) => ({ ...q, _id: id + "#" + i }));
+    const MKEY = "mock:mistakes";
+    const mistakes = () => ids.flatMap(bank).filter((q) => store.get(MKEY, {})[q._id]);
+
     const intro = () => {
-      const pool = ids.flatMap((id) => pick(banks[id].qs, per));
+      const pool = ids.flatMap((id) => pick(bank(id), per));
+      const missed = mistakes();
       const total = pool.reduce((n, q) => n + marks(q), 0);
       const best = store.get(key + ":best", null);
       const counts = SECTIONS.map((s) => [s, pool.filter((q) => s.types.includes(q.t)).length]).filter(([, n]) => n);
@@ -55,10 +61,11 @@
           : "Every attempt shuffles the questions and options. Short answers are marked by key ideas, like the doctor's marking scheme."),
         h("div", { class: "mk-start" },
           h("button", { class: "btn", type: "button", onclick: () => exam(pool, true) }, `▶ Start timed exam`),
-          h("button", { class: "btn btn--ghost", type: "button", onclick: () => exam(pool, false) }, "Practice: check as I go"))));
+          h("button", { class: "btn btn--ghost", type: "button", onclick: () => exam(pool, false) }, "Practice: check as I go"),
+          missed.length ? h("button", { class: "btn btn--warn mk-redo", type: "button", onclick: () => exam(missed, false, true) }, `↻ Review my ${missed.length} mistake${missed.length > 1 ? "s" : ""}`) : null)));
     };
 
-    function exam(pool, timed) {
+    function exam(pool, timed, review) {
       const qs = SECTIONS.flatMap((s) => shuffle(pool.filter((q) => s.types.includes(q.t))).map((q) => ({ ...q, sec: s })));
       const total = qs.reduce((n, q) => n + marks(q), 0);
       Mock.current = qs;
@@ -142,7 +149,11 @@
         items.forEach((it, i) => { if (res[i] == null) res[i] = it.submit(); });
         const got = res.reduce((n, r, i) => n + (r || 0) * marks(qs[i]), 0);
         const pct = Math.round((got / total) * 100);
-        if (pct > store.get(key + ":best", -1)) store.set(key + ":best", pct);
+        if (!review && pct > store.get(key + ":best", -1)) store.set(key + ":best", pct);
+        const ms = store.get(MKEY, {});
+        qs.forEach((q, i) => { if (res[i] === 1) delete ms[q._id]; else ms[q._id] = (ms[q._id] || 0) + 1; });
+        store.set(MKEY, ms);
+        const missedNow = qs.filter((_, i) => res[i] !== 1);
         const band = pct >= 90 ? "Excellent" : pct >= 80 ? "Very good" : pct >= 70 ? "Good" : pct >= 60 ? "Fair" : pct >= 50 ? "Pass" : "Below pass";
         const secs = SECTIONS.map((s) => {
           const ix = qs.map((q, i) => (q.sec === s ? i : -1)).filter((i) => i >= 0);
@@ -152,13 +163,14 @@
         });
         const wrong = res.map((r, i) => (r === 1 ? null : i)).filter((i) => i != null);
         result.replaceChildren(
-          h("p", { class: "mk-kicker" }, timeUp ? "Time is up · your exam was submitted" : timed ? "Exam submitted" : "Practice finished"),
+          h("p", { class: "mk-kicker" }, timeUp ? "Time is up · your exam was submitted" : review ? "Mistake review finished" : timed ? "Exam submitted" : "Practice finished"),
           h("p", { class: "mk-score" }, h("b", null, fmt(got)), ` / ${total}`, h("span", null, `${pct}% · ${band}`)),
           h("ul", { class: "mk-break", role: "list" }, secs),
           wrong.length
             ? h("div", { class: "mk-review" }, h("p", null, "Review the ones you lost marks on:"), h("div", { class: "mk-jumps" }, wrong.map((i) => h("a", { href: "#q" + (i + 1), class: res[i] > 0 ? "is-part" : "" }, "Q" + (i + 1)))))
             : h("p", null, "Full marks. Try a new attempt to see other questions."),
           h("div", { class: "qz-actions" },
+            missedNow.length ? h("button", { class: "btn btn--warn", type: "button", onclick: () => exam(missedNow, false, true) }, `↻ Redo the ${missedNow.length} I missed`) : null,
             h("button", { class: "btn", type: "button", onclick: intro }, ids.length > 1 ? "New exam (new questions)" : "Take it again"),
             h("a", { class: "btn btn--ghost", href: body.dataset.back }, "Back to course")));
         result.hidden = false;

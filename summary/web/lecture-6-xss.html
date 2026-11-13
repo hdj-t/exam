@@ -10,9 +10,12 @@
 <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
 <link rel="preload" href="../../fonts/GeistPixel-Square.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../../styles.css">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../icons/icon-192.png">
+<script>if ("serviceWorker" in navigator) addEventListener("load", () => navigator.serviceWorker.register("../../sw.js").catch(() => {}));</script>
 <link rel="stylesheet" href="../../summary.css">
 </head>
-<body class="summary">
+<body class="summary" data-doc="web/lecture-6-xss">
 <header class="rbar">
   <a class="icon-btn" href="../../index.html#web" aria-label="Back to Web Applications Security"><span aria-hidden="true">←</span></a>
   <div class="rbar-t"><span class="rbar-c">Web Applications Security · L6 · Summary</span><b>Cross-Site Scripting (XSS)</b></div>
@@ -57,6 +60,10 @@
 <div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Defense</th><th>Prevents XSS?</th><th>What it does</th></tr></thead><tbody><tr><td>Output encoding</td><td><b>Yes</b> (primary)</td><td>Data shown as text, not code</td></tr><tr><td>Input validation</td><td>Helps</td><td>Restricts what&#39;s accepted</td></tr><tr><td>CSP</td><td>Limits damage</td><td>Blocks inline / foreign scripts</td></tr><tr><td>HttpOnly</td><td><b>No</b></td><td>Protects the cookie from theft</td></tr></tbody></table></div>
 <p class="sm-def"><b>OWASP placement</b> : XSS was its own category in older editions; <b>2021 merged it into A03:2021 Injection</b>, because it shares SQL injection&#39;s root cause (an interpreter that can&#39;t tell code from data) — only the interpreter differs (browser vs database).</p>
 </section>
+<nav class="sm-next" aria-label="Practise this lecture">
+<a class="labcta labcta--cards" href="../../cards/web.html?deck=lecture-6-xss"><b>▣ Practise it as 14 flashcards</b><span>Tap to flip, swipe to sort what you know</span></a>
+<a class="labcta labcta--mock" href="../../mock/web/lecture-6-xss.html"><b>✎ Take the mock exam for this lecture</b><span>Timed, sectioned, with model answers</span></a>
+</nav>
 <p class="sm-src">Summary of Web Applications Security L6: Cross-Site Scripting (XSS). Built only from the lecture file; check the original slides for anything you're unsure about. <a href="../../read/web/lecture-6-xss.html">Open the lecture →</a></p>
 </main>
 <script src="../../reader.js" defer></script>

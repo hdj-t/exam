@@ -10,9 +10,12 @@
 <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
 <link rel="preload" href="../../fonts/GeistPixel-Square.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../../styles.css">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../icons/icon-192.png">
+<script>if ("serviceWorker" in navigator) addEventListener("load", () => navigator.serviceWorker.register("../../sw.js").catch(() => {}));</script>
 <link rel="stylesheet" href="../../summary.css">
 </head>
-<body class="summary">
+<body class="summary" data-doc="advanced/lecture-2-application-security-testing">
 <header class="rbar">
   <a class="icon-btn" href="../../index.html#advanced" aria-label="Back to Advanced Cybersecurity"><span aria-hidden="true">←</span></a>
   <div class="rbar-t"><span class="rbar-c">Advanced Cybersecurity · L2 · Summary</span><b>Application Security Testing (SAST / DAST)</b></div>
@@ -54,6 +57,10 @@
 <ul><li>SAST catches the flaw <b>early in code</b>; DAST <b>confirms exploitability</b> on the running system; after fixing, both re-scans pass (SAST: no issues; DAST: attacks defended).</li></ul>
 <div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>CWE</th><th>Name</th><th>Fix</th></tr></thead><tbody><tr><td>CWE-259</td><td>Hard-coded password</td><td>Environment variables / secrets manager</td></tr><tr><td>CWE-89</td><td>SQL injection</td><td>Parameterized queries</td></tr><tr><td>CWE-78</td><td>OS command injection</td><td>Argument arrays, no shell (subprocess list)</td></tr></tbody></table></div>
 </section>
+<nav class="sm-next" aria-label="Practise this lecture">
+<a class="labcta labcta--cards" href="../../cards/advanced.html?deck=lecture-2-application-security-testing"><b>▣ Practise it as 14 flashcards</b><span>Tap to flip, swipe to sort what you know</span></a>
+<a class="labcta labcta--mock" href="../../mock/advanced/lecture-2-application-security-testing.html"><b>✎ Take the mock exam for this lecture</b><span>Timed, sectioned, with model answers</span></a>
+</nav>
 <p class="sm-src">Summary of Advanced Cybersecurity L2: Application Security Testing (SAST / DAST). Built only from the lecture file; check the original slides for anything you're unsure about. <a href="../../read/advanced/lecture-2-application-security-testing.html">Open the lecture →</a></p>
 </main>
 <script src="../../reader.js" defer></script>

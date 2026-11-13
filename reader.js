@@ -11,6 +11,9 @@
 
   const save = () => {
     try {
+      // furthest page reached, for the progress marks on the home page
+      const k = "read:" + body.dataset.doc;
+      if (current > (+localStorage.getItem(k) || 0)) localStorage.setItem(k, current);
       localStorage.setItem("last-read", JSON.stringify({
         href: location.pathname.split("/").slice(-3).join("/"),
         title: body.dataset.title, page: current, pages: total,
@@ -27,6 +30,7 @@
     }
   }, { rootMargin: "-40% 0px -55% 0px" });
   if (io) pages.forEach((p) => io.observe(p));
+  if (isSummary) try { localStorage.setItem("sum:" + body.dataset.doc, "1"); } catch {}
 
   // Pages above a #pN jump are lazy; load them so the jump doesn't drift.
   if (location.hash) pages.forEach((p) => (p.querySelector("img").loading = "eager"));

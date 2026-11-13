@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>الطبقة الثانية والمصائب الآتية — L2 summary</title>
+<meta name="description" content="Network Security L2 summary: Layer 2 (Ethernet) Security">
+<meta name="theme-color" content="#F6F3EC" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#171513" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../../fonts/GeistPixel-Square.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../../styles.css">
+<link rel="stylesheet" href="../../summary.css">
+</head>
+<body class="summary">
+<header class="rbar">
+  <a class="icon-btn" href="../../index.html#network" aria-label="Back to Network Security"><span aria-hidden="true">←</span></a>
+  <div class="rbar-t"><span class="rbar-c">Network Security · L2 · Summary</span><b>Layer 2 (Ethernet) Security</b></div>
+  <a class="icon-btn" href="../../read/network/lecture-2-layer-2-security.html" aria-label="Open the lecture">Lec</a>
+  <a class="icon-btn icon-btn--pdf" href="lecture-2-layer-2-security.pdf" download aria-label="Download summary PDF">PDF</a>
+</header>
+<main class="sm">
+<section class="sm-sec" id="p1">
+<h1 class="sm-title" lang="ar" dir="rtl">الطبقة الثانية والمصائب الآتية</h1>
+<h2>Lecture 2 — Layer 2 (Ethernet) Security and Protection</h2>
+<p class="sm-def"><b>Layer 2 (Data Link)</b> : provides <b>local</b> network communication using frames, MAC addresses, switches and VLANs.</p>
+<p class="sm-def"><b>Ethernet</b> : the most common wired LAN technology; information is carried in <b>frames</b>.</p>
+<p class="sm-q">Q/ What are the fields of an Ethernet frame ?</p>
+<ol><li><b>Destination MAC</b>: the intended receiver.</li><li><b>Source MAC</b>: the sending interface — switches use it for <b>learning</b>.</li><li><b>Type/Length</b>: the carried protocol (IPv4, IPv6, ARP).</li><li><b>Payload</b>: the actual information.</li><li><b>FCS (Frame Check Sequence)</b>: detects transmission errors; damaged frames are discarded.</li></ol>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>MAC address</th><th>IP address</th></tr></thead><tbody><tr><td>Layer 2</td><td>Layer 3</td></tr><tr><td>Local frame delivery</td><td>Communication between networks</td></tr><tr><td>Used by switches</td><td>Used by routers</td></tr><tr><td>e.g. 00:25:96:FF:12:34</td><td>e.g. 192.168.10.5</td></tr></tbody></table></div>
+<div class="sm-key">A MAC address is <b>not strong proof of identity</b>: software can change or imitate it.</div>
+</section>
+<section class="sm-sec" id="p2">
+<h2>How a switch works</h2>
+<p class="sm-def"><b>MAC address table</b> : maps MAC addresses to switch ports.</p>
+<div class="sm-key">The switch <b>learns from the source MAC</b> but <b>forwards by the destination MAC</b>.</div>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Situation</th><th>Switch action</th></tr></thead><tbody><tr><td>Known destination MAC</td><td>Forward only to the correct port</td></tr><tr><td>Unknown destination MAC</td><td><b>Flood</b> to all other ports in the same VLAN (except the incoming one)</td></tr><tr><td>Broadcast FF:FF:FF:FF:FF:FF</td><td>Send to all ports in the broadcast domain (except the incoming one)</td></tr></tbody></table></div>
+<p class="sm-q">Q/ Why does Layer 2 need security ?</p>
+<ul><li>Its protocols were built for fast local communication and <b>trust</b> what devices send: the switch learns any source MAC, ARP accepts IP-to-MAC claims, DHCP clients accept configuration, STP exchanges BPDUs — all can be abused.</li></ul>
+</section>
+<section class="sm-sec" id="p3">
+<h2>Attacks and protections</h2>
+<p class="sm-def"><b>MAC flooding</b> : the attacker sends many frames with <b>fake source MACs</b> to fill/disturb the MAC table; unknown unicast is then flooded, exposing traffic and reducing performance.</p>
+<p class="sm-def"><b>MAC spoofing</b> : the attacker uses <b>another device&#39;s MAC</b> to imitate it.</p>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th></th><th>MAC flooding</th><th>MAC spoofing</th></tr></thead><tbody><tr><td>Goal</td><td>Disturb the MAC table</td><td>Imitate another device</td></tr><tr><td>Protection</td><td><b>Port Security</b></td><td><b>802.1X</b>, Port Security, stronger authentication</td></tr></tbody></table></div>
+<p class="sm-q">Q/ What can Port Security do ?</p>
+<ol><li><b>Limit the number</b> of MAC addresses allowed on a port.</li><li>Use <b>static</b>, <b>dynamically learned</b> or <b>sticky</b> secure MACs.</li><li><b>Drop</b> unauthorized traffic or <b>disable</b> the port on a violation.</li></ol>
+<p class="sm-def"><b>ARP (Address Resolution Protocol)</b> : discovers the MAC address associated with an IPv4 address on the local network.</p>
+<p class="sm-def"><b>ARP spoofing</b> : sending <b>false ARP replies</b> (e.g. &quot;192.168.1.1 is at CC:CC:…:03&quot;, the attacker&#39;s MAC), because basic ARP doesn&#39;t strongly authenticate replies → traffic goes through the attacker (<b>Man-in-the-Middle</b>).</p>
+<p class="sm-q">Q/ What are the possible results of ARP spoofing ?</p>
+<ol><li>Traffic interception. 2. Traffic modification. 3. Session hijacking. 4. Denial of service.</li></ol>
+<p class="sm-q">Q/ How to protect against ARP spoofing ?</p>
+<ol><li><b>Dynamic ARP Inspection (DAI)</b>.</li><li><b>DHCP Snooping</b>.</li><li>Network segmentation.</li><li>Encryption of application traffic.</li><li>Monitoring for unusual or duplicate ARP entries.</li></ol>
+<div class="sm-key"><b>DAI</b> validates ARP using trusted IP-to-MAC bindings, commonly learned from the <b>DHCP Snooping database</b>.</div>
+</section>
+<section class="sm-sec" id="p4">
+<p class="sm-def"><b>DHCP</b> : automatically gives clients an IP address, mask, default gateway, DNS server and lease time.</p>
+<p class="sm-def"><b>DORA</b> : the normal DHCP process — <b>D</b>iscover → <b>O</b>ffer → <b>R</b>equest → <b>A</b>cknowledge.</p>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Attack</th><th>What happens</th><th>Effect / protection</th></tr></thead><tbody><tr><td><b>Rogue DHCP server</b></td><td>An unauthorized server gives false settings (fake gateway, malicious DNS)</td><td>Traffic redirected → <b>DHCP Snooping</b></td></tr><tr><td><b>DHCP starvation</b></td><td>Many fake DHCP requests consume the address pool</td><td>Users get no IP → DHCP Snooping + <b>rate limiting</b></td></tr></tbody></table></div>
+<p class="sm-q">Q/ What does DHCP Snooping do ?</p>
+<ol><li>Classifies switch ports as <b>trusted</b> or <b>untrusted</b>.</li><li>Blocks DHCP <b>server</b> messages from untrusted ports.</li><li>Builds a <b>binding database</b> (IP, MAC, VLAN, port, lease).</li><li>Supports <b>DAI</b> and <b>IP Source Guard</b>.</li></ol>
+<div class="sm-key">Trusted ports lead toward the real DHCP server; user-facing ports are untrusted.</div>
+</section>
+<section class="sm-sec" id="p5">
+<p class="sm-def"><b>VLAN</b> : logically separates a switched network into different <b>broadcast domains</b> (students, staff, servers…), reducing exposure and allowing different policies.</p>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>VLAN hopping type</th><th>Idea</th><th>Basic protection</th></tr></thead><tbody><tr><td><b>Switch spoofing</b></td><td>Attacker pretends to be a switch and negotiates a <b>trunk</b></td><td>Configure user ports as <b>access</b> ports; disable automatic trunk negotiation</td></tr><tr><td><b>Double tagging</b></td><td>A frame with <b>two VLAN tags</b> crosses VLAN boundaries</td><td>Use a dedicated unused <b>native VLAN</b>; no user devices on it</td></tr></tbody></table></div>
+<p class="sm-def"><b>STP (Spanning Tree Protocol)</b> : prevents switching loops and elects a <b>root bridge</b>.</p>
+<p class="sm-def"><b>STP manipulation</b> : an unauthorized switch sends <b>superior BPDUs</b> to become root → change topology, redirect traffic, or cause instability.</p>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>BPDU Guard</th><th>Root Guard</th></tr></thead><tbody><tr><td>Used on <b>host-facing access ports</b></td><td>Used where the root must not appear</td></tr><tr><td>Unexpected BPDU → port disabled</td><td>Prevents an unexpected switch from becoming root</td></tr><tr><td>Protects <b>edge ports</b></td><td>Protects the <b>root-bridge position</b></td></tr></tbody></table></div>
+<p class="sm-def"><b>IEEE 802.1X</b> : authenticates users/devices <b>before</b> normal network access.</p>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>802.1X component</th><th>Role</th></tr></thead><tbody><tr><td><b>Supplicant</b></td><td>The user device requesting access</td></tr><tr><td><b>Authenticator</b></td><td>The switch or access point controlling the port</td></tr><tr><td><b>Authentication server</b></td><td>Verifies credentials</td></tr></tbody></table></div>
+</section>
+<section class="sm-sec" id="p6">
+<h2>Summary tables</h2>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Control</th><th>Main purpose</th></tr></thead><tbody><tr><td>Port Security</td><td>Limits which MACs can use a port</td></tr><tr><td>Disable unused ports</td><td>Reduces unauthorized physical access</td></tr><tr><td>VLAN segmentation</td><td>Separates users/services into zones</td></tr><tr><td>DHCP Snooping</td><td>Blocks rogue DHCP; builds trusted bindings</td></tr><tr><td>DAI</td><td>Validates ARP against trusted bindings</td></tr><tr><td>IP Source Guard</td><td>Filters source IP/MAC on untrusted interfaces</td></tr><tr><td>BPDU Guard</td><td>Stops STP on user-facing ports</td></tr><tr><td>Root Guard</td><td>Protects the intended root</td></tr><tr><td>IEEE 802.1X</td><td>Authenticates before access</td></tr></tbody></table></div>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Attack</th><th>Objective</th><th>Protection</th></tr></thead><tbody><tr><td>MAC flooding</td><td>Fill/disturb the MAC table</td><td>Port Security</td></tr><tr><td>MAC spoofing</td><td>Imitate another device</td><td>802.1X, Port Security</td></tr><tr><td>ARP spoofing</td><td>Redirect or intercept traffic</td><td>DAI, DHCP Snooping, encryption</td></tr><tr><td>Rogue DHCP</td><td>Give clients false configuration</td><td>DHCP Snooping</td></tr><tr><td>DHCP starvation</td><td>Exhaust IP addresses</td><td>DHCP Snooping, rate limiting</td></tr><tr><td>VLAN hopping</td><td>Reach another VLAN</td><td>Access mode, no negotiation, secure native VLAN</td></tr><tr><td>STP manipulation</td><td>Change switching topology</td><td>BPDU Guard, Root Guard</td></tr><tr><td>Unauthorized connection</td><td>Gain network access</td><td>Disable unused ports, 802.1X</td></tr></tbody></table></div>
+<p class="sm-q">Q/ University case — fix each problem.</p>
+<ol><li>All users in one VLAN → separate VLANs (students, teachers, admin, servers, guests).</li><li>Unused ports active → shut them down and put them in an unused VLAN.</li><li>Unknown devices connect → 802.1X. Too many MACs on a port → Port Security.</li><li>Rogue DHCP possible → DHCP Snooping. ARP spoofing → DAI.</li><li>Students connect switches → BPDU Guard. Unexpected root → Root Guard.</li></ol>
+<div class="sm-key">Don&#39;t trust a device just because it&#39;s connected; a MAC isn&#39;t identity; combine controls (<b>defense in depth</b>).</div>
+</section>
+<p class="sm-src">Summary of Network Security L2: Layer 2 (Ethernet) Security. Built only from the lecture file; check the original slides for anything you're unsure about. <a href="../../read/network/lecture-2-layer-2-security.html">Open the lecture →</a></p>
+</main>
+<script src="../../reader.js" defer></script>
+</body>
+</html>

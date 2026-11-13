@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>التشفير والتهشير في حفظ الأسرار من التشهير — L5 summary</title>
+<meta name="description" content="Web Applications Security L5 summary: Securing Web Application Data">
+<meta name="theme-color" content="#F6F3EC" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#171513" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../../fonts/GeistPixel-Square.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../../styles.css">
+<link rel="stylesheet" href="../../summary.css">
+</head>
+<body class="summary">
+<header class="rbar">
+  <a class="icon-btn" href="../../index.html#web" aria-label="Back to Web Applications Security"><span aria-hidden="true">←</span></a>
+  <div class="rbar-t"><span class="rbar-c">Web Applications Security · L5 · Summary</span><b>Securing Web Application Data</b></div>
+  <a class="icon-btn" href="../../read/web/lecture-5-securing-web-app-data.html" aria-label="Open the lecture">Lec</a>
+  <a class="icon-btn icon-btn--pdf" href="lecture-5-securing-web-app-data.pdf" download aria-label="Download summary PDF">PDF</a>
+</header>
+<main class="sm">
+<section class="sm-sec" id="p1">
+<h1 class="sm-title" lang="ar" dir="rtl">التشفير والتهشير في حفظ الأسرار من التشهير</h1>
+<h2>Lecture 5 — Securing Web Application Data</h2>
+<p class="sm-def"><b>Data classification</b> : sorting data into levels so each level gets the protection it needs. Treating everything the same wastes effort in one direction and creates risk in the other.</p>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Level</th><th>Example</th><th>Required protection</th></tr></thead><tbody><tr><td><b>Public</b></td><td>Marketing pages, published prices</td><td>Integrity checks only</td></tr><tr><td><b>Internal</b></td><td>Internal docs, non-public reports</td><td>Access control and authentication</td></tr><tr><td><b>Confidential</b></td><td>Financial records, business strategy</td><td>Access control + <b>encryption at rest</b></td></tr><tr><td><b>Restricted</b></td><td>National ID, health records, payment cards</td><td>Encryption at rest <b>and</b> in transit, strict access logging, often regulation</td></tr></tbody></table></div>
+<p class="sm-def"><b>Data in transit</b> : moving across a network (browser ↔ server, service ↔ service) — protected mainly by <b>TLS</b>.</p>
+<p class="sm-def"><b>Data at rest</b> : sitting in storage (database, files, backups, cache).</p>
+<div class="sm-key">Both need <b>independent</b> protection: HTTPS everywhere doesn&#39;t help if the customer table is stored as plain text on disk.</div>
+</section>
+<section class="sm-sec" id="p2">
+<h2>Encoding vs encryption vs hashing</h2>
+<p class="sm-def"><b>Encoding</b> : changes data format for compatibility (Base64, URL encoding). <b>No key, reversible by anyone</b> → provides <b>no confidentiality</b>.</p>
+<p class="sm-def"><b>Encryption</b> : transforms data with a <b>secret key</b>; only the key holder can reverse it.</p>
+<p class="sm-def"><b>Hashing</b> : <b>one-way</b>, no key, no reversal; used for password storage and integrity checks. A hash alone does <b>not</b> provide authenticity.</p>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Technique</th><th>Reversible?</th><th>Needs a key?</th><th>Typical use</th></tr></thead><tbody><tr><td>Encoding</td><td>Yes, by <b>anyone</b></td><td>No</td><td>Format compatibility (Base64, URL)</td></tr><tr><td>Encryption</td><td>Yes, <b>only with the key</b></td><td>Yes</td><td>Confidentiality in transit / at rest</td></tr><tr><td>Hashing</td><td><b>No</b></td><td>No</td><td>Passwords (Week 3), integrity verification</td></tr></tbody></table></div>
+<div class="sm-key">Exam trap: &quot;Base64-encoded password&quot; is <b>not protected</b>. Anyone can decode it.</div>
+</section>
+<section class="sm-sec" id="p3">
+<h2>Symmetric and asymmetric encryption</h2>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Symmetric</th><th>Asymmetric</th></tr></thead><tbody><tr><td><b>One shared key</b> encrypts and decrypts</td><td><b>Key pair</b>: public key (shared) + private key (secret)</td></tr><tr><td>Fast — good for large data</td><td>Computationally expensive</td></tr><tr><td>Example: <b>AES</b></td><td>Data encrypted with the public key decrypts only with the private key</td></tr></tbody></table></div>
+<p class="sm-q">Q/ How does TLS use both ?</p>
+<ol><li>The handshake uses asymmetric cryptography <b>only long enough</b> to authenticate and agree on a shared session key (modern TLS: asymmetric for <b>authentication/signatures</b>, <b>ephemeral Diffie–Hellman</b> for key exchange).</li><li>Every following byte is protected with <b>fast symmetric</b> encryption.</li></ol>
+</section>
+<section class="sm-sec" id="p4">
+<h2>Key management</h2>
+<p class="sm-q">Q/ What are the three principles of key management ?</p>
+<ol><li><b>Never store the key with the data</b> it protects — use a <b>key management service (KMS)</b> or <b>HSM</b> / secrets manager.</li><li><b>Rotate keys</b> on a schedule, so a past exposure doesn&#39;t stay valid forever.</li><li><b>Never hard-code keys</b> in source code or config committed to version control — that publishes them to anyone with repository access.</li></ol>
+<div class="sm-key">Same stolen backup, two outcomes: encrypted at rest with the key stored <b>separately</b> → useless to the attacker; key next to the data → fully readable.</div>
+<p class="sm-def"><b>Key lifecycle</b> : generate → store securely → use → rotate → revoke/destroy.</p>
+</section>
+<section class="sm-sec" id="p5">
+<h2>Reducing exposure</h2>
+<p class="sm-def"><b>Tokenization</b> : replace a sensitive value (e.g. a card number) with a <b>random token</b> that has no mathematical relationship to it; the real mapping lives in a separate, tightly controlled <b>vault</b>. A breached database yields only meaningless tokens.</p>
+<p class="sm-def"><b>Data minimization</b> : collect only what a feature really needs, and <b>delete it</b> once its purpose is fulfilled. Data never collected can&#39;t leak.</p>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Tokenization</th><th>Encryption</th></tr></thead><tbody><tr><td>Random token, no math link to the original</td><td>Ciphertext derived from the original with a key</td></tr><tr><td>Reverse only by looking up the vault</td><td>Reverse with the key</td></tr><tr><td>Common for payment cards</td><td>General confidentiality</td></tr></tbody></table></div>
+</section>
+<section class="sm-sec" id="p6">
+<p class="sm-def"><b>Cryptographic Failures (OWASP A02:2021)</b> : this lecture&#39;s category.</p>
+<p class="sm-q">Q/ What does A02:2021 Cryptographic Failures cover ?</p>
+<ol><li>Sending sensitive data in <b>plain text</b> instead of over TLS.</li><li><b>Outdated or weak algorithms</b> such as MD5 or DES.</li><li>Sensitive data <b>unencrypted at rest</b>.</li><li>Keys <b>stored or generated improperly</b> (hard-coded, next to the data, never rotated).</li><li><b>Predictable random numbers</b> where a cryptographically secure source was needed.</li></ol>
+<div class="sm-key">Nearly every item is a direct violation of a principle from this lecture.</div>
+</section>
+<p class="sm-src">Summary of Web Applications Security L5: Securing Web Application Data. Built only from the lecture file; check the original slides for anything you're unsure about. <a href="../../read/web/lecture-5-securing-web-app-data.html">Open the lecture →</a></p>
+</main>
+<script src="../../reader.js" defer></script>
+</body>
+</html>

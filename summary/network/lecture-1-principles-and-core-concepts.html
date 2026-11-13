@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>الثالوث والطبقات في حماية الشبكات — L1 summary</title>
+<meta name="description" content="Network Security L1 summary: Principles &amp; Core Concepts">
+<meta name="theme-color" content="#F6F3EC" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#171513" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../../fonts/GeistPixel-Square.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../../styles.css">
+<link rel="stylesheet" href="../../summary.css">
+</head>
+<body class="summary">
+<header class="rbar">
+  <a class="icon-btn" href="../../index.html#network" aria-label="Back to Network Security"><span aria-hidden="true">←</span></a>
+  <div class="rbar-t"><span class="rbar-c">Network Security · L1 · Summary</span><b>Principles &amp; Core Concepts</b></div>
+  <a class="icon-btn" href="../../read/network/lecture-1-principles-and-core-concepts.html" aria-label="Open the lecture">Lec</a>
+  <a class="icon-btn icon-btn--pdf" href="lecture-1-principles-and-core-concepts.pdf" download aria-label="Download summary PDF">PDF</a>
+</header>
+<main class="sm">
+<section class="sm-sec" id="p1">
+<h1 class="sm-title" lang="ar" dir="rtl">الثالوث والطبقات في حماية الشبكات</h1>
+<h2>Lecture 1 — Principles and Core Concepts</h2>
+<p class="sm-def"><b>Computer network</b> : a group of connected devices that communicate and exchange information (computers, phones, servers, switches, routers, access points, cameras, printers, IoT).</p>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Device</th><th>Main role</th></tr></thead><tbody><tr><td>Switch</td><td>Connects devices <b>inside</b> a local network</td></tr><tr><td>Router</td><td>Connects one network to <b>another</b> / the Internet</td></tr><tr><td>Server</td><td>Provides data or services</td></tr><tr><td>Wireless AP</td><td>Connects wireless devices (provides Wi-Fi)</td></tr></tbody></table></div>
+<p class="sm-def"><b>Network security</b> : protecting network devices, services, users and information against <b>unauthorized access, misuse, modification, damage, or interruption</b>.</p>
+<p class="sm-q">Q/ What does network security protect ?</p>
+<ol><li>Stored and transmitted data.</li><li>User accounts and passwords.</li><li>Servers, applications, devices and communication channels.</li></ol>
+<div class="sm-key">Key idea: connecting devices improves communication, but <b>every connection can also create a security risk</b>.</div>
+<p class="sm-q">Q/ What are the common consequences of a security incident ?</p>
+<ol><li>Loss of confidential information.</li><li>Financial loss.</li><li>Service interruption.</li><li>Loss of important files.</li><li>Legal or reputation problems.</li><li>Loss of user trust.</li></ol>
+</section>
+<section class="sm-sec" id="p2">
+<h2>The CIA Triad</h2>
+<p class="sm-def"><b>Confidentiality</b> : only authorized users can <b>read</b> information.</p>
+<p class="sm-def"><b>Integrity</b> : information stays <b>correct</b> and is changed only by authorized users.</p>
+<p class="sm-def"><b>Availability</b> : authorized users can access systems and data <b>when needed</b>.</p>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Objective</th><th>Typical protections</th><th>Violation example</th></tr></thead><tbody><tr><td>Confidentiality</td><td>Encryption, passwords, access control, VPN</td><td>Attacker captures an unencrypted username and password</td></tr><tr><td>Integrity</td><td>Hashes, digital signatures, permissions, logging</td><td>&quot;Transfer $100&quot; changed to &quot;Transfer $1,000&quot;</td></tr><tr><td>Availability</td><td>Backups, redundancy, UPS, updates, DoS protection</td><td>Server flooded with traffic, can&#39;t serve users</td></tr></tbody></table></div>
+<p class="sm-q">Q/ Apply CIA to a university examination system.</p>
+<ol><li>Confidentiality → students can&#39;t view exam questions before the exam.</li><li>Integrity → students can&#39;t change grades.</li><li>Availability → the system is accessible during the exam.</li></ol>
+<div class="sm-key">A secure system needs <b>all three</b>. Protecting only one is not enough.</div>
+</section>
+<section class="sm-sec" id="p3">
+<h2>Authentication, Authorization, Accountability</h2>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Concept</th><th>Question</th><th>Example</th></tr></thead><tbody><tr><td><b>Authentication</b></td><td>Who are you?</td><td>Password, fingerprint, smart card, OTP</td></tr><tr><td><b>Authorization</b></td><td>What are you allowed to do?</td><td>Student views grades; teacher modifies grades</td></tr><tr><td><b>Accountability</b></td><td>What did you do?</td><td>Logs record who changed data, when, from which device</td></tr></tbody></table></div>
+<div class="sm-key">Order: authenticate → authorize → record. <b>Authentication comes first.</b></div>
+</section>
+<section class="sm-sec" id="p4">
+<h2>Terminology</h2>
+<p class="sm-def"><b>Asset</b> : anything valuable that must be protected.</p>
+<p class="sm-def"><b>Threat</b> : something that can <b>potentially</b> cause harm.</p>
+<p class="sm-def"><b>Vulnerability</b> : a <b>weakness</b> in a system, device, configuration, policy or procedure.</p>
+<p class="sm-def"><b>Attack</b> : an <b>intentional action</b> that tries to exploit a vulnerability.</p>
+<p class="sm-def"><b>Risk</b> : the possibility that a threat exploits a vulnerability and causes harm. <b>Risk ≈ Likelihood × Impact</b>.</p>
+<p class="sm-def"><b>Security control</b> : a protection used to <b>reduce risk</b>.</p>
+<div class="sm-key">Example: weak admin password (<b>vulnerability</b>) + attacker (<b>threat</b>) → password guessing (<b>attack</b>) → unauthorized grade changes (<b>risk</b>).</div>
+</section>
+<section class="sm-sec" id="p5">
+<h2>Passive vs active attacks</h2>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Passive attack</th><th>Active attack</th></tr></thead><tbody><tr><td><b>Observes</b> or collects information</td><td><b>Changes</b> information or system operation</td></tr><tr><td>Normally doesn&#39;t modify data</td><td>May modify, delete, inject or disrupt</td></tr><tr><td>Often <b>difficult to detect</b></td><td>Often produces visible effects</td></tr><tr><td>Mainly affects <b>confidentiality</b></td><td>Mainly affects <b>integrity and availability</b></td></tr><tr><td>Sniffing, traffic analysis</td><td>DoS, malware, spoofing, unauthorized access</td></tr></tbody></table></div>
+<div class="sm-key">Encryption works well against passive eavesdropping; active attacks also need detection, access control, filtering and recovery.</div>
+</section>
+<section class="sm-sec" id="p6">
+<h2>Security controls</h2>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Category</th><th>Purpose</th><th>Examples</th></tr></thead><tbody><tr><td><b>Administrative</b></td><td>Rules and human processes</td><td>Security policy, password policy, training, incident procedures</td></tr><tr><td><b>Technical</b></td><td>Hardware or software protection</td><td>Firewall, encryption, antivirus, IDS, authentication, ACLs</td></tr><tr><td><b>Physical</b></td><td>Protect facilities and equipment</td><td>Locks, guards, cameras, access cards, fire alarms, backup power</td></tr></tbody></table></div>
+<p class="sm-q">Q/ How should controls be chosen ?</p>
+<ul><li>According to the <b>assets</b> protected, likely <b>threats</b>, known <b>vulnerabilities</b>, and the <b>impact</b> of an incident. Strong security combines all three categories.</li></ul>
+<div class="sm-key">A firewall can&#39;t replace user training; a strong password can&#39;t replace physical protection of the server room.</div>
+<p class="sm-def"><b>Defense in depth</b> : using <b>several layers</b> of security so that if one layer fails, another still reduces the damage.</p>
+<p class="sm-q">Q/ List the layers of defense in depth from the lecture.</p>
+<ol><li>Locked server room — physical protection.</li><li>Authentication &amp; strong passwords — control user access.</li><li>Firewall &amp; antivirus — block threats and malware.</li><li>Encryption — protect sensitive data.</li><li>Network monitoring — detect suspicious activity.</li><li>Regular backups — recover lost data.</li><li>Security awareness training — reduce human errors.</li></ol>
+<p class="sm-q">Q/ University case study — assets, threats, controls ?</p>
+<ul><li><b>Assets</b>: student records, exam questions, passwords, research files.</li><li><b>Threats / vulnerabilities</b>: attackers, malware, weak passwords, old software, open Wi-Fi, no backups.</li><li><b>Controls</b>: MFA, firewall, encryption, updates, antivirus, monitoring, backups, training.</li></ul>
+</section>
+<section class="sm-sec" id="p7">
+<p class="sm-q">Q/ What are the rules for ethical use of security tools ?</p>
+<ol><li>Work only on systems you have <b>permission</b> for.</li><li>Follow laboratory and university rules.</li><li>Don&#39;t access other users&#39; files or capture private information.</li><li>Don&#39;t scan external systems without authorization.</li><li>Protect passwords and report security problems to the instructor.</li></ol>
+<div class="sm-key">Technical ability does <b>not</b> provide legal permission.</div>
+</section>
+<p class="sm-src">Summary of Network Security L1: Principles &amp; Core Concepts. Built only from the lecture file; check the original slides for anything you're unsure about. <a href="../../read/network/lecture-1-principles-and-core-concepts.html">Open the lecture →</a></p>
+</main>
+<script src="../../reader.js" defer></script>
+</body>
+</html>

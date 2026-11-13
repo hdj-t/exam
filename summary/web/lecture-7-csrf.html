@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>الطلب المزوّر من الموقع المتنمّر — L7 summary</title>
+<meta name="description" content="Web Applications Security L7 summary: Cross-Site Request Forgery (CSRF)">
+<meta name="theme-color" content="#F6F3EC" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#171513" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../../fonts/GeistPixel-Square.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../../styles.css">
+<link rel="stylesheet" href="../../summary.css">
+</head>
+<body class="summary">
+<header class="rbar">
+  <a class="icon-btn" href="../../index.html#web" aria-label="Back to Web Applications Security"><span aria-hidden="true">←</span></a>
+  <div class="rbar-t"><span class="rbar-c">Web Applications Security · L7 · Summary</span><b>Cross-Site Request Forgery (CSRF)</b></div>
+  <a class="icon-btn" href="../../read/web/lecture-7-csrf.html" aria-label="Open the lecture">Lec</a>
+  <a class="icon-btn icon-btn--pdf" href="lecture-7-csrf.pdf" download aria-label="Download summary PDF">PDF</a>
+</header>
+<main class="sm">
+<section class="sm-sec" id="p1">
+<h1 class="sm-title" lang="ar" dir="rtl">الطلب المزوّر من الموقع المتنمّر</h1>
+<h2>Lecture 7 — Cross-Site Request Forgery (CSRF)</h2>
+<p class="sm-def"><b>Cross-Site Request Forgery (CSRF)</b> : a malicious page makes the victim&#39;s browser send a <b>state-changing request</b> to a site where the victim is logged in. The browser attaches the session cookie automatically, so the site thinks the victim meant it.</p>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>CSRF</th><th>XSS</th></tr></thead><tbody><tr><td>Attacker&#39;s code runs on <b>another site</b></td><td>Attacker&#39;s code runs <b>on the target site</b></td></tr><tr><td>Abuses the browser&#39;s automatic cookies</td><td>Injects script into the page</td></tr><tr><td>Can&#39;t read responses</td><td>Can read the page, tokens, cookies (if not HttpOnly)</td></tr><tr><td>Defense: tokens, SameSite, Origin check</td><td>Defense: output encoding, CSP</td></tr></tbody></table></div>
+<p class="sm-def"><b>Ambient authority</b> : performing an action just by naming the resource, without presenting a permission scoped to that action. Cookies work this way: attached by destination domain, <b>never checking which page initiated</b> the request.</p>
+<p class="sm-def"><b>Confused deputy problem</b> : a program holding more authority than the requester is tricked into misusing it. In CSRF: the <b>browser</b> is the deputy, the <b>session cookie</b> is the authority, the <b>malicious page</b> tricks it.</p>
+<div class="sm-key">Tokens work because they replace implicit (ambient) authority with an <b>explicit, per-action permission</b> only the legitimate origin can obtain.</div>
+</section>
+<section class="sm-sec" id="p2">
+<h2>State-changing GET requests</h2>
+<p class="sm-q">Q/ Why is a state-changing GET dangerous ?</p>
+<ol><li>GET is supposed to be <b>safe</b> (no state change).</li><li>A forged GET needs only an <b>image tag or a link</b> — the browser sends it as soon as the tag is parsed; no script, no click.</li><li>A forged POST needs at least an auto-submitting form; exposing a transfer or password change via GET removes even that step.</li></ol>
+</section>
+<section class="sm-sec" id="p3">
+<h2>Primary defenses</h2>
+<div class="sm-key">No single defense is complete. Layer a <b>token</b> with <b>SameSite</b>: SameSite is the safety net; the token holds when the net doesn&#39;t apply.</div>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Defense</th><th>Mechanism</th><th>Limitation</th></tr></thead><tbody><tr><td><b>Synchronizer Token Pattern</b></td><td>Server generates a unique, unpredictable token per session, embeds it in every state-changing form, rejects mismatches</td><td>Server-side state; must be in every form/API call</td></tr><tr><td><b>Double submit cookie</b></td><td>Random value set as a cookie <b>and</b> repeated as a request parameter; another origin can&#39;t read the cookie to copy it</td><td>Naive version weak unless <b>signed and session-bound</b></td></tr><tr><td><b>Custom request header</b></td><td>Script adds a custom header; only same-origin script can set it</td><td>Not usable for plain forms or links</td></tr><tr><td><b>SameSite cookie</b></td><td>Browser withholds the cookie on most cross-site requests</td><td><b>Lax</b> (default) still sends it on top-level navigation like a clicked link</td></tr><tr><td><b>Origin / Referer check</b></td><td>Compare the declared source with your own origin</td><td>Referer can be stripped by Referrer-Policy or privacy settings</td></tr></tbody></table></div>
+<p class="sm-def"><b>Naive double submit</b> : assumes an attacker can&#39;t set cookies on your domain — broken by a vulnerable subdomain, <b>subdomain takeover</b>, or plain-HTTP access.</p>
+<p class="sm-def"><b>Signed double submit cookie</b> : value generated with a server secret (<b>HMAC</b>) and <b>bound to the session ID</b>; a planted cookie can&#39;t pass the signature check. (Current OWASP guidance.)</p>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Origin header</th><th>Referer header</th></tr></thead><tbody><tr><td>Scheme + host + port only (no path)</td><td><b>Full URL</b> of the requesting page</td></tr><tr><td>Sent on all cross-origin requests and same-origin POST/PUT/DELETE</td><td>Can be suppressed by Referrer-Policy or browser settings</td></tr><tr><td><b>More dependable</b> — check first</td><td>Fallback when Origin is absent</td></tr></tbody></table></div>
+</section>
+<section class="sm-sec" id="p4">
+<h2>SameSite in practice</h2>
+<p class="sm-q">Q/ When does SameSite=Lax (the default since 2020) still allow a forged request ?</p>
+<ol><li><b>Top-level GET navigation</b> — a link the victim clicks — so a state-changing GET is still forgeable.</li><li>Chromium&#39;s <b>temporary exception</b>: a cookie <b>under 2 minutes old</b> is sent on a top-level cross-site <b>POST</b> (kept for SSO/identity flows; expected to be removed).</li></ol>
+<div class="sm-key">SameSite is a valuable <b>default, not a substitute</b> for an explicit token.</div>
+</section>
+<section class="sm-sec" id="p5">
+<h2>XSS defeats CSRF tokens</h2>
+<p class="sm-q">Q/ Why can an XSS vulnerability defeat token-based CSRF protection ?</p>
+<ul><li>Injected script runs with the page&#39;s full privileges, so it can <b>read the token</b> from the page (or a readable cookie) and copy it into the forged request. One XSS removes the protection against a completely different attack.</li></ul>
+</section>
+<section class="sm-sec" id="p6">
+<p class="sm-def"><b>OWASP placement</b> : CSRF was <b>#5 (2007)</b> and <b>#8 (2013)</b>, then <b>dropped from 2017</b> (declining incidence; frameworks added built-in protection). In 2021 it is <b>CWE-352</b>, included under <b>A01:2021 Broken Access Control</b> — processing a state-changing request without verifying the user&#39;s genuine intent is a failure to control access to that action.</p>
+</section>
+<p class="sm-src">Summary of Web Applications Security L7: Cross-Site Request Forgery (CSRF). Built only from the lecture file; check the original slides for anything you're unsure about. <a href="../../read/web/lecture-7-csrf.html">Open the lecture →</a></p>
+</main>
+<script src="../../reader.js" defer></script>
+</body>
+</html>

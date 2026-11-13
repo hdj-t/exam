@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>الآي بي والتشفير في زمن التزوير — L3 summary</title>
+<meta name="description" content="Network Security L3 summary: Layer 3: IPv4 &amp; IPsec Security">
+<meta name="theme-color" content="#F6F3EC" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#171513" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../../fonts/GeistPixel-Square.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../../styles.css">
+<link rel="stylesheet" href="../../summary.css">
+</head>
+<body class="summary">
+<header class="rbar">
+  <a class="icon-btn" href="../../index.html#network" aria-label="Back to Network Security"><span aria-hidden="true">←</span></a>
+  <div class="rbar-t"><span class="rbar-c">Network Security · L3 · Summary</span><b>Layer 3: IPv4 &amp; IPsec Security</b></div>
+  <a class="icon-btn" href="../../read/network/lecture-3-layer-3-ipv4-and-ipsec.html" aria-label="Open the lecture">Lec</a>
+  <a class="icon-btn icon-btn--pdf" href="lecture-3-layer-3-ipv4-and-ipsec.pdf" download aria-label="Download summary PDF">PDF</a>
+</header>
+<main class="sm">
+<section class="sm-sec" id="p1">
+<h1 class="sm-title" lang="ar" dir="rtl">الآي بي والتشفير في زمن التزوير</h1>
+<h2>Lecture 3 — Layer 3: IPv4 and IPsec Security and Protection</h2>
+<p class="sm-def"><b>Layer 3 (Network layer)</b> : moves packets <b>between networks</b>. IPv4 delivers packets; ACLs, filtering and IPsec add security.</p>
+<p class="sm-def"><b>IPv4</b> : a <b>connectionless</b> network-layer protocol with <b>32-bit</b> addresses written in dotted decimal (192.168.10.25).</p>
+<div class="sm-key">Routers forward mainly by the <b>destination</b> address. The <b>source</b> address is only a claim — not strong proof of identity.</div>
+<p class="sm-q">Q/ What are the IPv4 header fields and their role ?</p>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Field</th><th>Role</th></tr></thead><tbody><tr><td>Version</td><td>Always 4 for IPv4</td></tr><tr><td>IHL</td><td>Header length (where data begins)</td></tr><tr><td>DSCP/ECN</td><td>Priority / quality of service</td></tr><tr><td>Total Length</td><td>Header + data size</td></tr><tr><td>Identification, Flags, Fragment Offset</td><td>Fragmentation and reassembly</td></tr><tr><td><b>TTL</b></td><td>Decreases by 1 at each router; at 0 the packet is discarded (prevents endless loops)</td></tr><tr><td>Protocol</td><td>Upper layer: ICMP, TCP, UDP, <b>ESP</b>, <b>AH</b></td></tr><tr><td>Header Checksum</td><td>Detects errors in the header</td></tr><tr><td>Source / Destination</td><td>Claimed sender (32 bits) / intended receiver (32 bits)</td></tr></tbody></table></div>
+<p class="sm-q">Q/ Why does IPv4 need extra security ?</p>
+<ul><li>It was designed for <b>delivery</b> only: it doesn&#39;t encrypt contents or strongly authenticate the source address.</li></ul>
+</section>
+<section class="sm-sec" id="p2">
+<h2>IPv4 threats</h2>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Threat</th><th>What can happen</th></tr></thead><tbody><tr><td><b>IP spoofing</b></td><td>A false source address is placed in a packet</td></tr><tr><td>Packet interception</td><td>Unencrypted data read on an untrusted path</td></tr><tr><td>ICMP abuse</td><td>Ping sweeps, reconnaissance, floods, false control messages</td></tr><tr><td>DoS / DDoS</td><td>Bandwidth, router or server resources exhausted</td></tr><tr><td>Fragmentation attacks</td><td>Odd fragments confuse filters or consume reassembly resources</td></tr><tr><td>Routing attacks</td><td>Traffic redirected, dropped or intercepted</td></tr></tbody></table></div>
+<p class="sm-def"><b>IP spoofing</b> : faking the source IPv4 address to <b>hide the sender, imitate another device, bypass IP-based restrictions, or support DoS</b>.</p>
+<p class="sm-def"><b>ICMP</b> : diagnostics and error reporting — ping uses <b>Echo Request / Echo Reply</b>; traceroute also depends on ICMP.</p>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Topic</th><th>Explanation</th><th>Protection</th></tr></thead><tbody><tr><td>Ping sweep</td><td>ICMP to many addresses to find live hosts</td><td>Permit only required ICMP, rate-limit, log</td></tr><tr><td>DoS / DDoS</td><td>Floods make a service unavailable</td><td>Filtering, rate limiting, monitoring, upstream protection</td></tr><tr><td>Fragmentation</td><td>Tiny/overlapping/incomplete fragments confuse devices</td><td>Drop malformed fragments, reassemble/inspect, update</td></tr></tbody></table></div>
+<div class="sm-key"><b>Don&#39;t blindly block all ICMP</b> — some messages are needed for diagnostics and correct operation.</div>
+<p class="sm-q">Q/ How are routers protected against routing attacks ?</p>
+<ul><li>Strong admin authentication, <b>SSH</b>, restricted management addresses, <b>routing-protocol authentication</b>, updates, backups, logging, disabling unnecessary services.</li></ul>
+</section>
+<section class="sm-sec" id="p3">
+<h2>Protection mechanisms</h2>
+<p class="sm-def"><b>ACL (Access Control List)</b> : an <b>ordered</b> set of permit/deny rules checking source, destination, protocol, port or ICMP type.</p>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Standard ACL</th><th>Extended ACL</th></tr></thead><tbody><tr><td>Mainly checks the <b>source</b> IPv4 address</td><td>Checks <b>source, destination, protocol and TCP/UDP port</b></td></tr><tr><td>e.g. permit 192.168.10.0/24</td><td>e.g. permit HTTPS from 192.168.20.0/24 to 172.16.10.10</td></tr></tbody></table></div>
+<p class="sm-q">Q/ What are the ACL processing principles ?</p>
+<ol><li>Rules are checked <b>in order</b>.</li><li>The <b>first matching rule</b> is applied.</li><li><b>Specific rules before general</b> rules.</li><li>Permit only required traffic; test before deployment.</li></ol>
+<p class="sm-def"><b>Ingress filtering</b> : checks traffic <b>entering</b> the network; rejects impossible or suspicious source addresses.</p>
+<p class="sm-def"><b>Egress filtering</b> : checks traffic <b>leaving</b>; stops internal systems from using unauthorized source addresses.</p>
+<p class="sm-def"><b>uRPF (Unicast Reverse Path Forwarding)</b> : accepts a packet only if its source is reachable through the <b>expected return path</b>.</p>
+<p class="sm-def"><b>Network segmentation</b> : separates students, staff, administration, servers and management networks.</p>
+<div class="sm-key">No single Layer 3 control stops every attack — combine them.</div>
+</section>
+<section class="sm-sec" id="p4">
+<h2>IPsec</h2>
+<p class="sm-def"><b>IPsec</b> : protects IP communication <b>at the network layer</b>, useful across untrusted networks like the Internet. Adds encryption, integrity, authentication and <b>anti-replay</b>.</p>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Component</th><th>Main role</th></tr></thead><tbody><tr><td><b>AH</b> (Authentication Header)</td><td>Integrity, data-origin authentication, anti-replay — <b>no confidentiality</b></td></tr><tr><td><b>ESP</b> (Encapsulating Security Payload)</td><td><b>Encryption</b> (confidentiality) + integrity, authentication, anti-replay</td></tr><tr><td><b>SA</b> (Security Association)</td><td>How traffic is protected: algorithms, keys, peer, lifetime, <b>SPI</b>, anti-replay info</td></tr><tr><td><b>IKEv2</b></td><td>Authenticates peers, negotiates parameters, establishes keys, creates/manages SAs</td></tr></tbody></table></div>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Feature</th><th>AH</th><th>ESP</th></tr></thead><tbody><tr><td>Confidentiality</td><td><b>No</b></td><td><b>Yes</b></td></tr><tr><td>Integrity</td><td>Yes</td><td>Yes (when configured)</td></tr><tr><td>Source authentication</td><td>Yes</td><td>Yes (when configured)</td></tr><tr><td>Anti-replay</td><td>Yes</td><td>Yes</td></tr><tr><td>VPN use</td><td>Limited</td><td><b>Commonly used</b></td></tr></tbody></table></div>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Feature</th><th>Transport mode</th><th>Tunnel mode</th></tr></thead><tbody><tr><td>Protects</td><td>Mainly the original <b>payload</b></td><td>The <b>entire original packet</b></td></tr><tr><td>IP header</td><td>Original header stays visible</td><td>A <b>new outer IP header</b> is added</td></tr><tr><td>Typical use</td><td>Host-to-host</td><td><b>Gateway-to-gateway, site-to-site VPN</b>, remote access</td></tr><tr><td>Overhead</td><td>Lower</td><td>Higher</td></tr></tbody></table></div>
+<div class="sm-key">Two university buildings linked over the Internet → <b>tunnel mode</b> (with ESP).</div>
+<p class="sm-def"><b>Security Association (SA)</b> : a <b>one-directional</b> logical agreement — two-way traffic needs <b>one SA in each direction</b>.</p>
+<p class="sm-q">Q/ What does IKEv2 do ?</p>
+<ol><li>Authenticates the two peers.</li><li>Negotiates security algorithms and parameters.</li><li>Establishes keys and creates IPsec SAs.</li><li>Maintains the relationship and re-keys when needed.</li></ol>
+<p class="sm-q">Q/ Site-to-site example (192.168.10.0/24 ↔ 192.168.20.0/24) — what do the gateways do ?</p>
+<ul><li>Identify protected traffic → authenticate each other → establish SAs → encrypt packets → decrypt at the other site.</li></ul>
+</section>
+<section class="sm-sec" id="p5">
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Requirement</th><th>Recommended protection</th></tr></thead><tbody><tr><td>Students must not access router management</td><td>Management ACL + segmentation</td></tr><tr><td>Internet packet claims an internal source</td><td>Ingress filtering + uRPF</td></tr><tr><td>Only required traffic to the grade server</td><td>Extended ACL</td></tr><tr><td>Two buildings exchange private data over the Internet</td><td>IPsec tunnel mode</td></tr><tr><td>Suspicious ICMP traffic</td><td>Rate limiting + logging + monitoring</td></tr><tr><td>Routing information must be protected</td><td>Routing authentication + router hardening</td></tr></tbody></table></div>
+<div class="sm-key">Key points: IPv4 has no built-in confidentiality or strong source authentication; <b>ESP</b> is the choice when confidentiality is required (AH doesn&#39;t encrypt); <b>tunnel mode</b> protects the whole packet; <b>IKEv2</b> builds and manages SAs.</div>
+</section>
+<p class="sm-src">Summary of Network Security L3: Layer 3: IPv4 &amp; IPsec Security. Built only from the lecture file; check the original slides for anything you're unsure about. <a href="../../read/network/lecture-3-layer-3-ipv4-and-ipsec.html">Open the lecture →</a></p>
+</main>
+<script src="../../reader.js" defer></script>
+</body>
+</html>

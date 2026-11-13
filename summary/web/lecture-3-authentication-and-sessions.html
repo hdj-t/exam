@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>الدخول والجلسات في زمن الاختلاسات — L3 summary</title>
+<meta name="description" content="Web Applications Security L3 summary: Authentication &amp; Session Management">
+<meta name="theme-color" content="#F6F3EC" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#171513" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../../fonts/GeistPixel-Square.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../../styles.css">
+<link rel="stylesheet" href="../../summary.css">
+</head>
+<body class="summary">
+<header class="rbar">
+  <a class="icon-btn" href="../../index.html#web" aria-label="Back to Web Applications Security"><span aria-hidden="true">←</span></a>
+  <div class="rbar-t"><span class="rbar-c">Web Applications Security · L3 · Summary</span><b>Authentication &amp; Session Management</b></div>
+  <a class="icon-btn" href="../../read/web/lecture-3-authentication-and-sessions.html" aria-label="Open the lecture">Lec</a>
+  <a class="icon-btn icon-btn--pdf" href="lecture-3-authentication-and-sessions.pdf" download aria-label="Download summary PDF">PDF</a>
+</header>
+<main class="sm">
+<section class="sm-sec" id="p1">
+<h1 class="sm-title" lang="ar" dir="rtl">الدخول والجلسات في زمن الاختلاسات</h1>
+<h2>Lecture 3 — Authentication and Session Management</h2>
+<p class="sm-def"><b>Authentication (AuthN)</b> : answers &quot;<b>who are you?</b>&quot; — proving identity (e.g. username + password).</p>
+<p class="sm-def"><b>Authorization (AuthZ)</b> : answers &quot;<b>what are you allowed to do?</b>&quot; — which resources and actions the known identity may use.</p>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Authentication</th><th>Authorization</th></tr></thead><tbody><tr><td>Who are you?</td><td>What may you do?</td></tr><tr><td>Fails → <b>401</b> (identity unknown)</td><td>Fails → <b>403</b> (identity known, action denied)</td></tr><tr><td>Comes first</td><td>Comes after identity is verified</td></tr></tbody></table></div>
+<p class="sm-def"><b>Authentication factor</b> : a category of evidence used to prove identity.</p>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Factor</th><th>Examples</th><th>Weakness if used alone</th></tr></thead><tbody><tr><td>Something you <b>know</b></td><td>Password, PIN, security question</td><td>Guessed, phished, or reused from another breach</td></tr><tr><td>Something you <b>have</b></td><td>Phone (OTP app / SMS), hardware key (YubiKey)</td><td>Lost, stolen, or SMS intercepted (SIM swap)</td></tr><tr><td>Something you <b>are</b></td><td>Fingerprint, face recognition</td><td>Can&#39;t be &quot;reset&quot; if the biometric data is compromised</td></tr></tbody></table></div>
+<p class="sm-def"><b>MFA (Multi-Factor Authentication)</b> : combining factors from at least <b>two different categories</b>.</p>
+<p class="sm-q">Q/ Why is MFA stronger than one factor ?</p>
+<ul><li>It forces the attacker to defeat <b>two unrelated categories</b> at once; a leaked password alone is no longer enough.</li></ul>
+<div class="sm-key">Two passwords = still one factor (both &quot;something you know&quot;).</div>
+</section>
+<section class="sm-sec" id="p2">
+<h2>Password storage</h2>
+<p class="sm-q">Q/ How must passwords NOT be stored ?</p>
+<ol><li>In <b>plaintext</b>.</li><li>With <b>reversible encryption</b> (they must never be recoverable).</li></ol>
+<p class="sm-def"><b>Hashing</b> : a one-way function. Login = re-hash the entered password and <b>compare hashes</b> — never decrypt.</p>
+<p class="sm-def"><b>Salt</b> : a unique random value per user added before hashing, so identical passwords give different hashes — defeats <b>rainbow tables</b>.</p>
+<p class="sm-def"><b>Slow hash</b> : deliberately expensive algorithm so guessing millions of passwords per second becomes costly.</p>
+<p class="sm-q">Q/ Rank the acceptable password hashing algorithms (OWASP).</p>
+<ol><li><b>Argon2id</b> — first choice.</li><li><b>scrypt</b> — fallback.</li><li><b>bcrypt</b> — legacy systems.</li><li><b>PBKDF2</b> — where FIPS-140 compliance is required.</li></ol>
+<div class="sm-key">Plain <b>MD5 or SHA-256 are NOT acceptable</b> for passwords: they&#39;re designed to be <b>fast</b>, exactly the wrong property here.</div>
+</section>
+<section class="sm-sec" id="p3">
+<h2>Sessions</h2>
+<p class="sm-def"><b>Session ID</b> : a long, random, unguessable value issued after login via <b>Set-Cookie</b>; the browser resends it with every request and the server looks it up in its <b>session store</b>.</p>
+<p class="sm-q">Q/ What two operational rules matter for sessions ?</p>
+<ol><li><b>Idle timeout</b>: sessions expire after inactivity.</li><li><b>Regenerate the session ID at login</b>: always issue a fresh ID, replacing whatever the browser held before.</li></ol>
+<p class="sm-def"><b>Session Fixation</b> : the attacker gets the victim to authenticate using a session ID <b>the attacker already knows</b>; if the server keeps the same ID after login, the attacker is now logged in as the victim. The attacker never touches the victim&#39;s credentials.</p>
+<div class="sm-key">Fix: <b>every privilege change</b> (login, elevating to admin) issues a <b>brand-new session ID</b>.</div>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Attack</th><th>How it works</th><th>Primary mitigation</th></tr></thead><tbody><tr><td><b>Brute force</b></td><td>Automated tool tries many passwords against one account</td><td>Account lockout / rate limiting, CAPTCHA, MFA</td></tr><tr><td><b>Credential stuffing</b></td><td>Replays username/password pairs leaked from <b>other</b> breaches</td><td>MFA, check new passwords against breach lists, per-IP rate limiting</td></tr><tr><td><b>Session hijacking</b></td><td>Steals a valid session ID via XSS, sniffing plain HTTP, or a leaked log</td><td><b>HttpOnly + Secure</b> cookies, HTTPS everywhere</td></tr><tr><td><b>Session fixation</b></td><td>Victim logs in with an attacker-known session ID</td><td><b>Regenerate</b> the session ID at login</td></tr></tbody></table></div>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Brute force</th><th>Credential stuffing</th></tr></thead><tbody><tr><td>Guesses passwords</td><td>Reuses real leaked pairs</td></tr><tr><td>One account, many guesses</td><td>Many accounts, one leaked pair each</td></tr><tr><td>Lockout helps</td><td>MFA and breach-list checks help</td></tr></tbody></table></div>
+</section>
+<section class="sm-sec" id="p4">
+<h2>Modern authentication</h2>
+<p class="sm-def"><b>Token-based authentication (JWT)</b> : a self-contained token of three <b>base64url</b> parts — <code>header.payload.signature</code>.</p>
+<p class="sm-q">Q/ What does each JWT part contain ?</p>
+<ol><li><b>Header</b>: the signing algorithm.</li><li><b>Payload</b>: claims (who the user is, when the token expires).</li><li><b>Signature</b>: created with a server-held secret or private key, so the server can verify the token wasn&#39;t tampered with <b>without storing it</b>.</li></ol>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Session cookie</th><th>JWT</th></tr></thead><tbody><tr><td>Server keeps a lookup table of sessions</td><td>Stateless: nothing stored server-side</td></tr><tr><td>Revoke by deleting the session entry</td><td>A stolen token stays <b>valid until it expires</b> (no entry to revoke)</td></tr></tbody></table></div>
+<p class="sm-def"><b>OAuth 2.0 / SSO (Single Sign-On)</b> : the user authenticates <b>once</b> with a trusted identity provider (Google, Microsoft, university account) and reuses that identity across many applications — the app avoids storing passwords at all.</p>
+<p class="sm-q">Q/ What is the common theme behind session fixation ?</p>
+<ul><li>Trusting something that should have been <b>regenerated</b> — the same lesson as Weeks 1–2: don&#39;t trust values the client (or attacker) controls.</li></ul>
+</section>
+<p class="sm-src">Summary of Web Applications Security L3: Authentication &amp; Session Management. Built only from the lecture file; check the original slides for anything you're unsure about. <a href="../../read/web/lecture-3-authentication-and-sessions.html">Open the lecture →</a></p>
+</main>
+<script src="../../reader.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>الطبقات والجدران في معمار الخلّان — L4 summary</title>
+<meta name="description" content="Web Applications Security L4 summary: Web Application Architecture">
+<meta name="theme-color" content="#F6F3EC" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#171513" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../../fonts/GeistPixel-Square.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../../styles.css">
+<link rel="stylesheet" href="../../summary.css">
+</head>
+<body class="summary">
+<header class="rbar">
+  <a class="icon-btn" href="../../index.html#web" aria-label="Back to Web Applications Security"><span aria-hidden="true">←</span></a>
+  <div class="rbar-t"><span class="rbar-c">Web Applications Security · L4 · Summary</span><b>Web Application Architecture</b></div>
+  <a class="icon-btn" href="../../read/web/lecture-4-web-app-architecture.html" aria-label="Open the lecture">Lec</a>
+  <a class="icon-btn icon-btn--pdf" href="lecture-4-web-app-architecture.pdf" download aria-label="Download summary PDF">PDF</a>
+</header>
+<main class="sm">
+<section class="sm-sec" id="p1">
+<h1 class="sm-title" lang="ar" dir="rtl">الطبقات والجدران في معمار الخلّان</h1>
+<h2>Lecture 4 — Web Application Architecture</h2>
+<p class="sm-def"><b>Three-tier (N-tier) architecture</b> : the application split into a <b>presentation</b> tier (what the user sees), an <b>application</b> tier (business logic) and a <b>data</b> tier (persistent storage).</p>
+<div class="sm-key">The split is a <b>security boundary</b>: the presentation tier never talks to the database directly; every request passes through the application tier&#39;s logic first.</div>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Component</th><th>Role</th><th>Key security consideration</th></tr></thead><tbody><tr><td>Reverse proxy / Load balancer</td><td>Distributes traffic, often terminates TLS</td><td>Forward the real client IP; handle the <b>Host</b> header safely</td></tr><tr><td>API gateway</td><td>Single entry point for backend APIs</td><td>Good place for auth and rate limiting — but one misconfiguration exposes everything behind it</td></tr><tr><td>Application server</td><td>Executes business logic</td><td>Where most <b>injection</b> vulnerabilities live</td></tr><tr><td>Cache (e.g. Redis)</td><td>Speeds up repeated reads</td><td>Can leak data across users if not access-controlled per session</td></tr><tr><td>CDN</td><td>Serves static assets from edge locations</td><td>Cache poisoning / deception risk</td></tr><tr><td>Database</td><td>Persistent storage</td><td>Never directly reachable from the internet; least-privilege accounts</td></tr><tr><td>Third-party APIs</td><td>Payments, maps, analytics</td><td>Expands attack surface beyond your code — <b>supply-chain</b> risk</td></tr></tbody></table></div>
+<p class="sm-def"><b>MVC (Model-View-Controller)</b> : <b>Model</b> holds data and business rules; <b>View</b> renders what the user sees; <b>Controller</b> receives requests, decides what happens, coordinates the other two.</p>
+<p class="sm-q">Q/ Where do input validation and authorization checks belong in MVC ?</p>
+<ul><li>In the <b>Controller and Model</b>, before any business logic runs — <b>never</b> left to the View, never assumed done upstream.</li></ul>
+<p class="sm-def"><b>Trust boundary</b> : any point where data crosses from a zone you don&#39;t control into one you do, or from lower to higher privilege.</p>
+<div class="sm-key">The browser and the network are <b>always untrusted</b>. Inside the app tier, data still isn&#39;t safe for the database — cross that boundary with <b>parameterized queries</b>.</div>
+</section>
+<section class="sm-sec" id="p2">
+<h2>STRIDE threat modeling</h2>
+<p class="sm-q">Q/ What are the six STRIDE categories ?</p>
+<ol><li><b>S</b>poofing — pretending to be someone/something else.</li><li><b>T</b>ampering — altering data in transit or at rest.</li><li><b>R</b>epudiation — denying an action with no proof otherwise.</li><li><b>I</b>nformation disclosure — exposing data to the wrong people.</li><li><b>D</b>enial of service — making the system unavailable.</li><li><b>E</b>levation of privilege — gaining more access than granted.</li></ol>
+<p class="sm-def"><b>Threat modeling</b> : walking the architecture <b>boundary by boundary</b>, asking which STRIDE category applies and what the defense is — <b>before</b> the system is built.</p>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Boundary</th><th>Likely STRIDE threat</th><th>Impact &amp; primary defense</th></tr></thead><tbody><tr><td>Client → CDN / Proxy</td><td>Tampering, DoS</td><td>Traffic altered or flooded → TLS everywhere, rate limiting, WAF</td></tr><tr><td>Proxy → App server</td><td>Spoofing, Info disclosure</td><td>Forged client IP or Host header → validate X-Forwarded-For, allow-list domains</td></tr><tr><td>App server → Database</td><td>Tampering, Elevation</td><td>SQLi or over-privileged DB account → parameterized queries + least privilege</td></tr><tr><td>App → Other microservices</td><td>Spoofing, Elevation</td><td>&quot;Internal = safe&quot; assumption → <b>mTLS + Zero Trust</b></td></tr></tbody></table></div>
+</section>
+<section class="sm-sec" id="p3">
+<h2>Attacks on intermediaries</h2>
+<p class="sm-def"><b>Web Cache Poisoning</b> : abuses <b>unkeyed inputs</b> (headers/parameters that change the response but aren&#39;t part of the cache key, e.g. <b>X-Forwarded-Host</b>). One malicious request poisons the cached copy served to <b>everyone</b> afterwards.</p>
+<p class="sm-def"><b>Web Cache Deception</b> : tricks the cache into storing a <b>private</b> page. A request like <code>/account/profile.css</code> hits a dynamic, authenticated endpoint, but the cache — fooled by the <code>.css</code> suffix — stores the personal page as a static asset, retrievable by anyone requesting the same URL.</p>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Cache poisoning</th><th>Cache deception</th></tr></thead><tbody><tr><td>Poisons <b>shared</b> content for everyone</td><td>Exposes <b>one victim&#39;s private</b> content</td></tr><tr><td>Abuses an unkeyed input</td><td>Abuses a static-looking extension / path mapping</td></tr><tr><td>Attacker&#39;s response reaches victims</td><td>Victim&#39;s response reaches the attacker</td></tr></tbody></table></div>
+<p class="sm-def"><b>HTTP Request Smuggling</b> : a request carries both <b>Content-Length</b> and <b>Transfer-Encoding: chunked</b>, and the proxy trusts one while the backend trusts the other (classic <b>CL.TE</b>: proxy uses CL, backend uses TE). A second, hidden request reaches the backend <b>without passing the proxy&#39;s filters</b>.</p>
+<div class="sm-key">Fix: keep proxy and backend parsing <b>strictly consistent</b>; prefer <b>HTTP/2 end-to-end</b>.</div>
+</section>
+<section class="sm-sec" id="p4">
+<h2>Monolith, microservices and Zero Trust</h2>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Monolith</th><th>Microservices</th></tr></thead><tbody><tr><td>One deployable unit</td><td>Many small, independently deployed services</td></tr><tr><td>Simpler to build</td><td>Limits how far one compromised service reaches</td></tr><tr><td>One vulnerability can expose everything (one blast radius)</td><td>Many more network boundaries, each needs auth and validation</td></tr></tbody></table></div>
+<p class="sm-def"><b>Zero Trust (ZTNA)</b> : no request is trusted because of where it came from — every service-to-service call is <b>authenticated and authorized every time</b>.</p>
+<p class="sm-def"><b>mTLS (mutual TLS)</b> : both sides present certificates, so Service A proves who it is to Service B <b>and vice versa</b> (normal HTTPS: only the server proves itself).</p>
+<p class="sm-def"><b>Service mesh</b> : an infrastructure layer that automatically wraps every internal call in mTLS.</p>
+<p class="sm-def"><b>SSRF (Server-Side Request Forgery, A10:2021)</b> : tricking the app server into requesting an <b>internal-only</b> address; internal services that &quot;trust the inside&quot; respond — including cloud metadata endpoints like <b>169.254.169.254</b> that can hand over credentials.</p>
+<div class="sm-key">Control: forbid outbound requests to internal ranges and metadata addresses unless allow-listed.</div>
+</section>
+<section class="sm-sec" id="p5">
+<h2>Database tier</h2>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Account</th><th>Privileges</th><th>Used by</th></tr></thead><tbody><tr><td>App read account</td><td>SELECT only</td><td>Reports, search, read-heavy endpoints</td></tr><tr><td>App write account</td><td>SELECT, INSERT, UPDATE (no DROP/ALTER)</td><td>Core transactional logic (checkout, profile)</td></tr><tr><td>Migration / admin</td><td>Full schema privileges</td><td>CI/CD migration jobs only — <b>never</b> the running app</td></tr></tbody></table></div>
+<div class="sm-key">Never connect as a superuser; configure <b>connection pools per account type</b> so a compromised read path can&#39;t borrow write credentials.</div>
+<p class="sm-def"><b>Insecure Design (A04:2021)</b> : flaws baked into the architecture before any code is written. A well-coded implementation of a badly designed architecture is still insecure.</p>
+<p class="sm-q">Q/ Booking/payment app — apply the lecture&#39;s rules.</p>
+<ol><li>Redis (sessions) on a <b>private segment</b>, reachable only from the app tier.</li><li>Payment API keys and DB credentials in a <b>secrets manager</b>, injected at startup, never hard-coded or returned.</li><li>App server <b>forbidden</b> from requesting internal IPs / metadata (anti-SSRF).</li><li>Internal call to the payment microservice over <b>mTLS</b> (Zero Trust).</li></ol>
+</section>
+<p class="sm-src">Summary of Web Applications Security L4: Web Application Architecture. Built only from the lecture file; check the original slides for anything you're unsure about. <a href="../../read/web/lecture-4-web-app-architecture.html">Open the lecture →</a></p>
+</main>
+<script src="../../reader.js" defer></script>
+</body>
+</html>

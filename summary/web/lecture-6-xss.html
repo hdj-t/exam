@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>السكربت المسموم في متصفح المظلوم — L6 summary</title>
+<meta name="description" content="Web Applications Security L6 summary: Cross-Site Scripting (XSS)">
+<meta name="theme-color" content="#F6F3EC" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#171513" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../../fonts/GeistPixel-Square.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../../styles.css">
+<link rel="stylesheet" href="../../summary.css">
+</head>
+<body class="summary">
+<header class="rbar">
+  <a class="icon-btn" href="../../index.html#web" aria-label="Back to Web Applications Security"><span aria-hidden="true">←</span></a>
+  <div class="rbar-t"><span class="rbar-c">Web Applications Security · L6 · Summary</span><b>Cross-Site Scripting (XSS)</b></div>
+  <a class="icon-btn" href="../../read/web/lecture-6-xss.html" aria-label="Open the lecture">Lec</a>
+  <a class="icon-btn icon-btn--pdf" href="lecture-6-xss.pdf" download aria-label="Download summary PDF">PDF</a>
+</header>
+<main class="sm">
+<section class="sm-sec" id="p1">
+<h1 class="sm-title" lang="ar" dir="rtl">السكربت المسموم في متصفح المظلوم</h1>
+<h2>Lecture 6 — Cross-Site Scripting (XSS)</h2>
+<p class="sm-def"><b>Cross-Site Scripting (XSS)</b> : the application puts untrusted input into a page <b>without neutralizing it</b>, so the browser runs it as <b>script</b> instead of showing it as text.</p>
+<div class="sm-key">The browser can&#39;t tell a legitimate script from an injected one: both come from the same trusted origin with the same privileges. Same root cause as SQL injection (code vs data), but inside the <b>browser&#39;s</b> HTML/JS engine.</div>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Category</th><th>Where the payload lives</th><th>Persistence</th><th>Typical delivery</th></tr></thead><tbody><tr><td><b>Reflected</b></td><td>In the request itself (URL parameter)</td><td>Not stored; one response only</td><td>A crafted link, often by phishing</td></tr><tr><td><b>Stored</b></td><td>Saved on the server (comment, profile field)</td><td><b>Persistent</b>; served to every visitor</td><td>No further interaction once posted</td></tr><tr><td><b>DOM-based</b></td><td>Never reaches the server; written by client-side script</td><td>Depends on the script</td><td>Manipulating a URL fragment or other client source</td></tr></tbody></table></div>
+<p class="sm-q">Q/ Which XSS category is the most consequential and why ?</p>
+<ul><li><b>Stored</b>: one successful injection runs in the browser of <b>every later visitor</b>, with no further action from the attacker.</li></ul>
+</section>
+<section class="sm-sec" id="p2">
+<h2>DOM-based XSS: sources and sinks</h2>
+<p class="sm-def"><b>Source</b> : where untrusted data <b>enters</b> client-side script.</p>
+<p class="sm-def"><b>Sink</b> : a function/property that turns a string into <b>parsed markup or executed code</b>.</p>
+<div class="sm-key">A DOM XSS exists when data flows <b>from a source into a sink</b> without a safe transformation.</div>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Sources</th><th>Sinks</th></tr></thead><tbody><tr><td>location.hash, location.search</td><td>element.innerHTML, element.outerHTML</td></tr><tr><td>document.referrer, document.URL</td><td>document.write(), document.writeln()</td></tr><tr><td>window.name</td><td>eval(), new Function()</td></tr><tr><td>postMessage data</td><td>setTimeout()/setInterval() with a <b>string</b></td></tr><tr><td></td><td>Event-handler attribute set from untrusted data</td></tr></tbody></table></div>
+<div class="sm-key">Safe alternative: <b>element.textContent</b> (always text) or build elements through the DOM. Server-side encoding can&#39;t reach DOM XSS because it never touches the server.</div>
+</section>
+<section class="sm-sec" id="p3">
+<p class="sm-q">Q/ What does an attacker gain from XSS ?</p>
+<ol><li><b>Session theft</b> (most common): read the session cookie and send it to the attacker&#39;s server → impersonate the victim without the password.</li><li>Capture <b>keystrokes</b>.</li><li>Redirect to a <b>fake login</b> form.</li><li><b>Submit requests</b> on the victim&#39;s behalf (links to CSRF, Week 7).</li><li><b>Deface</b> the page.</li></ol>
+</section>
+<section class="sm-sec" id="p4">
+<h2>Defenses</h2>
+<p class="sm-def"><b>Output encoding</b> : converting special characters (like &lt; &gt;) to harmless text <b>at the exact point</b> data is written into the page. The primary defense.</p>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Output context</th><th>Where</th><th>Correct encoding</th></tr></thead><tbody><tr><td>HTML body</td><td>Text between tags (inside p or div)</td><td><b>HTML entity</b> encoding (&lt; &gt; &amp; &quot; &#39;)</td></tr><tr><td>HTML attribute</td><td>Inside value=&quot;…&quot; or href</td><td>Entity-encode <b>everything outside a small safe set</b> (attributes can be closed by more than &gt;)</td></tr><tr><td>JavaScript variable</td><td>Inside a script, as an already-quoted string</td><td><b>Unicode escaping</b>; only ever inside an existing quoted string</td></tr><tr><td>CSS value</td><td>Stylesheet or style attribute</td><td><b>CSS hex</b> encoding</td></tr><tr><td>URL parameter</td><td>Query string / URL part</td><td><b>Percent</b> encoding</td></tr></tbody></table></div>
+<div class="sm-key"><b>Encoding must match its context.</b> Wrong encoding = as exposed as none.<br>Putting untrusted data <b>directly inside a script tag</b> (not in a quoted string) is a dangerous context that <b>no encoding fully fixes</b> — avoid it.</div>
+<p class="sm-q">Q/ What are the additional layers of defense ?</p>
+<ol><li><b>Input validation</b> with an <b>allow list</b> of permitted characters/formats (not a block list).</li><li>A <b>sanitization library</b> when some HTML must be accepted (parse and rebuild, no custom filters).</li><li><b>Content-Security-Policy</b>: blocks inline scripts and limits script sources — limits damage even if injection slips through.</li><li><b>HttpOnly</b> cookies: doesn&#39;t prevent XSS, but stops script reading the session cookie.</li></ol>
+</section>
+<section class="sm-sec" id="p5">
+<h2>Frameworks</h2>
+<p class="sm-def"><b>React</b> : values in <code>{curly braces}</code> are escaped automatically. Escape hatch: <b>dangerouslySetInnerHTML</b> (name is deliberate).</p>
+<p class="sm-def"><b>Angular</b> : <b>DomSanitizer</b> sanitizes HTML, style and URL bindings. Escape hatch: <b>bypassSecurityTrustHtml</b>.</p>
+<div class="sm-key">Frameworks make the safe behaviour the <b>default</b>; using an escape hatch puts responsibility back on the developer.</div>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Defense</th><th>Prevents XSS?</th><th>What it does</th></tr></thead><tbody><tr><td>Output encoding</td><td><b>Yes</b> (primary)</td><td>Data shown as text, not code</td></tr><tr><td>Input validation</td><td>Helps</td><td>Restricts what&#39;s accepted</td></tr><tr><td>CSP</td><td>Limits damage</td><td>Blocks inline / foreign scripts</td></tr><tr><td>HttpOnly</td><td><b>No</b></td><td>Protects the cookie from theft</td></tr></tbody></table></div>
+<p class="sm-def"><b>OWASP placement</b> : XSS was its own category in older editions; <b>2021 merged it into A03:2021 Injection</b>, because it shares SQL injection&#39;s root cause (an interpreter that can&#39;t tell code from data) — only the interpreter differs (browser vs database).</p>
+</section>
+<p class="sm-src">Summary of Web Applications Security L6: Cross-Site Scripting (XSS). Built only from the lecture file; check the original slides for anything you're unsure about. <a href="../../read/web/lecture-6-xss.html">Open the lecture →</a></p>
+</main>
+<script src="../../reader.js" defer></script>
+</body>
+</html>

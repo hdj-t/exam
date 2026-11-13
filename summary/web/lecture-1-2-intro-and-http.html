@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>الطلب والجواب في عالم الأبواب — L1–2 summary</title>
+<meta name="description" content="Web Applications Security L1–2 summary: Introduction &amp; HTTP Deep Dive">
+<meta name="theme-color" content="#F6F3EC" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#171513" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../../fonts/GeistPixel-Square.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../../styles.css">
+<link rel="stylesheet" href="../../summary.css">
+</head>
+<body class="summary">
+<header class="rbar">
+  <a class="icon-btn" href="../../index.html#web" aria-label="Back to Web Applications Security"><span aria-hidden="true">←</span></a>
+  <div class="rbar-t"><span class="rbar-c">Web Applications Security · L1–2 · Summary</span><b>Introduction &amp; HTTP Deep Dive</b></div>
+  <a class="icon-btn" href="../../read/web/lecture-1-2-intro-and-http.html" aria-label="Open the lecture">Lec</a>
+  <a class="icon-btn icon-btn--pdf" href="lecture-1-2-intro-and-http.pdf" download aria-label="Download summary PDF">PDF</a>
+</header>
+<main class="sm">
+<section class="sm-sec" id="p1">
+<h1 class="sm-title" lang="ar" dir="rtl">الطلب والجواب في عالم الأبواب</h1>
+<h2>Lectures 1–2 — Introduction to Web Application Security &amp; HTTP Protocol Deep Dive</h2>
+<p class="sm-def"><b>Web application</b> : software that runs on a remote server and is accessed through a browser (Gmail, online banking, a university portal). None of its code runs permanently on your machine.</p>
+<p class="sm-q">Q/ What is the request/response cycle ?</p>
+<ul><li>The browser sends a request → the server processes it (often talking to a database) → it sends back a response that the browser turns into the page. This happens on every click, form submit or page load.</li></ul>
+<p class="sm-q">Q/ What four steps happen before the browser &quot;talks&quot; to the application ?</p>
+<ol><li><b>DNS resolution</b>: the name (example.com) becomes an IP address.</li><li><b>TCP handshake</b>: SYN / SYN-ACK / ACK opens a reliable connection.</li><li><b>TLS handshake</b> (HTTPS): both sides agree on encryption keys — confidentiality, integrity, and server authentication through certificates.</li><li><b>HTTP request/response</b>: only now does the application conversation begin (GET /login …).</li></ol>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Network security</th><th>Web application security</th></tr></thead><tbody><tr><td>Protects the <b>pipes</b>: firewalls, routers, VPNs, TLS</td><td>Protects what runs <b>on top</b>: the application logic itself</td></tr><tr><td>Focus: how data travels</td><td>Focus: what the application <b>does</b> with data once it arrives</td></tr></tbody></table></div>
+<div class="sm-key">A firewall won&#39;t stop an attacker who logs in normally and then manipulates a form field to see another user&#39;s data — the traffic looks legitimate.</div>
+</section>
+<section class="sm-sec" id="p2">
+<p class="sm-q">Q/ Split the attack surface of a web application.</p>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Client-side attacks (target the victim&#39;s browser)</th><th>Server-side attacks (target app server, database, backend)</th></tr></thead><tbody><tr><td>Cross-Site Scripting (XSS) — Week 6</td><td>SQL Injection — Week 9</td></tr><tr><td>Cross-Site Request Forgery (CSRF) — Week 7</td><td>Command Injection</td></tr><tr><td>DOM-based manipulation</td><td>Server-Side Request Forgery (SSRF)</td></tr><tr><td>Clickjacking</td><td>Broken Access Control — Week 12</td></tr></tbody></table></div>
+<p class="sm-q">Q/ Why are web apps attractive targets ?</p>
+<ol><li><b>Publicly reachable</b>: anyone with a browser can reach the login page.</li><li><b>Valuable data</b>: passwords, payment details, personal records.</li><li><b>Complex</b>: more code = more places for a small mistake to hide.</li></ol>
+<p class="sm-def"><b>Confidentiality</b> : only authorized users can see the data (your bank balance stays private).</p>
+<p class="sm-def"><b>Integrity</b> : data isn&#39;t changed without permission (no one edits your order total or grade).</p>
+<p class="sm-def"><b>Availability</b> : the service stays reachable (a flood of fake requests can&#39;t take it offline).</p>
+<div class="sm-key">XSS mainly threatens <b>confidentiality</b> (session theft); SQL injection can break <b>confidentiality and integrity</b>; DoS targets <b>availability</b>.</div>
+<p class="sm-def"><b>The fundamental flaw — mixing code and data</b> : letting user input be interpreted as <b>executable instructions</b> instead of plain data. It is the root of SQL injection, command injection, XSS and more.</p>
+<div class="sm-key">“An interpreter that treats user input as code, instead of as data, is already broken.”</div>
+<p class="sm-q">Q/ List the OWASP Top 10 (2021) — the edition used in this course.</p>
+<ol><li>A01 Broken Access Control</li><li>A02 Cryptographic Failures</li><li>A03 Injection</li><li>A04 Insecure Design</li><li>A05 Security Misconfiguration</li><li>A06 Vulnerable and Outdated Components</li><li>A07 Identification and Authentication Failures</li><li>A08 Software and Data Integrity Failures</li><li>A09 Security Logging and Monitoring Failures</li><li>A10 Server-Side Request Forgery (SSRF)</li></ol>
+<div class="sm-key">The 2025 edition reshuffles it (Security Misconfiguration moves to #2; Software Supply Chain Failures is new). Always check the <b>year</b> before comparing numbers.</div>
+<p class="sm-def"><b>Rules of Engagement (RoE)</b> : a written agreement before testing that defines what is in scope / out of scope, timing, allowed methods and contacts.</p>
+<p class="sm-def"><b>Responsible (Coordinated) Disclosure</b> : report a flaw privately to the owner first and give them a fair window (commonly <b>~90 days</b>) before going public.</p>
+<p class="sm-def"><b>Safe Harbor / Bug Bounty</b> : platforms (HackerOne, Bugcrowd) publish an official, legally protected scope so testing within it is authorized (and often paid).</p>
+<div class="sm-key">&quot;I was just curious&quot; is not a legal defense — <b>permission first, always</b>.</div>
+</section>
+<section class="sm-sec" id="p3">
+<h2>HTTP</h2>
+<p class="sm-q">Q/ What are the four parts of every HTTP message ?</p>
+<ol><li><b>Start line / status line</b> — what is asked for (request) or what happened (response).</li><li><b>Headers</b> — metadata: format, size, cookies, caching…</li><li><b>Blank line</b> — marks the end of headers.</li><li><b>Body</b> — the payload (form data up, HTML/JSON down).</li></ol>
+<p class="sm-def"><b>Safe method</b> : doesn&#39;t change server state.</p>
+<p class="sm-def"><b>Idempotent method</b> : sending it twice has the same effect as once.</p>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Method</th><th>Purpose</th><th>Safe?</th><th>Idempotent?</th></tr></thead><tbody><tr><td>GET</td><td>Retrieve a resource</td><td>Yes</td><td>Yes</td></tr><tr><td>POST</td><td>Create / submit data</td><td>No</td><td>No</td></tr><tr><td>PUT</td><td>Replace a resource entirely</td><td>No</td><td>Yes</td></tr><tr><td>PATCH</td><td>Partially update</td><td>No</td><td>No</td></tr><tr><td>DELETE</td><td>Remove a resource</td><td>No</td><td>Yes</td></tr><tr><td>HEAD</td><td>Like GET, headers only</td><td>Yes</td><td>Yes</td></tr><tr><td>OPTIONS</td><td>Ask what&#39;s allowed (CORS preflight)</td><td>Yes</td><td>Yes</td></tr></tbody></table></div>
+<div class="sm-key">GET parameters live in the <b>URL</b> → browser history, server logs, proxy logs. Never put passwords or tokens in a GET query string; use POST.</div>
+<p class="sm-def"><b>Verb tampering (method override abuse)</b> : bypassing an access rule that checks only the literal method (e.g. blocks POST to /admin/delete but forgets GET/HEAD), or abusing a header like <b>X-HTTP-Method-Override</b>. Fix: <b>authorize the action, not the verb string</b>.</p>
+<p class="sm-q">Q/ What are the HTTP status code classes ?</p>
+<ol><li><b>1xx</b> Informational — 100 Continue.</li><li><b>2xx</b> Success — 200 OK, 201 Created.</li><li><b>3xx</b> Redirection — 301 Moved Permanently, 302 Found.</li><li><b>4xx</b> Client error — 400, 401, 403, 404.</li><li><b>5xx</b> Server error — 500, 503.</li></ol>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>401 Unauthorized</th><th>403 Forbidden</th></tr></thead><tbody><tr><td>Actually means <b>unauthenticated</b></td><td>Identity known, <b>permissions insufficient</b></td></tr><tr><td>&quot;Who are you?&quot;</td><td>&quot;I know who you are, and the answer is still no.&quot;</td></tr></tbody></table></div>
+<p class="sm-def"><b>Username enumeration</b> : different messages for &quot;wrong password&quot; and &quot;no such user&quot; let an attacker discover valid usernames. Fix: one <b>generic error</b> either way.</p>
+</section>
+<section class="sm-sec" id="p4">
+<p class="sm-def"><b>HTTP is stateless</b> : every request is brand new; the server keeps no memory. Applications rebuild state with <b>cookies</b>.</p>
+<p class="sm-q">Q/ Which cookie attributes matter for security ?</p>
+<ol><li><b>Secure</b>: sent only over HTTPS.</li><li><b>HttpOnly</b>: JavaScript can&#39;t read it — limits what XSS can steal.</li><li><b>SameSite</b>: restricts sending the cookie with cross-site requests — core CSRF defense.</li><li><b>Domain</b>: which hosts receive it. <b>Path</b>: which URL paths.</li></ol>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>SameSite value</th><th>Behaviour</th></tr></thead><tbody><tr><td><b>Strict</b></td><td>Never sent on any cross-site request, even a link click. Strongest; can break cross-site flows</td></tr><tr><td><b>Lax</b></td><td>Sent only with safe top-level navigation (clicking a link), not cross-site POSTs, images, iframes. <b>Modern browser default</b></td></tr><tr><td><b>None</b></td><td>Sent with every cross-site request; <b>requires Secure</b></td></tr></tbody></table></div>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Security header</th><th>Protects against</th></tr></thead><tbody><tr><td>Strict-Transport-Security (<b>HSTS</b>)</td><td>Forces HTTPS; blocks downgrade / SSL-stripping</td></tr><tr><td>Content-Security-Policy (<b>CSP</b>)</td><td>Restricts which scripts/resources run — major XSS defense</td></tr><tr><td>X-Content-Type-Options: nosniff</td><td>Browser guessing file types (content-type confusion)</td></tr><tr><td>X-Frame-Options</td><td>Being framed by another site — <b>clickjacking</b></td></tr><tr><td>Access-Control-Allow-Origin</td><td>CORS: which origins may read the response via JS</td></tr><tr><td>Referrer-Policy: no-referrer</td><td>Leaking the full previous URL (with tokens) to third parties</td></tr></tbody></table></div>
+<p class="sm-q">Q/ How do headers leak data without any &quot;attack&quot; ?</p>
+<ol><li><b>Referer</b>: a URL like /reset?token=abc123 with a third-party image or link hands the token to that third party → fix with <b>Referrer-Policy</b>.</li><li><b>Caching</b>: without <b>Cache-Control: no-store</b>, a bank statement stays in the browser cache after logout; the next user on a shared PC can press Back.</li></ol>
+<p class="sm-def"><b>Host Header Injection</b> : the app trusts the client-supplied <b>Host</b> header to build absolute URLs.</p>
+<p class="sm-def"><b>Password-reset poisoning</b> : the attacker requests a reset for the victim with <code>Host: attacker.com</code>; the email link points to the attacker&#39;s domain, so the victim&#39;s reset <b>token is sent to the attacker</b>. Fix: never build security-sensitive URLs from client input; <b>allow-list</b> real domains.</p>
+<p class="sm-def"><b>HTTPS = HTTP + TLS</b> : the same HTTP conversation wrapped in TLS, giving <b>confidentiality</b> (encrypted), <b>integrity</b> (can&#39;t be altered) and <b>authenticity</b> (certificate). Never dismiss a &quot;connection not secure&quot; warning.</p>
+</section>
+<p class="sm-src">Summary of Web Applications Security L1–2: Introduction &amp; HTTP Deep Dive. Built only from the lecture file; check the original slides for anything you're unsure about. <a href="../../read/web/lecture-1-2-intro-and-http.html">Open the lecture →</a></p>
+</main>
+<script src="../../reader.js" defer></script>
+</body>
+</html>

@@ -62,7 +62,7 @@
         key("Clear", "Clear the screen", () => { this.out.textContent = ""; }),
       );
       this.el = h("div", { class: "term" + (o.theme ? " term--" + o.theme : "") }, this.out, form, keys);
-      this.out.addEventListener("click", () => { if (!getSelection().toString()) this.inp.focus({ preventScroll: true }); });
+      this.out.addEventListener("click", () => { if (!getSelection().toString() && !matchMedia("(pointer: coarse)").matches) this.inp.focus({ preventScroll: true }); });
       this.inp.addEventListener("keydown", (e) => {
         if (e.key === "ArrowUp") { e.preventDefault(); this.histMove(-1); }
         else if (e.key === "ArrowDown") { e.preventDefault(); this.histMove(1); }
@@ -261,12 +261,13 @@
     return { results, total: qs.length };
   }
 
-  function renderQ(q, i, report) {
+  // exam: no Check button; the page calls submit() for every question at the end
+  function renderQ(q, i, report, exam) {
     const fb = h("div", { class: "qz-fb", hidden: true });
     const body = h("div", { class: "qz-body" });
     const check = h("button", { class: "btn", type: "button" }, "Check");
     const el = h("li", { class: "qz-q", id: "q" + (i + 1) },
-      h("p", { class: "qz-k" }, `Q${i + 1} · ${TYPE_LABEL[q.t]}`),
+      h("p", { class: "qz-k" }, `Q${i + 1} · ${TYPE_LABEL[q.t]}`, exam && h("span", { class: "qz-m-k" }, ` · ${q.m || 1} mark${(q.m || 1) > 1 ? "s" : ""}`)),
       h("div", { class: "qz-text", html: q.q }),
       body, h("div", { class: "qz-act" }, check), fb);
     let grade, lock;
@@ -331,7 +332,7 @@
         };
         lock = () => ol.querySelectorAll("button").forEach((b) => (b.disabled = true));
       } else if (q.t === "match") {
-        const rights = shuffle(q.pairs.map((p) => p[1]));
+        const rights = shuffle([...new Set(q.pairs.map((p) => p[1]))]);
         const sels = q.pairs.map(([l]) => {
           const s = h("select", { class: "qz-sel" }, h("option", { value: "" }, "Choose…"), rights.map((r) => h("option", { value: r }, r)));
           body.append(h("label", { class: "qz-m" }, h("span", { class: "qz-ml", html: l }), s));
@@ -359,14 +360,20 @@
       }
     };
     build();
-    check.addEventListener("click", () => {
-      const r = grade();
-      if (r == null) { fb.hidden = false; fb.className = "qz-fb is-warn"; fb.textContent = "Answer first, then check."; return; }
+    if (exam) check.hidden = true;
+    const finish = (force) => {
+      let r = grade();
+      const blank = r == null;
+      if (blank && !force) { fb.hidden = false; fb.className = "qz-fb is-warn"; fb.textContent = "Answer first, then check."; return; }
+      if (blank) { r = 0; if (q.t === "short") fb.dataset.keys = JSON.stringify(q.keys.map((alts) => [[].concat(alts)[0], false])); }
       lock();
       check.hidden = true;
       el.classList.add(r === 1 ? "is-right" : r > 0 ? "is-part" : "is-wrong");
-      const verdict = r === 1 ? "Correct" : r > 0 ? "Partly right" : "Not quite";
+      const verdict = blank ? "Not answered" : r === 1 ? "Correct" : r > 0 ? "Partly right" : "Not quite";
       let extra = "";
+      if ((q.t === "mcq" || q.t === "multi" || q.t === "tf") && r !== 1) {
+        extra = `<p class="qz-model"><b>Answer:</b> ${q.t === "tf" ? (q.a ? "True" : "False") : [].concat(q.a).map((k) => q.opts[k]).join(" · ")}</p>`;
+      }
       if (q.t === "short") {
         const keys = JSON.parse(fb.dataset.keys || "[]");
         extra = `<p class="qz-model"><b>Model answer:</b> ${q.model}</p><p class="qz-keys">${keys.map(([k, ok]) => `<span class="${ok ? "ok" : "no"}">${ok ? "✓" : "✗"} ${esc(k)}</span>`).join(" ")}</p>`;
@@ -382,16 +389,19 @@
       fb.className = "qz-fb " + (r === 1 ? "is-right" : r > 0 ? "is-part" : "is-wrong");
       fb.innerHTML = `<p class="qz-v">${verdict}${q.t === "short" ? " · marked by key ideas" : ""}</p>${extra}${q.why ? `<p class="qz-why">${q.why}</p>` : ""}${q.src ? `<p class="qz-src">Source: ${q.src}</p>` : ""}`;
       report(r);
-    });
+      return r;
+    };
+    check.addEventListener("click", () => finish(false));
     return {
       el,
-      reset() { el.classList.remove("is-right", "is-wrong", "is-part"); fb.hidden = true; check.hidden = false; build(); },
+      submit: () => finish(true),
+      reset() { el.classList.remove("is-right", "is-wrong", "is-part"); fb.hidden = true; check.hidden = !!exam; build(); },
     };
   }
 
   // ------------------------------------------------------------------ lab shell
   const Lab = {
-    h, sleep, esc, store, Term, Topo, cmdMatch, norm, shuffle,
+    h, sleep, esc, store, Term, Topo, cmdMatch, norm, shuffle, renderQ,
     start(def) {
       const key = "lab:" + document.body.dataset.lab;
       const app = document.getElementById("app");
@@ -454,7 +464,8 @@
             it.chip.setAttribute("aria-selected", k === id);
             if (k === id) it.chip.querySelector(".dot").hidden = true;
           }
-          dock.chips.querySelector('[aria-selected="true"]')?.scrollIntoView({ block: "nearest", inline: "nearest" });
+          const sel = dock.chips.querySelector('[aria-selected="true"]');
+          if (sel) dock.chips.scrollLeft += sel.getBoundingClientRect().left - dock.chips.getBoundingClientRect().left - 8;
           api.onShow?.(id);
           const t = dock.items[id].wrap.querySelector(".term-out");
           if (t) t.scrollTop = t.scrollHeight;

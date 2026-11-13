@@ -44,7 +44,11 @@
       chips.forEach((c) => c.classList.remove("is-here"));
       const c = chips.get(e.target.id);
       c.classList.add("is-here");
-      c.scrollIntoView({ block: "nearest", inline: "nearest" });
+      // scroll only the chip row sideways: scrollIntoView would also move the
+      // page and cut the user's swipe short on phones
+      const row = c.parentElement;
+      const cr = c.getBoundingClientRect(), rr = row.getBoundingClientRect();
+      if (cr.left < rr.left || cr.right > rr.right) row.scrollLeft += cr.left - rr.left - 8;
     }
   }, { rootMargin: "-45% 0px -50% 0px" });
   $$(".course").forEach((s) => io.observe(s));

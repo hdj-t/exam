@@ -115,6 +115,7 @@ for (const c of site.courses) {
     d.exam = inScope(c, d);
     if (d.lab && !fs.existsSync(path.join(ROOT, "labs", c.id, d.file + ".js"))) { console.warn(`lab script missing for ${d.id}`); d.lab = null; }
     if (d.lab) d.labUrl = `labs/${d.id}.html`;
+    if (fs.existsSync(path.join(ROOT, "mock", c.id, d.file + ".js"))) d.mockUrl = `mock/${d.id}.html`;
     const dir = path.join(ROOT, "pages", c.id, d.file);
     process.stdout.write(`render ${d.id} (${d.pages}p)\n`);
     render(pdf, dir);
@@ -184,6 +185,7 @@ for (const c of site.courses) {
 <main class="pages" id="main">
 <p class="rinfo">${tag}<span>${d.pages} pages · ${kb(d.size)}</span> <a href="${rel}${d.pdf}">Open original PDF ↗</a></p>
 ${d.summary ? `<a class="labcta labcta--sum" href="${rel}${d.sumUrl}"><b>Σ Read the summary: <span lang="ar" dir="rtl">${esc(d.sumTitle)}</span></b><span>Definitions, Q/ questions and comparison tables</span></a>` : ""}
+${d.mockUrl ? `<a class="labcta labcta--mock" href="${rel}${d.mockUrl}"><b>✎ Take the mock exam for this lecture</b><span>Timed, sectioned like the real exam, with model answers and marks</span></a>` : ""}
 ${d.lab ? `<a class="labcta" href="${rel}${d.labUrl}"><b>▶ Try it as an interactive lab</b><span>Run the commands in a simulator, check each step, then take the quiz</span></a>` : ""}
 ${pages}
 </main>
@@ -254,6 +256,41 @@ ${mods}
   fs.writeFileSync(path.join(ROOT, "labs", c.id, d.file + ".html"), html);
 }
 
+// ---------------------------------------------------------------- mock exams
+// mock/<course>/<file>.js is a question bank (Mock.add); each gets its own exam page,
+// and every course gets a midterm that draws from the banks of its in-scope lectures.
+function mockPage(c, file, title, sub, banks, per, minutes) {
+  const rel = "../../";
+  const html = `${head(`${title} — ${c.name}`, rel, `Mock exam: ${title} (${c.name})`).replace("</head>", `<link rel="stylesheet" href="../../labs/lab.css">\n</head>`)}
+<body class="lab mock" data-mock="${esc(banks.map((d) => d.id).join(","))}" data-key="${esc(c.id + "/" + file)}" data-pick="${per}" data-minutes="${minutes}" data-title="${esc(title)}" data-back="${rel}index.html#${c.id}">
+<header class="rbar">
+  <a class="icon-btn" href="${rel}index.html#${c.id}" aria-label="Back to ${esc(c.name)}"><span aria-hidden="true">←</span></a>
+  <div class="rbar-t">
+    <span class="rbar-c">${esc(c.name)} · ${esc(sub)}</span>
+    <b>${esc(title)}</b>
+  </div>
+  ${banks.length === 1 ? `<a class="icon-btn" href="${rel}read/${banks[0].id}.html" aria-label="Open the lecture">Lec</a>` : ""}
+</header>
+<main id="app"><p class="noscript">The mock exam needs JavaScript.</p></main>
+<script src="${rel}labs/engine.js" defer></script>
+<script src="${rel}labs/mock.js" defer></script>
+${banks.map((d) => `<script src="${esc(d.file)}.js" defer></script>`).join("\n")}
+</body>
+</html>
+`;
+  fs.writeFileSync(path.join(ROOT, "mock", c.id, file + ".html"), html);
+}
+for (const c of site.courses) {
+  const banks = c.docs.filter((d) => d.mockUrl);
+  for (const d of banks) mockPage(c, d.file, `Mock exam · ${docLabel(d)} ${d.title}`, `${docLabel(d)} mock exam`, [d], 0, 30);
+  const scoped = banks.filter((d) => d.kind === "lecture" && d.exam !== false);
+  if (scoped.length > 1) {
+    const per = Math.ceil(40 / scoped.length);
+    mockPage(c, "midterm", `Mock midterm · ${c.name}`, c.scope.confirmed ? "lectures in exam scope" : "all lectures so far", scoped, per, 60);
+    c.midterm = { url: `mock/${c.id}/midterm.html`, n: scoped.length, q: per * scoped.length };
+  }
+}
+
 // ---------------------------------------------------------------- home
 const sorted = [...site.courses].sort((a, b) => a.exam.localeCompare(b.exam));
 const chips = sorted
@@ -274,6 +311,7 @@ const courseHtml = sorted
             (d) => `<li class="doc${d.exam === true ? " is-exam" : d.exam === false ? " is-out" : ""}" data-exam="${d.exam}">
 <a class="doc-a" href="read/${d.id}.html"><span class="num">${esc(docLabel(d))}</span><span class="doc-t"><b>${esc(d.title)}</b><small>${d.pages} pages${d.exam === true ? ' · <em class="tag tag--exam">In exam</em>' : d.exam === false ? ' · <em class="tag tag--out">Not in exam</em>' : ""}</small></span></a>
 ${d.summary ? `<a class="doc-lab doc-sum" href="${d.sumUrl}" aria-label="Summary: ${esc(d.title)}"><span aria-hidden="true">Σ</span><small>SUM</small></a>` : ""}
+${d.mockUrl ? `<a class="doc-lab doc-mock" href="${d.mockUrl}" aria-label="Mock exam: ${esc(d.title)}"><span aria-hidden="true">✎</span><small>MOCK</small></a>` : ""}
 ${d.lab ? `<a class="doc-lab" href="${d.labUrl}" aria-label="Interactive lab: ${esc(d.title)}"><span aria-hidden="true">▶</span><small>LAB</small></a>` : ""}
 <a class="doc-dl" href="${d.pdf}" download aria-label="Download ${esc(d.title)} PDF, ${kb(d.size)}"><span aria-hidden="true">↓</span><small>PDF</small></a>
 </li>`
@@ -290,6 +328,7 @@ ${d.lab ? `<a class="doc-lab" href="${d.labUrl}" aria-label="Interactive lab: ${
   <h2 id="h-${c.id}">${esc(c.name)}</h2>
   <p class="course-meta"><span class="code">${esc(c.code)}</span> <span lang="ar" dir="rtl">${esc(c.ar)}</span></p>
   ${scope}
+  ${c.midterm ? `<a class="labcta labcta--mock" href="${c.midterm.url}"><b>✎ Mock midterm · ${c.midterm.q} questions · 60 min</b><span>Drawn from ${c.midterm.n} lecture banks, timed, marked by section · new questions every attempt</span></a>` : ""}
 </header>
 ${groups}
 </section>`;

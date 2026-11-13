@@ -31,6 +31,15 @@ Engine: `labs/engine.js`, `labs/net.js`, `labs/kit.js`, `labs/webkit.js`; one sc
 
 `summaries/<course>/<lecture>.md` (definitions, `Q/` questions, comparison tables, a playful Arabic title) build into `summary/…html` + a printable PDF, and are part of the search.
 
+## Mock exams
+
+`mock/<course>/<file>.js` is a question bank for one lecture (`Mock.add(id, {title, qs})`, same question
+format as the lab quizzes). The build gives each bank its own exam page (✎ MOCK on the home row) and
+every course a **mock midterm** that draws a fresh, type-balanced set from the banks of its in-scope
+lectures on each attempt. Exams are sectioned (A multiple choice, B true/false, C complete/match/order,
+D short answer), marked per question, timed against a deadline (survives a sleeping phone) and
+auto-submitted when time runs out; practice mode checks each answer as you go.
+
 ## Adding a file
 
 1. Put the PDF in `files/<course>/` with a simple name, such as `lecture-4-....pdf`.

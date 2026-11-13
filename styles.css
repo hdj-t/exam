@@ -102,7 +102,7 @@
 }
 
 @layer base {
-  html { scroll-padding-top: calc(var(--bar-h) + 0.75rem); scroll-behavior: smooth; }
+  html { scroll-padding-top: calc(var(--bar-h) + 0.75rem); }
   body {
     background: var(--c-page);
     color: var(--c-ink);
@@ -224,7 +224,7 @@
 
   /* ---- main column ---- */
   main#courses, .foot { max-inline-size: var(--page-max); margin-inline: auto; padding-inline: var(--gutter); }
-  .lists { display: grid; gap: 1.75rem; padding-block: 1.25rem 2rem; }
+  .lists { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1.75rem; padding-block: 1.25rem 2rem; }
 
   .next { font-family: var(--font-pixel); font-size: 0.9rem; color: var(--c-ink-muted); }
   .next b { color: var(--c-accent); font-weight: 400; }
@@ -402,3 +402,23 @@
   .labcta span { font-size: 0.82rem; opacity: 0.9; }
 }
 @layer components { .doc-sum { color: var(--c-ink); } .labcta--sum { background: var(--c-ink); color: var(--c-page); } }
+@layer components {
+  .doc-mock { color: var(--c-warn); }
+  .labcta--mock { background: var(--c-card); color: var(--c-ink); box-shadow: inset 4px 0 0 var(--c-warn), inset 0 0 0 1px var(--c-rule); }
+  .course-h .labcta--mock { margin-block-start: 0.75rem; }
+}
+/* Phones: a row with three or more buttons puts them in a bar under the title,
+   so the title keeps the full width */
+@layer components {
+  @media (max-width: 40rem) {
+    .doc:has(> :nth-child(4)) { flex-wrap: wrap; }
+    .doc:has(> :nth-child(4)) > .doc-a { flex-basis: 100%; padding-block-end: 0.45rem; }
+    .doc:has(> :nth-child(4)) > :not(.doc-a) {
+      flex: 1 1 0; inline-size: auto; min-block-size: 2.6rem; display: flex; flex-direction: row;
+      align-items: center; justify-content: center; gap: 0.35rem; border-block-start: 1px dashed var(--c-rule);
+    }
+    .doc:has(> :nth-child(4)) > :not(.doc-a) + :not(.doc-a) { border-inline-start: 1px dashed var(--c-rule); }
+    .doc:has(> :nth-child(4)) > :not(.doc-a) small { margin: 0; font-size: 0.68rem; }
+  }
+}
+@layer components { .results, .empty { overflow-wrap: anywhere; } }

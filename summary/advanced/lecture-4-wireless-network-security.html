@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>اللاسلكي والمفتاح في زمن الصياح — L4 summary</title>
+<meta name="description" content="Advanced Cybersecurity L4 summary: Wireless Network Security">
+<meta name="theme-color" content="#F6F3EC" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#171513" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../../fonts/GeistPixel-Square.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../../styles.css">
+<link rel="stylesheet" href="../../summary.css">
+</head>
+<body class="summary">
+<header class="rbar">
+  <a class="icon-btn" href="../../index.html#advanced" aria-label="Back to Advanced Cybersecurity"><span aria-hidden="true">←</span></a>
+  <div class="rbar-t"><span class="rbar-c">Advanced Cybersecurity · L4 · Summary</span><b>Wireless Network Security</b></div>
+  <a class="icon-btn" href="../../read/advanced/lecture-4-wireless-network-security.html" aria-label="Open the lecture">Lec</a>
+  <a class="icon-btn icon-btn--pdf" href="lecture-4-wireless-network-security.pdf" download aria-label="Download summary PDF">PDF</a>
+</header>
+<main class="sm">
+<section class="sm-sec" id="p1">
+<h1 class="sm-title" lang="ar" dir="rtl">اللاسلكي والمفتاح في زمن الصياح</h1>
+<h2>Lecture 4 — Wireless Network Security</h2>
+<p class="sm-q">Q/ Why is security even more essential in wireless networks ?</p>
+<ul><li>Wireless signals aren&#39;t contained in a wire: <b>any device in range can receive the traffic</b>. Wired LAN traffic is often unencrypted, but traffic between wireless clients and the <b>AP must be encrypted</b>.</li></ul>
+<p class="sm-def"><b>Authentication</b> : verifying the identity of a user and/or device. Clients must authenticate before associating with an AP; ideally clients also authenticate the AP (to avoid a <b>malicious AP</b> and man-in-the-middle).</p>
+<p class="sm-def"><b>Encryption</b> : scrambling a message so only the sender and intended recipient can read it (both must use the same protocol).</p>
+<p class="sm-def"><b>Integrity</b> : the message isn&#39;t modified by a third party — checked with a <b>MIC (Message Integrity Check)</b>.</p>
+<p class="sm-q">Q/ How does a MIC work ?</p>
+<ol><li>Sender calculates a MIC and attaches it.</li><li>Sender encrypts the message + MIC and sends the frame.</li><li>Recipient decrypts and <b>recalculates</b> the MIC with the same protocol.</li><li>Recipient <b>compares</b>: same → not tampered; different → <b>discarded</b>.</li></ol>
+<div class="sm-key">More accurate: a MIC helps <b>detect</b> that integrity was compromised.</div>
+</section>
+<section class="sm-sec" id="p2">
+<h2>Foundations</h2>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Layer</th><th>Name</th><th>Job</th></tr></thead><tbody><tr><td>1</td><td>Physical</td><td>Sends/receives radio waves</td></tr><tr><td>2</td><td>Data Link</td><td>Frames; MAC addresses pick the local device</td></tr><tr><td>3</td><td>Network (IP)</td><td>Routes packets between networks</td></tr></tbody></table></div>
+<div class="sm-key">Wireless security (authentication, encryption, integrity) is a <b>Layer 2</b> concern; Layer 3+ don&#39;t know which protocol is used.</div>
+<p class="sm-def"><b>Frame</b> : the basic unit of data at Layer 2.</p>
+<p class="sm-def"><b>MAC address</b> : a <b>48-bit</b> hardware address (00:1A:2B:3C:4D:5E) used to deliver frames.</p>
+<p class="sm-def"><b>802.11</b> : the technical name for Wi-Fi (IEEE WLAN standards).</p>
+<p class="sm-def"><b>BSS (Basic Service Set)</b> : an AP plus its clients, identified by the <b>BSSID</b> (the AP radio&#39;s MAC).</p>
+<p class="sm-def"><b>SSID</b> : the human-readable network name.</p>
+<p class="sm-def"><b>ESS (Extended Service Set)</b> : several BSSs sharing one SSID, so clients <b>roam</b> between APs.</p>
+<p class="sm-def"><b>Infrastructure mode</b> : clients communicate through an AP. <b>IBSS / ad hoc</b> : clients talk directly, no AP.</p>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Symmetric</th><th>Asymmetric (public-key)</th></tr></thead><tbody><tr><td>One shared secret key</td><td>Public key (anyone) + private key (owner)</td></tr><tr><td>Fast</td><td>Far slower</td></tr><tr><td>Bulk data: WEP, TKIP, CCMP, GCMP</td><td>Briefly: authenticate and agree on a symmetric key (inside PEAP/EAP-TLS TLS tunnels)</td></tr></tbody></table></div>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Block cipher</th><th>Stream cipher</th></tr></thead><tbody><tr><td>Encrypts fixed-size chunks; needs a mode of operation</td><td>Continuous keystream XORed with plaintext bit by bit</td></tr><tr><td><b>AES</b> — used by CCMP, GCMP (in <b>counter mode</b>, acting like a stream cipher)</td><td><b>RC4</b> — used by WEP, TKIP</td></tr></tbody></table></div>
+<p class="sm-def"><b>XOR</b> : 1 if the bits differ, 0 if they match; XOR-ing the same keystream twice cancels out (plaintext ⊕ keystream = ciphertext; ciphertext ⊕ keystream = plaintext).</p>
+<p class="sm-def"><b>Digital signature</b> : (1) hash the document, (2) encrypt the hash with the signer&#39;s <b>private key</b>, (3) anyone verifies with the signer&#39;s <b>public key</b>.</p>
+<div class="sm-key">Reversal: encryption uses the <b>recipient&#39;s public key</b>; a signature uses the <b>signer&#39;s private key</b>.</div>
+<p class="sm-def"><b>Certificate Authority (CA)</b> : a trusted third party that signs a document binding a public key to an identity. This trust structure is <b>PKI</b>.</p>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Hash function</th><th>MIC</th></tr></thead><tbody><tr><td>No secret key — anyone can recompute</td><td>Uses a <b>shared secret key</b></td></tr><tr><td>Protects against accidental corruption</td><td>Protects against <b>deliberate tampering</b></td></tr></tbody></table></div>
+<div class="sm-key">In general crypto a MIC is also called a <b>MAC (Message Authentication Code)</b> — unrelated to a MAC address.</div>
+<p class="sm-def"><b>Pairwise key</b> : each client&#39;s own key with the AP — clients can&#39;t decrypt each other&#39;s <b>unicast</b> traffic.</p>
+<p class="sm-def"><b>Group key</b> : shared by all clients, refreshed by the AP — used only for <b>broadcast/multicast</b>.</p>
+</section>
+<section class="sm-sec" id="p3">
+<h2>Authentication methods (least → most secure)</h2>
+<p class="sm-def"><b>Open authentication</b> : the AP accepts every request, no credentials. Not secure alone, but combined with other methods (e.g. public Wi-Fi + web login page).</p>
+<p class="sm-def"><b>WEP (Wired Equivalent Privacy)</b> : authentication <b>and</b> encryption with <b>RC4</b>; shared key of <b>40 or 104 bits + 24-bit IV = 64 or 128 bits</b>. Easily cracked — <b>don&#39;t use</b>.</p>
+<p class="sm-q">Q/ How does WEP challenge-response authentication work ?</p>
+<ol><li><b>Challenge</b>: AP sends a challenge phrase.</li><li><b>Response</b>: client encrypts it with the WEP key and returns it.</li><li><b>Comparison</b>: AP compares with its own encryption; match → same key → authenticated.</li></ol>
+<p class="sm-def"><b>EAP (Extensible Authentication Protocol)</b> : not one protocol but a <b>framework</b> that EAP methods (LEAP, EAP-FAST, PEAP, EAP-TLS) build on.</p>
+<p class="sm-def"><b>802.1X</b> : <b>port-based network access control</b> — limits access until the client authenticates (wired and wireless).</p>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>802.1X entity</th><th>Role</th><th>In a WLAN</th></tr></thead><tbody><tr><td><b>Supplicant</b></td><td>Device that wants to connect</td><td>Client laptop</td></tr><tr><td><b>Authenticator</b></td><td>Device that provides access</td><td>AP (or the <b>WLC</b> in split-MAC)</td></tr><tr><td><b>Authentication server</b></td><td>Checks credentials, permits/denies</td><td>Usually <b>RADIUS</b></td></tr></tbody></table></div>
+<div class="sm-key">Two stages: <b>open authentication</b> to associate, then <b>EAP authentication</b> for network access (only EAP traffic allowed meanwhile).</div>
+<p><b>LEAP</b> (Cisco) : username + password; <b>mutual</b> challenge phrases; <b>dynamic WEP keys</b>. Still <b>vulnerable</b>.</p>
+<p><b>EAP-FAST</b> (Cisco) : (1) server gives a <b>PAC</b> (Protected Access Credential), (2) PAC builds a <b>TLS tunnel</b>, (3) client authenticated <b>inside</b> the tunnel.</p>
+<p class="sm-def"><b>PEAP</b> : server presents a <b>digital certificate</b> → authenticates the server and builds the TLS tunnel; client authenticated inside (e.g. <b>MS-CHAP</b>).</p>
+<p class="sm-def"><b>EAP-TLS</b> : certificates on the <b>server and every client</b>; mutual certificate authentication, no inner client authentication. <b>Most secure, hardest to deploy</b>.</p>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Method</th><th>Developer</th><th>Server authenticated by</th><th>Client authenticated by</th><th>Status</th></tr></thead><tbody><tr><td>LEAP</td><td>Cisco</td><td>Mutual challenge phrase</td><td>Username/password + challenge</td><td>Vulnerable — don&#39;t use</td></tr><tr><td>EAP-FAST</td><td>Cisco</td><td>PAC → TLS tunnel</td><td>Inside the tunnel</td><td>Secure</td></tr><tr><td>PEAP</td><td>—</td><td>Server certificate → TLS tunnel</td><td>Inside the tunnel (MS-CHAP)</td><td>Secure; easier than EAP-TLS</td></tr><tr><td>EAP-TLS</td><td>—</td><td>Server certificate</td><td><b>Client certificate</b></td><td><b>Most secure</b>; hardest</td></tr></tbody></table></div>
+</section>
+<section class="sm-sec" id="p4">
+<h2>Encryption and integrity methods</h2>
+<p class="sm-def"><b>TKIP (Temporal Key Integrity Protocol)</b> : a <b>temporary fix</b> based on WEP for old hardware; used in <b>WPA</b>.</p>
+<p class="sm-q">Q/ What does TKIP add to WEP ?</p>
+<ol><li>A <b>MIC</b> for integrity.</li><li><b>Key mixing</b>: a unique WEP key per frame.</li><li>IV doubled <b>24 → 48 bits</b>.</li><li>MIC includes the <b>sender MAC address</b>.</li><li><b>Timestamp</b> against replay attacks.</li><li><b>Sequence number</b> per source MAC (wrong counter → frame dropped).</li></ol>
+<p class="sm-def"><b>CCMP (Counter Mode CBC-MAC Protocol)</b> : <b>AES counter mode</b> encryption + <b>CBC-MAC</b> integrity; used in <b>WPA2</b>; needs hardware support.</p>
+<p class="sm-def"><b>GCMP (Galois Counter Mode Protocol)</b> : <b>AES counter mode</b> + <b>GMAC</b> integrity; more secure and efficient (higher throughput); used in <b>WPA3</b>.</p>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Protocol</th><th>Encryption</th><th>Integrity</th><th>Used in</th></tr></thead><tbody><tr><td>TKIP</td><td>RC4 (WEP + per-frame key mixing, 48-bit IV)</td><td>MIC (incl. sender MAC)</td><td>WPA</td></tr><tr><td>CCMP</td><td>AES counter mode</td><td>CBC-MAC</td><td>WPA2</td></tr><tr><td>GCMP</td><td>AES counter mode</td><td>GMAC</td><td>WPA3</td></tr></tbody></table></div>
+</section>
+<section class="sm-sec" id="p5">
+<h2>WPA, WPA2, WPA3</h2>
+<p class="sm-def"><b>WPA (Wi-Fi Protected Access)</b> : standard sets of security protocols certified by the <b>Wi-Fi Alliance</b> (the first is &quot;WPA&quot;, not WPA1).</p>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Personal mode</th><th>Enterprise mode</th></tr></thead><tbody><tr><td><b>Pre-shared key (PSK)</b> — home Wi-Fi password, SOHO</td><td><b>802.1X + authentication server</b> with EAP methods (PEAP, EAP-TLS…)</td></tr><tr><td>PSK never sent over the air; <b>four-way handshake</b> derives keys</td><td>Any EAP method supported</td></tr></tbody></table></div>
+<p class="sm-q">Q/ What extra features does WPA3 add ?</p>
+<ol><li><b>PMF (Protected Management Frames)</b>: protects management frames from eavesdropping/forging — optional in WPA2, <b>mandatory</b> in WPA3.</li><li><b>SAE (Simultaneous Authentication of Equals)</b>: protects the four-way handshake in Personal mode.</li><li><b>Forward secrecy</b>: captured frames can&#39;t be decrypted later.</li></ol>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th></th><th>WPA</th><th>WPA2</th><th>WPA3</th></tr></thead><tbody><tr><td>Encryption &amp; integrity</td><td>TKIP</td><td>CCMP (AES-CTR + CBC-MAC)</td><td>GCMP (AES-CTR + GMAC)</td></tr><tr><td>Personal mode</td><td>PSK</td><td>PSK</td><td>PSK + <b>SAE</b></td></tr><tr><td>Enterprise mode</td><td>802.1X + EAP</td><td>802.1X + EAP</td><td>802.1X + EAP</td></tr><tr><td>Protected management frames</td><td>No</td><td>Optional</td><td><b>Mandatory</b></td></tr><tr><td>Forward secrecy</td><td>No</td><td>No</td><td><b>Yes</b></td></tr></tbody></table></div>
+</section>
+<p class="sm-src">Summary of Advanced Cybersecurity L4: Wireless Network Security. Built only from the lecture file; check the original slides for anything you're unsure about. <a href="../../read/advanced/lecture-4-wireless-network-security.html">Open the lecture →</a></p>
+</main>
+<script src="../../reader.js" defer></script>
+</body>
+</html>

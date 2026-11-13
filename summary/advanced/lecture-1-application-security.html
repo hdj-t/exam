@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>حصن التطبيقات من الثغرات والآفات — L1 summary</title>
+<meta name="description" content="Advanced Cybersecurity L1 summary: Application Security">
+<meta name="theme-color" content="#F6F3EC" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#171513" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../../fonts/GeistPixel-Square.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../../styles.css">
+<link rel="stylesheet" href="../../summary.css">
+</head>
+<body class="summary">
+<header class="rbar">
+  <a class="icon-btn" href="../../index.html#advanced" aria-label="Back to Advanced Cybersecurity"><span aria-hidden="true">←</span></a>
+  <div class="rbar-t"><span class="rbar-c">Advanced Cybersecurity · L1 · Summary</span><b>Application Security</b></div>
+  <a class="icon-btn" href="../../read/advanced/lecture-1-application-security.html" aria-label="Open the lecture">Lec</a>
+  <a class="icon-btn icon-btn--pdf" href="lecture-1-application-security.pdf" download aria-label="Download summary PDF">PDF</a>
+</header>
+<main class="sm">
+<section class="sm-sec" id="p1">
+<h1 class="sm-title" lang="ar" dir="rtl">حصن التطبيقات من الثغرات والآفات</h1>
+<h2>Lecture 1 — Application Security</h2>
+<p class="sm-def"><b>Application security</b> : the set of measures and practices that protect software applications from threats and vulnerabilities <b>throughout their life cycle</b>. It is a specific subset of cybersecurity focused on securing <b>software</b> itself.</p>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Area</th><th>What it protects</th><th>Typical measures</th></tr></thead><tbody><tr><td>Network security</td><td>Traffic and connections between systems</td><td>Firewalls, segmentation, IDS, VPNs</td></tr><tr><td>Infrastructure / cloud</td><td>Servers, containers, VMs, cloud accounts</td><td>Hardening, patching, IAM, configuration baselines</td></tr><tr><td>Physical security</td><td>Buildings, data centers, devices</td><td>Badges, locks, cameras</td></tr><tr><td><b>Application security</b></td><td>The software: design, code, dependencies, runtime behaviour</td><td>Threat modeling, secure coding, code review, SAST/DAST, dependency scanning, monitoring</td></tr></tbody></table></div>
+<p class="sm-def"><b>Shift-left</b> : moving security activities <b>earlier</b> in the life cycle so feedback arrives while the code is still fresh.</p>
+</section>
+<section class="sm-sec" id="p2">
+<h2>Security objectives</h2>
+<p class="sm-def"><b>Confidentiality</b> : data is accessible only to authorized parties.</p>
+<p class="sm-def"><b>Integrity</b> : data cannot be modified by unauthorized parties.</p>
+<p class="sm-def"><b>Availability</b> : the application and its data are accessible when legitimate users need them.</p>
+<p class="sm-def"><b>Authentication</b> : verifying a user, device or system <b>is who it claims</b> to be.</p>
+<p class="sm-def"><b>Authorization</b> : deciding what an <b>already-authenticated</b> identity may do or see.</p>
+<p class="sm-def"><b>Accountability</b> : trustworthy evidence of <b>who did what and when</b>, so actions can be reconstructed and not denied.</p>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Objective</th><th>Core question</th><th>Mechanisms</th><th>Typical failures</th></tr></thead><tbody><tr><td>Confidentiality</td><td>Can an unauthorized party read it?</td><td>Encryption, access control, data classification</td><td>Missing access control, unencrypted data, verbose errors, IDOR</td></tr><tr><td>Integrity</td><td>Can it be changed without authorization?</td><td>Input validation, digital signatures, audit trails</td><td>No input validation, no signatures, SQL injection</td></tr><tr><td>Availability</td><td>Can users reach it when needed?</td><td>Rate limiting, redundancy, capacity planning</td><td>DoS, resource exhaustion, unpatched crashes</td></tr><tr><td>Authentication</td><td>Who are you?</td><td>Passwords, MFA, certificates</td><td>Weak/reused passwords, no MFA, predictable tokens</td></tr><tr><td>Authorization</td><td>What may you do?</td><td>RBAC, policy engines</td><td>Missing object-level checks, hidden buttons instead of server checks, broad roles</td></tr><tr><td>Accountability</td><td>Can we prove who did what, when?</td><td>Audit logs, timestamps, correlation IDs</td><td>Missing logs, no user/time, tamperable logs</td></tr></tbody></table></div>
+<div class="sm-key">Example: a support agent who changes an account ID in the URL and sees every company&#39;s invoices — authenticated correctly, <b>authorized</b> wrongly.</div>
+</section>
+<section class="sm-sec" id="p3">
+<p class="sm-q">Q/ What are the three pillars of application security administration ?</p>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Pillar</th><th>Role</th><th>Examples</th></tr></thead><tbody><tr><td><b>People</b></td><td>Responsibility and decisions</td><td>Developers, security engineers, architects, Security Advocate, app owners</td></tr><tr><td><b>Process</b></td><td>Consistent security activities</td><td>Threat modeling, code review, vulnerability &amp; patch management, incident response</td></tr><tr><td><b>Technology</b></td><td>Automated detection</td><td>SAST, DAST, SCA, secrets scanning, runtime monitoring, CI/CD controls</td></tr></tbody></table></div>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Model</th><th>Core idea</th><th>Representative controls</th></tr></thead><tbody><tr><td><b>Zero Trust</b></td><td>No implicit trust; access continuously evaluated</td><td>Strong identity, service-to-service auth, signed tokens, just-in-time privileges</td></tr><tr><td><b>Shift-Left</b></td><td>Security earlier in the life cycle</td><td>SAST in IDE/PR, dependency analysis, secrets scanning, pre-merge tests</td></tr><tr><td><b>Defense in Depth</b></td><td>Many independent layers; no single failure = full compromise</td><td>Validation + parameterized queries + least-privilege DB + authz + monitoring</td></tr><tr><td><b>DevSecOps</b></td><td>Security inside existing dev/ops workflows</td><td>Findings in the same tracker and CI/CD pipeline</td></tr><tr><td><b>Risk-Based</b></td><td>Prioritize by business context, not only technical severity</td><td>Asset criticality, data sensitivity, exploitability, exposure</td></tr></tbody></table></div>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Framework</th><th>Publisher</th><th>Focus</th></tr></thead><tbody><tr><td><b>OWASP</b> Top 10 / ASVS</td><td>OWASP</td><td>Common risks catalog + verification standard</td></tr><tr><td><b>NIST SSDF</b> (SP 800-218)</td><td>NIST</td><td>Prepare, Protect, Produce, Respond</td></tr><tr><td><b>ISO/IEC 27034</b></td><td>ISO</td><td>App security inside the organization&#39;s ISMS</td></tr><tr><td><b>CIS Controls</b></td><td>Center for Internet Security</td><td>Prioritized prescriptive safeguards</td></tr><tr><td><b>PCI DSS</b></td><td>PCI SSC</td><td>Mandatory controls for payment card data</td></tr></tbody></table></div>
+</section>
+<section class="sm-sec" id="p4">
+<h2>Threat modeling</h2>
+<p class="sm-def"><b>Threat modeling</b> : a systematic process to <b>identify, understand, prioritize and mitigate</b> threats <b>before and throughout</b> implementation — proactive instead of reactive.</p>
+<p class="sm-def"><b>Vulnerability</b> : a weakness. <b>Threat</b> : a potential action/event that could exploit it. <b>Risk</b> : the potential consequences in context.</p>
+<p class="sm-q">Q/ What are the three fundamental threat-modeling questions ?</p>
+<ol><li><b>What are we building?</b> Components, users, assets, data flows, dependencies, trust boundaries.</li><li><b>What can go wrong?</b> Threats to C, I, A, authentication, authorization, accountability.</li><li><b>What are we going to do about it?</b> Preventive, detective, corrective controls; manage residual risk.</li></ol>
+<p class="sm-def"><b>Data Flow Diagram (DFD)</b> : a structured picture of how information moves through the system, used to expose attack-relevant parts.</p>
+<p class="sm-q">Q/ What are the elements of a security DFD ?</p>
+<ol><li><b>External entities</b> (users, external apps, third parties).</li><li><b>Processes</b> (components that receive/transform/validate data).</li><li><b>Data stores</b> (databases, files, caches, queues, backups).</li><li><b>Data flows</b> (exchanges between them).</li><li><b>Trust boundaries</b> (the fifth, most important concept).</li></ol>
+<p class="sm-def"><b>Trust boundary</b> : a logical line where the level of <b>trust, privilege or control changes</b> (not necessarily a network boundary).</p>
+<div class="sm-key">Mobile app example: the device is <b>untrusted</b> — the server must independently authenticate, authorize and validate; never rely only on client-side checks.</div>
+<p class="sm-def"><b>STRIDE</b> : Microsoft&#39;s threat-modeling framework of six categories.</p>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>STRIDE</th><th>Definition</th><th>Property violated</th><th>Controls</th></tr></thead><tbody><tr><td><b>S</b>poofing</td><td>Pretending to be another user/device/service</td><td>Authentication</td><td>MFA, credential &amp; session management, token validation</td></tr><tr><td><b>T</b>ampering</td><td>Unauthorized modification of data, requests, config or software</td><td>Integrity</td><td>Encrypted channels, server-side validation, signatures, DB constraints</td></tr><tr><td><b>R</b>epudiation</td><td>Denying an action with no trustworthy evidence</td><td>Accountability / non-repudiation</td><td>Secure audit logs, timestamps, transaction IDs, tamper-resistant logs</td></tr><tr><td><b>I</b>nformation disclosure</td><td>Data reaches unauthorized parties</td><td>Confidentiality</td><td>Encryption, access control, least privilege, data minimization, safe errors</td></tr><tr><td><b>D</b>enial of service</td><td>Users can&#39;t access the service / it degrades</td><td>Availability</td><td>Rate limiting, quotas, size limits, load balancing, DDoS protection</td></tr><tr><td><b>E</b>levation of privilege</td><td>Gaining permissions beyond those assigned</td><td>Authorization</td><td>Server-side authz, RBAC/ABAC, least privilege, object-level checks</td></tr></tbody></table></div>
+<p class="sm-def"><b>Risk score</b> : <b>Likelihood × Impact</b>, each rated <b>High 3 · Medium 2 · Low 1</b> → score <b>1–9</b>.</p>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Level</th><th>Likelihood</th><th>Impact</th></tr></thead><tbody><tr><td>High (3)</td><td>Little skill/access; tools readily available</td><td>Many users, big loss, sensitive data, safety</td></tr><tr><td>Medium (2)</td><td>Some skill, privileged access or conditions</td><td>One user or limited group, moderate damage</td></tr><tr><td>Low (1)</td><td>Advanced skill, rare access, many conditions</td><td>Minor, temporary, reversible</td></tr></tbody></table></div>
+<div class="sm-key">Don&#39;t confuse the dimensions: a whole-database breach has high <b>impact</b> but isn&#39;t automatically <b>likely</b>. Don&#39;t rate everything High; justify each rating.</div>
+<p class="sm-q">Q/ QuickBite worked example — what are the trust boundaries and top threats ?</p>
+<ul><li><b>TB1</b> Internet → QuickBite cloud (all client devices untrusted). <b>TB2</b> QuickBite → payment provider (authenticate both ways). <b>TB3</b> app tier → data tier.</li><li>Top five: <b>I2</b> IDOR on /orders/5521→5522 (9), <b>S1</b> account takeover by credential stuffing (9), <b>T1</b> price tampering (9), <b>E1</b> customer calls restaurant endpoints (6), <b>D2</b> API/promo flooding at peak (6).</li><li>Tie-break order: <b>personal safety</b> → <b>users affected</b> → <b>cost</b>.</li></ul>
+</section>
+<section class="sm-sec" id="p5">
+<h2>Secure coding practices</h2>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Practice</th><th>Rule</th></tr></thead><tbody><tr><td>Input validation</td><td>Never trust input; check type, length, format, range; prefer <b>allow-lists</b></td></tr><tr><td>Parameterized queries</td><td>Keep SQL code separate from data (stops <code>&#39; OR &#39;1&#39;=&#39;1</code>)</td></tr><tr><td>Output encoding</td><td>Encode special characters so the browser shows text, not code (XSS)</td></tr><tr><td>Password storage</td><td>Salted, slow hash (<b>bcrypt, Argon2</b>); never MD5/SHA-1</td></tr><tr><td>Authentication &amp; sessions</td><td>MFA, lockout/slow-down, random session IDs, HttpOnly/Secure/SameSite, idle expiry</td></tr><tr><td>Authorization &amp; least privilege</td><td>Check permission on <b>every request</b>; minimum rights (DB account can&#39;t DROP TABLE)</td></tr><tr><td>Secrets management</td><td>No hard-coded keys; load from env or a secrets manager; never commit to Git</td></tr><tr><td>Error handling &amp; logging</td><td>Generic messages to users, details in protected logs, no sensitive data in logs</td></tr><tr><td>Encryption</td><td>HTTPS/TLS in transit, encryption at rest; never invent your own crypto</td></tr><tr><td>Secure defaults / fail-safe</td><td>Secure out of the box; on failure <b>fail closed</b> (deny)</td></tr><tr><td>Code review &amp; testing</td><td>Peer review, SAST (Bandit, SonarQube), DAST, penetration testing</td></tr><tr><td>CSRF protection</td><td>Stop a logged-in browser being tricked into unwanted requests (tokens, SameSite)</td></tr></tbody></table></div>
+<div class="sm-key">Fail-safe example: if <code>check_permission</code> throws, set <code>allowed = False</code>, never <code>True</code>.</div>
+</section>
+<p class="sm-src">Summary of Advanced Cybersecurity L1: Application Security. Built only from the lecture file; check the original slides for anything you're unsure about. <a href="../../read/advanced/lecture-1-application-security.html">Open the lecture →</a></p>
+</main>
+<script src="../../reader.js" defer></script>
+</body>
+</html>

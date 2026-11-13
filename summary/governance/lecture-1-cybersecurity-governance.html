@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>الحوكمة والضوابط في زمن المخابط — L1 summary</title>
+<meta name="description" content="Cybersecurity Governance L1 summary: Cybersecurity Governance: CIA, AAA &amp; Controls">
+<meta name="theme-color" content="#F6F3EC" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#171513" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../../fonts/GeistPixel-Square.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../../styles.css">
+<link rel="stylesheet" href="../../summary.css">
+</head>
+<body class="summary">
+<header class="rbar">
+  <a class="icon-btn" href="../../index.html#governance" aria-label="Back to Cybersecurity Governance"><span aria-hidden="true">←</span></a>
+  <div class="rbar-t"><span class="rbar-c">Cybersecurity Governance · L1 · Summary</span><b>Cybersecurity Governance: CIA, AAA &amp; Controls</b></div>
+  <a class="icon-btn" href="../../read/governance/lecture-1-cybersecurity-governance.html" aria-label="Open the lecture">Lec</a>
+  <a class="icon-btn icon-btn--pdf" href="lecture-1-cybersecurity-governance.pdf" download aria-label="Download summary PDF">PDF</a>
+</header>
+<main class="sm">
+<section class="sm-sec" id="p1">
+<h1 class="sm-title" lang="ar" dir="rtl">الحوكمة والضوابط في زمن المخابط</h1>
+<h2>Lecture 1 — Cybersecurity Governance: Foundations, Protection Architecture &amp; Enterprise Governance</h2>
+<p class="sm-def"><b>Security</b> : what helps an organization continue to exist and operate despite attempts to steal data or compromise its physical and logical assets. It is a <b>business management responsibility</b>, not merely an IT concern.</p>
+<p class="sm-def"><b>IT/IS</b> : the hardware and software that support business operations; security protects their reliable operation and supports the organization&#39;s <b>mission, goals and objectives</b>.</p>
+<p class="sm-q">Q/ What are the three common methods to evaluate security ?</p>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Method</th><th>Primary objective</th><th>How it works</th></tr></thead><tbody><tr><td><b>Risk assessment</b></td><td>Identify assets, threats and vulnerabilities to calculate exposure</td><td>Evaluates impact vs likelihood; sets mitigation priorities</td></tr><tr><td><b>Vulnerability assessment</b></td><td>Find known software, hardware and configuration weaknesses</td><td><b>Automated scanning tools</b> and baselining</td></tr><tr><td><b>Penetration testing</b></td><td>Stress-test defenses against simulated real attacks</td><td><b>Trusted/ethical testers</b> find exploitable flaws and logic gaps</td></tr></tbody></table></div>
+<p class="sm-q">Q/ How should security controls be selected ?</p>
+<ul><li>To give the <b>greatest protection at the lowest reasonable cost</b>, meeting the organization&#39;s needs, complying with laws, and backed by <b>evidence</b> (to defend actions in court and avoid fines, penalties or negligence claims).</li></ul>
+<div class="sm-key">Security is an <b>ongoing process</b>, never a finished project — technology, users, vulnerabilities and attacks keep changing.</div>
+</section>
+<section class="sm-sec" id="p2">
+<h2>The five pillars</h2>
+<p class="sm-q">Q/ What are the five pillars of information security ?</p>
+<ol><li>Confidentiality. 2. Integrity. 3. Availability. 4. Authenticity. 5. Nonrepudiation.</li></ol>
+<ul><li>The first three form the <b>CIA Triad</b>, the primary goals of information security.</li></ul>
+<p class="sm-def"><b>Confidentiality</b> : information is disclosed only to authorized individuals or systems.</p>
+<p class="sm-q">Q/ What causes unauthorized disclosure and how is it prevented ?</p>
+<ul><li>Causes: deliberate attacks, human error, poor policies, misconfigured controls.</li><li>Protections: encryption, access control, strong authentication, data classification, training.</li></ul>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Confidentiality concept</th><th>Meaning</th></tr></thead><tbody><tr><td>Sensitivity</td><td>Potential harm from disclosure</td></tr><tr><td>Discretion</td><td>Controlling disclosure</td></tr><tr><td>Concealment / Secrecy</td><td>Hiding / preventing disclosure</td></tr><tr><td>Privacy</td><td>Protecting personal information</td></tr><tr><td>Seclusion</td><td>Storing information in a restricted location</td></tr><tr><td>Isolation</td><td>Keeping information separate</td></tr></tbody></table></div>
+<p class="sm-def"><b>Integrity</b> : protects the <b>accuracy, correctness and reliability</b> of information — preventing unauthorized changes and minimizing mistakes by authorized users.</p>
+<p class="sm-q">Q/ Integrity — threats, protections, concepts ?</p>
+<ul><li>Threats: viruses, unauthorized access, software errors, malicious modifications, <b>logic bombs</b>, <b>backdoors</b>.</li><li>Protections: access controls, strong authentication, intrusion detection, <b>hash verification</b>, input validation, training.</li><li>Concepts: accuracy, truthfulness, validity, accountability, responsibility, completeness, comprehensiveness.</li></ul>
+<p class="sm-def"><b>Availability</b> : authorized users can access information and systems <b>when needed</b>, without unacceptable interruption.</p>
+<p class="sm-q">Q/ Availability — threats, protections, concepts ?</p>
+<ul><li>Threats: hardware failure, software errors, environmental problems, power loss, <b>DoS</b>, communication interruptions.</li><li>Protections: performance monitoring, access controls, firewalls, <b>redundant systems</b>, tested backups, <b>fault tolerance</b>, <b>BCP</b> (removes single points of failure).</li><li>Concepts: <b>usability</b> (ease of use), <b>accessibility</b> (different users can interact), <b>timeliness</b> (reasonable response time).</li></ul>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>CIA</th><th>Question</th></tr></thead><tbody><tr><td>Confidentiality</td><td><b>Who can see or read</b> the information?</td></tr><tr><td>Integrity</td><td>Is it <b>accurate, valid and unmodified</b>?</td></tr><tr><td>Availability</td><td>Can authorized users access it <b>on demand</b>?</td></tr></tbody></table></div>
+</section>
+<section class="sm-sec" id="p3">
+<p class="sm-def"><b>DAD Triad</b> : the <b>opposite / failure state</b> of CIA.</p>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>DAD</th><th>Violates</th></tr></thead><tbody><tr><td><b>D</b>isclosure — unauthorized access</td><td>Confidentiality</td></tr><tr><td><b>A</b>lteration — malicious or accidental change</td><td>Integrity</td></tr><tr><td><b>D</b>estruction / DoS — damaged or inaccessible</td><td>Availability</td></tr></tbody></table></div>
+<p class="sm-def"><b>Overprotection</b> : over-protecting confidentiality or integrity can <b>restrict availability</b>, and over-providing availability can <b>destroy confidentiality and integrity</b> — security must be balanced.</p>
+<p class="sm-def"><b>Authenticity</b> : data is <b>genuine</b> and originates from its <b>claimed origin</b>.</p>
+<p class="sm-def"><b>Nonrepudiation</b> : a subject <b>cannot deny</b> performing an action (supported by identification, authentication, authorization, auditing, accounting, digital certificates, transaction logs).</p>
+<p class="sm-def"><b>AAA services</b> : five elements that must all be implemented to avoid structural weaknesses.</p>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Element</th><th>Definition</th><th>Mechanisms</th></tr></thead><tbody><tr><td>1. <b>Identification</b></td><td>Claiming an identity</td><td>Usernames, smart cards, tokens, biometric identifiers</td></tr><tr><td>2. <b>Authentication</b></td><td>Proving the claimed identity</td><td>Passwords, PINs, OTP tokens, certificates, biometric match</td></tr><tr><td>3. <b>Authorization</b></td><td>Granting specific permissions</td><td>RBAC, ABAC, ACLs</td></tr><tr><td>4. <b>Auditing</b></td><td>Recording activity</td><td>System, access and intrusion logs</td></tr><tr><td>5. <b>Accounting (Accountability)</b></td><td>Reviewing logs for compliance; holding subjects <b>legally liable</b></td><td>SIEM log aggregation, compliance reviews, forensics, nonrepudiation</td></tr></tbody></table></div>
+<div class="sm-key">Order matters: <b>identify → authenticate → authorize → audit → account</b>.</div>
+</section>
+<section class="sm-sec" id="p4">
+<h2>Protection mechanisms</h2>
+<p class="sm-def"><b>Defense in depth (layering)</b> : multiple security controls <b>in series</b> (not in parallel), so an attack is checked by every control and the failure of one doesn&#39;t break the whole solution.</p>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Series (layering)</th><th>Parallel</th></tr></thead><tbody><tr><td>Narrow and deep</td><td>Useful in distributed computing</td></tr><tr><td>Failure of one control doesn&#39;t expose everything</td><td>One path failing can bypass the rest</td></tr></tbody></table></div>
+<div class="sm-key">Related terms: levels, multilevel, layers, classifications, zones, realms, compartments, silos, segmentations, lattice structures, protection rings.</div>
+<p class="sm-def"><b>Defense in breadth (diversity of defense)</b> : using products from <b>different vendors</b> so one vulnerability can&#39;t break several layers at once.</p>
+<p class="sm-def"><b>Abstraction</b> : grouping similar elements into <b>roles, classes or groups</b> that receive the same controls and permissions (from object-oriented programming).</p>
+<p class="sm-def"><b>Unknown environment doctrine</b> : users don&#39;t need to know how an object works inside, only the correct inputs and outputs (like user-mode apps calling system calls → <b>mediated access</b>).</p>
+<p class="sm-def"><b>Data hiding</b> : placing data in a logical compartment that is <b>invisible and unreachable</b> to unauthorized subjects.</p>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Data hiding</th><th>Security through obscurity</th></tr></thead><tbody><tr><td><b>Real protection</b>: data is functionally unviewable and inaccessible</td><td>Relies only on <b>secrecy</b>, hoping no one finds it</td></tr><tr><td>Separate security containers</td><td>&quot;Digital hide and seek&quot;</td></tr><tr><td>e.g. multilevel systems, apps can&#39;t touch hardware directly, steganography</td><td>e.g. shipping software with a known flaw and hoping nobody notices</td></tr></tbody></table></div>
+</section>
+<section class="sm-sec" id="p5">
+<p class="sm-def"><b>Security boundary</b> : the line between areas, subnets or environments with <b>different security requirements</b> (e.g. LAN vs Internet).</p>
+<p class="sm-q">Q/ What are the rules for security boundaries ?</p>
+<ol><li>They exist in <b>physical and logical</b> environments — both need their own mechanisms and policy.</li><li>Policy must define <b>where control begins and ends</b> (logical: where communications reach your devices; physical: walls, building, campus fence — also the reach of <b>legal responsibility</b>).</li><li>Evaluate each boundary separately for the most <b>cost-effective</b> solution.</li><li>Never spend more on a countermeasure than the <b>value</b> of the protected asset.</li></ol>
+</section>
+<section class="sm-sec" id="p6">
+<h2>Security governance</h2>
+<p class="sm-def"><b>Security governance</b> : practices that <b>support, evaluate, define and direct</b> an organization&#39;s security efforts — ideally by a <b>board of directors / governance committee</b> (in small organizations, the CEO or CISO).</p>
+<p class="sm-q">Q/ What are the key points of security governance ?</p>
+<ol><li>Closely linked with <b>corporate and IT governance</b> (keep processes running, growth, minimize downtime and loss).</li><li>Driven by <b>legislative/regulatory compliance</b>, industry guidelines, licensing.</li><li>Must be <b>audited and validated</b> periodically (harder when countries&#39; laws conflict).</li><li>Security is a <b>business operations issue</b>, not only back-end IT.</li><li>Frameworks: <b>NIST SP 800-53</b>, <b>NIST SP 800-100</b> (government-focused, adaptable by companies).</li></ol>
+<p class="sm-def"><b>Third-party governance</b> : external oversight required by laws, regulations, standards, contracts or licensing (outside auditors/investigators) — and also <b>oversight of external providers</b> you rely on (guards, maintenance, support, accounting), who must comply with your security stance.</p>
+<p class="sm-q">Q/ How is third-party compliance verified ?</p>
+<ol><li><b>On-site assessments</b> — firsthand view of deployed controls.</li><li>Auditors follow protocols like <b>COBIT</b> with a requirements checklist.</li><li><b>Open document exchange</b> between the organization and the governing body.</li><li>Organization submits <b>security policies and self-assessment reports</b> → <b>documentation review</b>.</li></ol>
+</section>
+<p class="sm-src">Summary of Cybersecurity Governance L1: Cybersecurity Governance: CIA, AAA &amp; Controls. Built only from the lecture file; check the original slides for anything you're unsure about. <a href="../../read/governance/lecture-1-cybersecurity-governance.html">Open the lecture →</a></p>
+</main>
+<script src="../../reader.js" defer></script>
+</body>
+</html>

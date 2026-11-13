@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>الافتراض والعزل في زمن الهزل — L3 summary</title>
+<meta name="description" content="Advanced Cybersecurity L3 summary: Virtualization Security">
+<meta name="theme-color" content="#F6F3EC" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#171513" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../../fonts/GeistPixel-Square.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../../styles.css">
+<link rel="stylesheet" href="../../summary.css">
+</head>
+<body class="summary">
+<header class="rbar">
+  <a class="icon-btn" href="../../index.html#advanced" aria-label="Back to Advanced Cybersecurity"><span aria-hidden="true">←</span></a>
+  <div class="rbar-t"><span class="rbar-c">Advanced Cybersecurity · L3 · Summary</span><b>Virtualization Security</b></div>
+  <a class="icon-btn" href="../../read/advanced/lecture-3-virtualization-security.html" aria-label="Open the lecture">Lec</a>
+  <a class="icon-btn icon-btn--pdf" href="lecture-3-virtualization-security.pdf" download aria-label="Download summary PDF">PDF</a>
+</header>
+<main class="sm">
+<section class="sm-sec" id="p1">
+<h1 class="sm-title" lang="ar" dir="rtl">الافتراض والعزل في زمن الهزل</h1>
+<h2>Lecture 3 — Virtualization Security</h2>
+<p class="sm-def"><b>Traditional server architecture</b> : each physical server has its own CPU, RAM and storage, one OS installed directly on the hardware, and one service (web, mail, database).</p>
+<p class="sm-q">Q/ What are the problems of the traditional architecture ?</p>
+<ol><li>Hardware <b>underutilization</b>. 2. Increased <b>costs</b>. 3. Higher <b>power</b> consumption. 4. More <b>maintenance</b>.</li></ol>
+<p class="sm-def"><b>Virtualization</b> : running multiple operating systems on one physical machine by creating separate <b>virtual machines (VMs)</b>, each with its own virtual CPU, RAM, storage, OS and apps.</p>
+<p class="sm-def"><b>Hypervisor</b> : the software layer that <b>creates and runs VMs</b>, allocates physical CPU and RAM to each, and manages access to the hardware.</p>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Type 1 hypervisor</th><th>Type 2 hypervisor</th></tr></thead><tbody><tr><td>Runs <b>directly on the hardware</b></td><td>Runs as an <b>application inside a host OS</b></td></tr><tr><td>No general-purpose OS underneath</td><td>Layers: hardware → host OS → hypervisor → guest OSes</td></tr><tr><td>Controls hardware and allocates it to VMs</td><td>Host OS and hypervisor work together</td></tr></tbody></table></div>
+</section>
+<section class="sm-sec" id="p2">
+<p class="sm-q">Q/ What are the four benefits of virtualization ?</p>
+<ol><li><b>Partitioning</b>: dividing one computer&#39;s resources among several VMs.</li><li><b>Isolation</b>: each VM operates separately; a fault in one doesn&#39;t affect others (<b>fault isolation</b>) — but not absolute protection against hypervisor flaws or shared-hardware attacks.</li><li><b>Encapsulation</b>: a VM and its configuration are stored as <b>files</b> → easy to copy, back up, move, restore.</li><li><b>Hardware independence</b>: a VM isn&#39;t tied to one physical computer and can move to another compatible server without reinstalling.</li></ol>
+<p class="sm-q">Q/ What three mechanisms secure cloud virtualization ?</p>
+<ol><li><b>Hardware isolation</b>: each VM has an isolated memory space.</li><li><b>Hypervisor security</b>: the hypervisor separates VMs; <b>patches</b> fix weaknesses.</li><li><b>Confidential computing</b>: AMD SEV / Intel SGX protect data <b>during processing</b>.</li></ol>
+</section>
+<section class="sm-sec" id="p3">
+<h2>Confidential computing</h2>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Data state</th><th>Meaning</th><th>Traditional protection</th></tr></thead><tbody><tr><td><b>At rest</b></td><td>Stored on disks, databases</td><td>Disk encryption</td></tr><tr><td><b>In transit</b></td><td>Moving over a network</td><td>TLS</td></tr><tr><td><b>In use</b></td><td>Being processed by the CPU, in memory</td><td><b>Confidential computing</b></td></tr></tbody></table></div>
+<p class="sm-def"><b>Confidential computing</b> : hardware-based mechanisms that protect sensitive data <b>while it is processed</b>, isolating it from untrusted software (host OS, hypervisor).</p>
+<p class="sm-def"><b>Memory encryption</b> : data is <b>encrypted before it is written to RAM</b> and <b>decrypted when read</b>, by a hardware engine.</p>
+<p class="sm-q">Q/ What are the steps of hardware memory encryption ?</p>
+<ol><li>Data is processed by the VM.</li><li><b>Encryption before storage</b> by the memory-encryption engine.</li><li><b>Encrypted storage</b> in RAM.</li><li><b>Decryption during access</b> when the processor reads it.</li><li><b>Transparent operation</b> — done in hardware; apps don&#39;t do it themselves.</li></ol>
+<p class="sm-def"><b>AES (Advanced Encryption Standard)</b> : a <b>symmetric</b> algorithm (same key encrypts and decrypts) working on <b>128-bit blocks</b>.</p>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>AES key size</th><th>Rounds</th></tr></thead><tbody><tr><td>AES-128</td><td>10</td></tr><tr><td>AES-192</td><td>12</td></tr><tr><td>AES-256</td><td>14</td></tr></tbody></table></div>
+<p class="sm-q">Q/ What are the AES round operations ?</p>
+<ol><li><b>SubBytes</b> — replace each byte using a substitution table.</li><li><b>ShiftRows</b> — shift rows to rearrange bytes.</li><li><b>MixColumns</b> — combine bytes in each column (diffusion). <b>Not in the final round.</b></li><li><b>AddRoundKey</b> — XOR with the round key.</li></ol>
+<p class="sm-def"><b>Encryption key</b> : the secret value the algorithm uses. <b>AES is the algorithm; the key is the value it uses.</b> Whoever gets the key can decrypt.</p>
+<p class="sm-q">Q/ What does a hardware key mechanism do ?</p>
+<ol><li><b>Key generation</b> — create a secure secret key.</li><li><b>Key assignment</b> — tie it to a VM or protected environment.</li><li><b>Key protection</b> — keep it inside a hardware boundary.</li><li><b>Key use</b> — let the hardware use it without exposing it.</li><li><b>Key isolation</b> — one VM can&#39;t use another&#39;s key.</li></ol>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Term</th><th>Meaning</th></tr></thead><tbody><tr><td>Key generation</td><td>Creating a new secret key</td></tr><tr><td>Key derivation</td><td>Producing a specific key from a protected <b>root key</b> + other inputs (e.g. enclave identity)</td></tr><tr><td>Key management</td><td>Controlling assignment, use, protection, lifetime and access</td></tr></tbody></table></div>
+</section>
+<section class="sm-sec" id="p4">
+<h2>AMD SEV</h2>
+<p class="sm-def"><b>AMD SEV (Secure Encrypted Virtualization)</b> : protects the memory of an <b>entire VM</b> from the hypervisor and other software outside it.</p>
+<p class="sm-q">Q/ What are the components of AMD SEV ?</p>
+<ol><li><b>Guest VM</b> — its memory is encrypted in physical RAM.</li><li><b>Hypervisor</b> — manages VMs but must <b>not</b> see plaintext VM memory.</li><li><b>AMD Secure Processor (AMD-SP)</b> — initializes SEV, generates/manages VM-specific keys, keeps keys in hardware; the hypervisor <b>can&#39;t read the VM key</b>.</li><li><b>Memory encryption engine</b> — in the memory-access path; encrypts/decrypts automatically.</li></ol>
+<p class="sm-q">Q/ How does SEV protect memory ?</p>
+<ol><li>AMD-SP initializes SEV. 2. Hypervisor creates a VM and requests SEV. 3. A VM-specific key is associated. 4. VM runs. 5. Writes are encrypted with the VM&#39;s key. 6. Reads are decrypted automatically. 7. If the hypervisor inspects the memory it sees only <b>ciphertext</b>.</li></ol>
+<p class="sm-def"><b>VEK (VM Encryption Key)</b> : the secret key of an SEV-protected VM, used by the hardware to encrypt that VM&#39;s memory.</p>
+<p class="sm-def"><b>ASID (Address Space Identifier)</b> : identifies a VM&#39;s encryption context. <b>ASID is NOT an encryption key</b> and isn&#39;t secret.</p>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Extension</th><th>Main protection</th></tr></thead><tbody><tr><td><b>SEV</b></td><td>Encrypts VM memory (confidentiality from the hypervisor)</td></tr><tr><td><b>SEV-ES</b></td><td>+ protects <b>CPU register state</b> when the VM exits to the hypervisor</td></tr><tr><td><b>SEV-SNP</b></td><td>+ <b>memory integrity</b>: against malicious remapping and <b>replay</b> attacks</td></tr></tbody></table></div>
+<div class="sm-key">Encryption alone protects <b>confidentiality</b>, not integrity — that&#39;s why SEV-SNP matters.</div>
+</section>
+<section class="sm-sec" id="p5">
+<h2>Intel SGX</h2>
+<p class="sm-def"><b>Intel SGX (Software Guard Extensions)</b> : protects <b>selected application code and data</b> inside an <b>enclave</b> (not the whole VM).</p>
+<p class="sm-q">Q/ What are the components of Intel SGX ?</p>
+<ol><li><b>Application outside the enclave</b> — ordinary, not automatically trusted.</li><li><b>Enclave</b> — protected memory with selected code and secrets (e.g. crypto operations and keys).</li><li><b>EPC (Enclave Page Cache)</b> — protected memory holding enclave pages.</li><li><b>CPU and SGX key hierarchy</b> — hardware key material used to <b>derive</b> keys; not exposed to OS/hypervisor.</li></ol>
+<p class="sm-q">Q/ How does SGX protect data ?</p>
+<ol><li>Create an enclave. 2. Load protected code and data. 3. Establish enclave identity. 4. Enter with <b>ECALL</b>. 5. Process secrets inside. 6. Leave with <b>EEXIT</b> and return permitted results. 7. Hardware blocks the OS and hypervisor from reading enclave memory.</li></ol>
+<p class="sm-def"><b>EGETKEY</b> : the instruction an enclave uses to ask the <b>CPU to derive a key</b> (the OS/hypervisor never receive the root secret).</p>
+<p class="sm-def"><b>Sealing</b> : encrypting enclave data so it can be <b>stored outside the enclave</b> and later recovered by an authorized enclave.</p>
+<p class="sm-q">Q/ What are the steps of sealing ?</p>
+<ol><li>Hold a sensitive key. 2. Request a <b>sealing key</b> via EGETKEY. 3. Encrypt the data. 4. Store it outside (e.g. disk). 5. Later request the sealing key again and decrypt.</li></ol>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>AMD SEV</th><th>Intel SGX</th></tr></thead><tbody><tr><td>Protects the <b>whole VM&#39;s memory</b></td><td>Protects <b>selected code/data</b> in an enclave</td></tr><tr><td>Keys managed by the <b>AMD Secure Processor</b> (VEK per VM)</td><td>Keys <b>derived by the CPU</b> (EGETKEY)</td></tr><tr><td>Hides the VM from the hypervisor</td><td>Hides the enclave from the OS and hypervisor</td></tr><tr><td>Extensions: SEV-ES, SEV-SNP</td><td>Sealing for storing secrets outside</td></tr></tbody></table></div>
+</section>
+<section class="sm-sec" id="p6">
+<h2>Major virtualization threats</h2>
+<p class="sm-def"><b>VM escape</b> : compromising a VM and then exploiting a hypervisor/virtualization flaw to reach the <b>host or other VMs</b>.</p>
+<p class="sm-q">Q/ What are the steps of a VM escape ?</p>
+<ol><li>Compromise a VM (app/OS flaw in VM1).</li><li>Send crafted requests to a <b>virtual device</b> (network adapter, storage controller).</li><li>Trigger a hypervisor vulnerability → code runs <b>outside</b> the VM.</li><li>Escape to the host/hypervisor.</li><li>Attack other VMs or steal data.</li></ol>
+<p class="sm-def"><b>Side-channel attack</b> : inferring secrets from <b>indirect information</b> (timing, cache behaviour) instead of reading data directly — possible because VMs share CPU cores and caches.</p>
+<p class="sm-q">Q/ What are the steps of a cache side-channel between two VMs ?</p>
+<ol><li>Both VMs share one physical CPU. 2. VM1 processes secrets (keys, passwords). 3. Attacker in VM2 observes shared cache activity. 4. Measures timing/access patterns. 5. Infers VM1&#39;s secrets from repeated measurements.</li></ol>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Side-channel technique</th><th>Observes</th></tr></thead><tbody><tr><td>Cache attacks</td><td>CPU cache access patterns and timing</td></tr><tr><td>Timing attacks</td><td>Execution time of sensitive operations</td></tr><tr><td>Speculative-execution attacks</td><td>Microarchitectural side effects of CPU speculation</td></tr></tbody></table></div>
+<p class="sm-def"><b>SSRF (Server-Side Request Forgery)</b> : making a server send unauthorized requests to <b>internal</b> systems (cloud management interfaces, internal APIs, <b>metadata services</b>).</p>
+<p class="sm-q">Q/ What are the steps of SSRF in the cloud ?</p>
+<ol><li>Find an app that fetches user-supplied URLs.</li><li>Supply a URL pointing to an <b>internal</b> service.</li><li>The server sends the request from <b>its own network</b>.</li><li>The internal service answers (inadequately restricted).</li><li>Abuse the metadata/credentials to reach more cloud resources.</li></ol>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Threat</th><th>Layer it targets</th></tr></thead><tbody><tr><td>VM escape</td><td>The <b>isolation boundary</b> enforced by the hypervisor</td></tr><tr><td>Side-channel</td><td><b>Shared hardware</b></td></tr><tr><td>SSRF</td><td>A <b>vulnerable application</b> reaching internal cloud services</td></tr><tr><td>Insecure configuration</td><td>Settings across the stack</td></tr></tbody></table></div>
+</section>
+<p class="sm-src">Summary of Advanced Cybersecurity L3: Virtualization Security. Built only from the lecture file; check the original slides for anything you're unsure about. <a href="../../read/advanced/lecture-3-virtualization-security.html">Open the lecture →</a></p>
+</main>
+<script src="../../reader.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>الفحص والتمحيص في كود الحريص — L2 summary</title>
+<meta name="description" content="Advanced Cybersecurity L2 summary: Application Security Testing (SAST / DAST)">
+<meta name="theme-color" content="#F6F3EC" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#171513" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../../fonts/GeistPixel-Square.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../../styles.css">
+<link rel="stylesheet" href="../../summary.css">
+</head>
+<body class="summary">
+<header class="rbar">
+  <a class="icon-btn" href="../../index.html#advanced" aria-label="Back to Advanced Cybersecurity"><span aria-hidden="true">←</span></a>
+  <div class="rbar-t"><span class="rbar-c">Advanced Cybersecurity · L2 · Summary</span><b>Application Security Testing (SAST / DAST)</b></div>
+  <a class="icon-btn" href="../../read/advanced/lecture-2-application-security-testing.html" aria-label="Open the lecture">Lec</a>
+  <a class="icon-btn icon-btn--pdf" href="lecture-2-application-security-testing.pdf" download aria-label="Download summary PDF">PDF</a>
+</header>
+<main class="sm">
+<section class="sm-sec" id="p1">
+<h1 class="sm-title" lang="ar" dir="rtl">الفحص والتمحيص في كود الحريص</h1>
+<h2>Lecture 2 — Application Security Testing (AST): SAST and DAST</h2>
+<p class="sm-def"><b>Application Security Testing (AST)</b> : making applications resilient against cyber threats by <b>identifying, analyzing and fixing</b> security vulnerabilities.</p>
+<p class="sm-def"><b>SAST (Static Application Security Testing)</b> : an <b>inside-out, white-box</b> approach that analyzes <b>source code at rest without executing it</b>.</p>
+<p class="sm-def"><b>DAST (Dynamic Application Security Testing)</b> : an <b>outside-in, black-box</b> approach that tests a <b>running application</b> by simulating real-world attacks against its endpoints (HTTP/APIs).</p>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th></th><th>SAST</th><th>DAST</th></tr></thead><tbody><tr><td>View</td><td>Inside-out, <b>white-box</b></td><td>Outside-in, <b>black-box</b></td></tr><tr><td>Needs</td><td>Source code, build scripts, configs</td><td>A <b>live, running</b> target</td></tr><tr><td>Executes the app?</td><td><b>No</b></td><td><b>Yes</b></td></tr><tr><td>When in SDLC</td><td><b>Early</b> (before compile/deploy)</td><td>Later (deployed / test environment)</td></tr><tr><td>Finds</td><td>Structural flaws: weak crypto, hard-coded secrets, unsafe patterns</td><td>Runtime behaviour: confirmed exploitable responses</td></tr><tr><td>Tool in the lecture</td><td><b>Bandit</b> (Python)</td><td>Python <code>requests</code> script attacking a FastAPI app</td></tr><tr><td>Proof</td><td>&quot;Possible&quot; issue at a code line</td><td>Attack actually succeeds (or is defended)</td></tr></tbody></table></div>
+<div class="sm-key">Both are used together in <b>DevSecOps</b> pipelines.</div>
+</section>
+<section class="sm-sec" id="p2">
+<h2>SAST with Bandit</h2>
+<p class="sm-def"><b>Bandit</b> : an open-source SAST tool that parses Python code into an <b>Abstract Syntax Tree (AST)</b> to find security bugs.</p>
+<p class="sm-q">Q/ Which three vulnerabilities were planted in vulnerable_app.py ?</p>
+<ol><li><b>Hard-coded secret</b> — CWE-259 (<code>DB_PASSWORD = &quot;SuperSecretPassword123!&quot;</code>).</li><li><b>SQL injection vector</b> — CWE-89 (query built with an f-string).</li><li><b>Command injection vector</b> — CWE-78 (<code>os.system(f&quot;ping -c 1 {user_ip}&quot;)</code>).</li></ol>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Bandit ID</th><th>Issue</th><th>Severity</th><th>Confidence</th></tr></thead><tbody><tr><td><b>B105</b> hardcoded_password_string</td><td>Possible hard-coded password</td><td>Medium</td><td>High</td></tr><tr><td><b>B608</b> sql_injection_string_vulnerability</td><td>SQL injection through string formatting</td><td>Medium</td><td>High</td></tr><tr><td><b>B605</b> start_process_with_a_shell</td><td>Process started with a shell, possible injection</td><td><b>High</b></td><td>High</td></tr></tbody></table></div>
+<div class="sm-key">Result: 3 issues (Medium: 2, High: 1) in 18 lines.</div>
+<p class="sm-q">Q/ How was each flaw remediated (secure_app.py) ?</p>
+<ol><li>Secret → read from an <b>environment variable</b>: <code>os.getenv(&quot;DATABASE_PASSWORD&quot;)</code>.</li><li>SQL → <b>parameterized query</b> with <code>?</code> placeholders: <code>cursor.execute(query, (username, password))</code>.</li><li>Command → <code>subprocess.run([&quot;ping&quot;, &quot;-c&quot;, &quot;1&quot;, user_ip])</code> — an <b>argument array, no shell</b>, so input is only an argument.</li></ol>
+<div class="sm-key">Re-scan: <b>No issues identified</b> (Medium 0, High 0).</div>
+</section>
+<section class="sm-sec" id="p3">
+<h2>DAST against a live API</h2>
+<p class="sm-q">Q/ What did the vulnerable FastAPI service expose ?</p>
+<ol><li><code>/login</code> — builds the SQL query with an f-string.</li><li><code>/ping</code> — runs <code>os.popen(f&quot;ping -c 1 {ip}&quot;)</code>.</li></ol>
+<div class="sm-key">Colab note: the API runs on 127.0.0.1 <b>inside Google&#39;s machine</b>, so <b>Localtunnel</b> creates a public URL; the scanner sends the <code>bypass-tunnel-reminder</code> header to skip the splash page.</div>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>DAST probe</th><th>Payload</th><th>Vulnerable app</th><th>Secure app</th></tr></thead><tbody><tr><td>SQL injection</td><td>username = <code>admin&#39; OR &#39;1&#39;=&#39;1</code>, any password</td><td><b>status: success</b> — &quot;Welcome (&#39;admin&#39;, &#39;SuperSecret123&#39;)&quot;</td><td><b>status: fail</b> — Invalid credentials</td></tr><tr><td>Command injection</td><td>ip = <code>127.0.0.1; cat /etc/hostname</code></td><td>Shell runs the extra command</td><td><code>ping: 127.0.0.1; cat /etc/hostname: Name or service not known</code> — treated as one argument</td></tr></tbody></table></div>
+<p class="sm-q">Q/ Why does <code>admin&#39; OR &#39;1&#39;=&#39;1</code> log in ?</p>
+<ul><li>The quote closes the string and <code>OR &#39;1&#39;=&#39;1&#39;</code> makes the WHERE condition <b>always true</b>, so the first user (admin) is returned without the right password.</li></ul>
+<p class="sm-q">Q/ Why does <code>; cat /etc/hostname</code> work against os.popen ?</p>
+<ul><li>The <b>shell</b> treats <code>;</code> as a command separator and runs a second command. With an argument list and no shell, <code>;</code> is just part of the hostname.</li></ul>
+<p class="sm-q">Q/ What is the DevSecOps lesson ?</p>
+<ul><li>SAST catches the flaw <b>early in code</b>; DAST <b>confirms exploitability</b> on the running system; after fixing, both re-scans pass (SAST: no issues; DAST: attacks defended).</li></ul>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>CWE</th><th>Name</th><th>Fix</th></tr></thead><tbody><tr><td>CWE-259</td><td>Hard-coded password</td><td>Environment variables / secrets manager</td></tr><tr><td>CWE-89</td><td>SQL injection</td><td>Parameterized queries</td></tr><tr><td>CWE-78</td><td>OS command injection</td><td>Argument arrays, no shell (subprocess list)</td></tr></tbody></table></div>
+</section>
+<p class="sm-src">Summary of Advanced Cybersecurity L2: Application Security Testing (SAST / DAST). Built only from the lecture file; check the original slides for anything you're unsure about. <a href="../../read/advanced/lecture-2-application-security-testing.html">Open the lecture →</a></p>
+</main>
+<script src="../../reader.js" defer></script>
+</body>
+</html>

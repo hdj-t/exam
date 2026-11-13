@@ -294,3 +294,35 @@
     .ws-table td:nth-child(3), .ws-table td:nth-child(4) { max-inline-size: 7.5rem; overflow: hidden; text-overflow: ellipsis; }
   }
 }
+
+/* ---- web-security labs (PortSwigger style) ---- */
+@layer components {
+  .wb-browser { overflow: hidden; }
+  .wb-banner { display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; padding: 0.45rem 0.65rem; background: #1A2129; color: #fff; }
+  .wb-logo { font-family: var(--font-pixel); font-size: 0.72rem; letter-spacing: 0.06em; color: #FF6633; }
+  .wb-bar { display: flex; gap: 0.35rem; padding: 0.45rem; background: var(--c-well); }
+  .wb-addr { flex: 1; min-inline-size: 0; min-block-size: 2.3rem; padding: 0 0.6rem; border: 0; font-size: 16px; font-family: ui-monospace, Menlo, monospace; background: var(--c-page); box-shadow: inset 0 0 0 1px var(--c-border); color: inherit; }
+  .wb-view { background: #fff; color: #1C1A17; min-block-size: 16rem; max-block-size: 60vh; overflow: auto; }
+  .wb-page { padding: 0.8rem 0.9rem 1.2rem; font-size: 0.92rem; line-height: 1.5; display: grid; gap: 0.5rem; }
+  .wb-page h1 { font-size: 1.25rem; } .wb-page h2 { font-size: 1.05rem; }
+  .wb-page a { color: #0B63B6; text-decoration: underline; cursor: pointer; }
+  .wb-page [data-c="lab-head"] { background: #1A2129; color: #fff; padding: 0.4rem 0.6rem; margin: -0.8rem -0.9rem 0; font-weight: 700; }
+  .wb-page [data-c="nav"] { font-size: 0.85rem; }
+  .wb-page form { display: grid; gap: 0.4rem; padding: 0.6rem; background: #F2F4F6; }
+  .wb-page input, .wb-page textarea, .wb-page select { font-size: 16px; padding: 0.4rem 0.5rem; border: 1px solid #9AA4AE; border-radius: 0; background: #fff; color: #1C1A17; font-family: inherit; }
+  .wb-page button { justify-self: start; padding: 0.45rem 0.9rem; border: 0; background: #FF6633; color: #fff; font-weight: 700; cursor: pointer; }
+  .wb-page [data-c="comment"] { padding: 0.4rem 0.6rem; background: #F7F8F9; border-inline-start: 3px solid #D5DBE0; }
+  .wb-page table { border-collapse: collapse; } .wb-page td, .wb-page th { border: 1px solid #D5DBE0; padding: 0.25rem 0.45rem; }
+  .wb-img { display: inline-block; min-inline-size: 2rem; padding: 0.1rem 0.35rem; background: #EEE; color: #888; font-size: 0.7rem; }
+  .wb-iframe { display: block; padding: 0.4rem; background: #EEE; color: #666; font-size: 0.75rem; }
+  .wb-has-handler { outline: 1px dashed #FF6633; }
+  .wb-dialog { margin: 0.5rem; }
+  .wb-raw { max-block-size: 22rem; overflow: auto; white-space: pre; font-size: 0.72rem; }
+  .wb-ta { inline-size: 100%; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 13px; padding: 0.5rem; border: 0; background: var(--c-page); color: inherit; box-shadow: inset 0 0 0 1px var(--c-border); resize: vertical; white-space: pre; }
+  @media (pointer: coarse) { .wb-ta { font-size: 16px; } }
+  .wb-hist { max-block-size: 14rem; overflow: auto; }
+  .wb-hrow { display: block; inline-size: 100%; text-align: start; border: 0; background: none; padding: 0.45rem 0.6rem; font: inherit; font-size: 0.8rem; color: inherit; cursor: pointer; border-block-end: 1px solid var(--c-rule); }
+  .wb-hrow.sel { background: var(--c-mark); }
+  .wb-split { display: grid; gap: 0.5rem; margin-block-start: 0.6rem; }
+  .wb-cookies summary { padding: 0.45rem 0.65rem; cursor: pointer; font-family: var(--font-pixel); font-size: 0.75rem; background: var(--c-well); }
+}

@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>أنواع السحاب في زمن الضباب — L2 summary</title>
+<meta name="description" content="Cloud Computing L2 summary: Types of Clouds, Providers &amp; Data Centers">
+<meta name="theme-color" content="#F6F3EC" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#171513" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../../fonts/GeistPixel-Square.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../../styles.css">
+<link rel="stylesheet" href="../../summary.css">
+</head>
+<body class="summary">
+<header class="rbar">
+  <a class="icon-btn" href="../../index.html#cloud" aria-label="Back to Cloud Computing"><span aria-hidden="true">←</span></a>
+  <div class="rbar-t"><span class="rbar-c">Cloud Computing · L2 · Summary</span><b>Types of Clouds, Providers &amp; Data Centers</b></div>
+  <a class="icon-btn" href="../../read/cloud/lecture-2-types-of-clouds.html" aria-label="Open the lecture">Lec</a>
+  <a class="icon-btn icon-btn--pdf" href="lecture-2-types-of-clouds.pdf" download aria-label="Download summary PDF">PDF</a>
+</header>
+<main class="sm">
+<section class="sm-sec" id="p1">
+<h1 class="sm-title" lang="ar" dir="rtl">أنواع السحاب في زمن الضباب</h1>
+<h2>Lecture 2 — Types of Clouds, Providers, and Data Centers</h2>
+<p class="sm-q">Q/ What are the two questions about any cloud ?</p>
+<ol><li><b>Service model</b> — WHAT do you get? IaaS · PaaS · SaaS · DaaS (Lecture 1).</li><li><b>Deployment model</b> — WHO owns the infrastructure and WHO shares it? Private · Public · Hybrid · Multi-cloud (Lecture 2).</li></ol>
+<div class="sm-key">The two choices are <b>independent</b>. Example: Gmail is <b>SaaS</b> (service model) delivered from a <b>public</b> cloud (deployment model).</div>
+</section>
+<section class="sm-sec" id="p2">
+<h2>Deployment models</h2>
+<p class="sm-def"><b>Private Cloud</b> : cloud infrastructure <b>dedicated to a single organization</b>, run in its own data center or in a provider&#39;s dedicated space.</p>
+<p class="sm-q">Q/ What are the characteristics of a private cloud ?</p>
+<ol><li>One tenant: no sharing with other customers.</li><li>Full control of hardware, network and policy.</li><li>High upfront cost (<b>CapEx</b>) and in-house staff.</li><li>Elasticity limited by the hardware you own.</li></ol>
+<p class="sm-q">Q/ Name technologies used to build a private cloud.</p>
+<ul><li>OpenStack · VMware vSphere · Proxmox · Kubernetes on your own servers.</li></ul>
+<div class="sm-key">Security angle: you own the whole stack, so you own the <b>whole security burden</b> (physical access, patching, monitoring, incident response).</div>
+<p class="sm-def"><b>Public Cloud</b> : infrastructure <b>owned and operated by a provider</b> and rented to many customers (tenants) over the internet.</p>
+<p class="sm-q">Q/ What are the characteristics of a public cloud ?</p>
+<ol><li><b>Multi-tenant</b>: resources shared and isolated logically.</li><li><b>Pay-as-you-go</b> (OpEx), no upfront hardware.</li><li>Near-instant elasticity and global regions.</li><li>The provider secures the infrastructure layers.</li></ol>
+<p class="sm-q">Q/ Name the major public cloud providers.</p>
+<ul><li>AWS · Microsoft Azure · Google Cloud (also Alibaba, Oracle, IBM, DigitalOcean).</li></ul>
+<div class="sm-key">Security angle: <b>shared responsibility</b> — the provider secures the cloud, you secure what you put <b>in</b> it. <b>Misconfiguration</b> is a leading cause of public-cloud breaches.</div>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Aspect</th><th>Private cloud</th><th>Public cloud</th></tr></thead><tbody><tr><td>Ownership</td><td>Single organization</td><td>Provider; shared by many tenants</td></tr><tr><td>Cost model</td><td>High upfront (CapEx)</td><td>Pay-as-you-go (OpEx)</td></tr><tr><td>Elasticity</td><td>Limited by owned hardware</td><td>Near-unlimited, on demand</td></tr><tr><td>Control</td><td>Full</td><td>Limited to what the provider exposes</td></tr><tr><td>Time to deploy</td><td>Weeks to months</td><td>Minutes</td></tr><tr><td>Security duty</td><td>Entirely the organization</td><td>Shared with the provider</td></tr><tr><td>Best for</td><td>Strict compliance, steady workloads</td><td>Variable demand, fast growth</td></tr></tbody></table></div>
+</section>
+<section class="sm-sec" id="p3">
+<p class="sm-def"><b>Hybrid Cloud</b> : a <b>private</b> cloud (or on-premises) and a <b>public</b> cloud working together, connected by a VPN or dedicated link.</p>
+<p class="sm-q">Q/ What are the uses of hybrid cloud ?</p>
+<ol><li><b>Cloud bursting</b>: run normally in-house; rent public capacity only for peaks.</li><li><b>Data residency</b>: keep regulated data local; use the public cloud for everything else.</li><li><b>Gradual migration</b>: move workloads to the cloud step by step.</li></ol>
+<div class="sm-key">Security angle: the <b>link between the two worlds</b> is a new attack surface; encrypt it and keep policies consistent on both sides.</div>
+<p class="sm-def"><b>Multi-Cloud</b> : using <b>two or more public cloud providers</b>, for different workloads or for the same workload.</p>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Multi-cloud benefits</th><th>Multi-cloud challenges</th></tr></thead><tbody><tr><td>Less lock-in</td><td>More skills needed</td></tr><tr><td>Resilience to one provider&#39;s outage</td><td>Different IAM and tools per provider</td></tr><tr><td>Best service for each task</td><td>Egress fees between clouds</td></tr></tbody></table></div>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Hybrid</th><th>Multi-cloud</th></tr></thead><tbody><tr><td>Private + public, working together</td><td>Two or more <b>public</b> providers</td></tr></tbody></table></div>
+<div class="sm-key">A company can be <b>both</b> hybrid and multi-cloud at the same time.</div>
+</section>
+<section class="sm-sec" id="p4">
+<h2>Providers</h2>
+<p class="sm-def"><b>Provider Lock-in</b> : switching providers becomes so costly or difficult that you stay even when you would rather leave.</p>
+<p class="sm-q">Q/ What creates lock-in ?</p>
+<ol><li>Proprietary services and APIs (managed databases, serverless).</li><li><b>Data gravity</b>: large datasets are slow and costly to move out.</li><li><b>Egress</b> (data-out) fees.</li><li>Team skills and tooling tied to one platform.</li><li>Long-term contracts and commitments.</li></ol>
+<p class="sm-q">Q/ How to reduce lock-in ?</p>
+<ol><li>Containers and Kubernetes for portable workloads.</li><li>Infrastructure as Code (e.g. Terraform).</li><li>Open standards and portable data formats.</li><li>Regular exports and tested backups.</li><li>A written <b>exit plan</b> before you sign.</li></ol>
+<div class="sm-key">Security angle: lock-in is also an <b>availability and resilience</b> risk (outage or changed terms, and no quick alternative).</div>
+<p class="sm-def"><b>Hyperscale</b> : providers running data centers with very large server counts across a global footprint of <b>regions and availability zones</b>.</p>
+<p class="sm-q">Q/ What makes a provider hyperscale ?</p>
+<ol><li>Data centers with very large server counts.</li><li>Global footprint of regions and zones.</li><li>Custom hardware, chips and networking.</li><li>Automation of almost everything.</li></ol>
+<p class="sm-def"><b>Region</b> : a geographic area containing several availability zones.</p>
+<p class="sm-def"><b>Availability Zone</b> : a separate facility (one or more data centers) in a region, linked to the others by fast private networks, so <b>one failure doesn&#39;t take everything down</b>.</p>
+<div class="sm-key">Security angle: <b>concentration risk</b> — much of the internet depends on a few hyperscalers, so one failure can ripple widely.</div>
+</section>
+<section class="sm-sec" id="p5">
+<h2>Inside the data center</h2>
+<p class="sm-def"><b>Rack</b> : a standard frame (about <b>42U</b>) holding servers and a <b>top-of-rack switch</b>.</p>
+<p class="sm-def"><b>Aisle</b> : the space between rows, used to control cool and hot air flow (cold aisle in, hot aisle out).</p>
+<p class="sm-def"><b>Pod</b> : a group of racks sharing power, cooling and network uplinks — the unit you add as you grow.</p>
+<p class="sm-q">Q/ What is the power path in a data center ?</p>
+<ul><li>Utility grid → <b>UPS</b> (batteries bridge the gap) / backup <b>generator</b> → <b>PDU</b> (distributes power to each rack) → rack.</li></ul>
+<p class="sm-q">Q/ How is a data center cooled ?</p>
+<ol><li>Hot/cold aisle containment keeps air streams apart.</li><li>Air-conditioning units (CRAC/CRAH) move the heat out.</li><li>Chilled water and liquid cooling for very dense racks.</li><li>Site and climate choices can cut cooling cost.</li></ol>
+<p class="sm-def"><b>PUE (Power Usage Effectiveness)</b> : total facility power ÷ power used by IT equipment. <b>1.0 is ideal</b>; lower = less energy wasted on cooling and power losses.</p>
+<div class="sm-key">Example: facility uses 1.5 MW and IT equipment 1.0 MW → PUE = 1.5.</div>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>North-South traffic</th><th>East-West traffic</th></tr></thead><tbody><tr><td>Between users outside and servers inside the data center</td><td>Between servers inside (replication, microservice calls, data processing)</td></tr><tr><td>Seen by the perimeter firewall</td><td>Usually the <b>larger</b> share; perimeter firewalls rarely see it</td></tr></tbody></table></div>
+<div class="sm-key">Security angle: attackers move <b>laterally</b> east-west; <b>micro-segmentation</b> and <b>zero trust</b> limit it.</div>
+<p class="sm-def"><b>Leaf-Spine</b> : every leaf switch connects to every spine switch, so any two servers are the <b>same number of hops</b> apart.</p>
+<p class="sm-q">Q/ Why use leaf-spine ?</p>
+<ol><li>Predictable latency (equal hops).</li><li>More servers → add leaves; more bandwidth → add spines.</li><li>Many equal-cost paths: one failed link barely matters.</li></ol>
+<p class="sm-def"><b>Fat-Tree</b> : the idea of many parallel equal paths with full bandwidth; leaf-spine is its common practical form.</p>
+<p class="sm-def"><b>Unified data center network</b> : one Ethernet fabric carries user, storage and management traffic instead of a separate network for each (fewer devices and cables, simpler operations; needs priorities and isolation).</p>
+<p class="sm-q">Q/ What are the data-center security takeaways ?</p>
+<ol><li>Control physical access to racks and cages.</li><li>Separate the <b>management network</b> from user and storage traffic.</li><li>Watch east-west traffic, not only the perimeter.</li><li>Treat power and cooling redundancy as <b>availability controls</b>.</li></ol>
+</section>
+<section class="sm-sec" id="p6">
+<h2>Security across deployment models</h2>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Model</th><th>Who secures what</th><th>Key risk</th><th>Typical controls</th></tr></thead><tbody><tr><td>Private</td><td>The organization, all layers</td><td>Under-resourced patching and monitoring</td><td>Hardening, SIEM, physical access control</td></tr><tr><td>Public</td><td>Shared with the provider</td><td>Misconfigured storage and IAM</td><td>Least privilege, MFA, encryption, posture checks</td></tr><tr><td>Hybrid</td><td>Both sides, plus the link</td><td>Weak link, inconsistent policies</td><td>Encrypted tunnels, unified identity, segmentation</td></tr><tr><td>Multi-cloud</td><td>Each provider separately</td><td>Bigger attack surface, tool sprawl</td><td>Central identity, policy-as-code, unified logging</td></tr></tbody></table></div>
+<div class="sm-key">Rule of thumb: the more places your data lives, the more consistent your <b>identity and logging</b> must be.</div>
+<p class="sm-q">Q/ Mini case — a national bank must keep records in the country, has unpredictable salary-day peaks, and fears one vendor. Which model ?</p>
+<ol><li>Regulated data → private or <b>hybrid</b>.</li><li>Unpredictable demand → public elasticity.</li><li>Fear of one vendor → <b>multi-cloud</b>.</li></ol>
+<ul><li>Recommendation: <b>hybrid</b> (records stay in a private/in-country cloud, the app front-end bursts to public), ideally with <b>more than one public provider</b>.</li></ul>
+</section>
+<p class="sm-src">Summary of Cloud Computing L2: Types of Clouds, Providers &amp; Data Centers. Built only from the lecture file; check the original slides for anything you're unsure about. <a href="../../read/cloud/lecture-2-types-of-clouds.html">Open the lecture →</a></p>
+</main>
+<script src="../../reader.js" defer></script>
+</body>
+</html>

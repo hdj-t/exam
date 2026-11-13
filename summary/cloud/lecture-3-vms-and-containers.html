@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>الحاويات والآلات في زمن الأزمات — L3 summary</title>
+<meta name="description" content="Cloud Computing L3 summary: Virtual Machines &amp; Containers">
+<meta name="theme-color" content="#F6F3EC" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#171513" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../../fonts/GeistPixel-Square.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../../styles.css">
+<link rel="stylesheet" href="../../summary.css">
+</head>
+<body class="summary">
+<header class="rbar">
+  <a class="icon-btn" href="../../index.html#cloud" aria-label="Back to Cloud Computing"><span aria-hidden="true">←</span></a>
+  <div class="rbar-t"><span class="rbar-c">Cloud Computing · L3 · Summary</span><b>Virtual Machines &amp; Containers</b></div>
+  <a class="icon-btn" href="../../read/cloud/lecture-3-vms-and-containers.html" aria-label="Open the lecture">Lec</a>
+  <a class="icon-btn icon-btn--pdf" href="lecture-3-vms-and-containers.pdf" download aria-label="Download summary PDF">PDF</a>
+</header>
+<main class="sm">
+<section class="sm-sec" id="p1">
+<h1 class="sm-title" lang="ar" dir="rtl">الحاويات والآلات في زمن الأزمات</h1>
+<h2>Lecture 3 — Virtual Machines and Containers</h2>
+<p class="sm-def"><b>Virtualization</b> : slicing one physical server into several isolated virtual machines. It is what makes cloud sharing possible.</p>
+<p class="sm-q">Q/ Why virtualize ? (three reasons)</p>
+<ol><li><b>Consolidation</b>: physical servers usually idle at low utilization; packing many VMs on one host raises utilization and cuts hardware, power and space.</li><li><b>Isolation</b>: each VM has its own OS and resources; a crash or compromise in one should not reach its neighbours.</li><li><b>Elasticity</b>: a VM is software — create, clone, resize or move it in minutes. This is the engine behind on-demand IaaS.</li></ol>
+</section>
+<section class="sm-sec" id="p2">
+<h2>Hypervisors</h2>
+<p class="sm-def"><b>Hypervisor (Virtual Machine Monitor)</b> : software that creates VMs and shares CPU, memory and I/O among them.</p>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th></th><th>Type 1 — bare metal</th><th>Type 2 — hosted</th></tr></thead><tbody><tr><td>Runs on</td><td>Directly on the hardware</td><td>As an application on a host OS (Windows / Linux)</td></tr><tr><td>Examples</td><td>ESXi, Hyper-V, KVM, Xen</td><td>VMware Workstation, VirtualBox</td></tr><tr><td>Used in</td><td>Data centers / cloud providers</td><td>Desktops and labs</td></tr></tbody></table></div>
+<div class="sm-key">Cloud providers run <b>Type 1</b> (KVM-based or custom).</div>
+<p class="sm-q">Q/ What are the approaches to virtualization ?</p>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Approach</th><th>How it works</th><th>Guest OS changed?</th><th>Trade-off</th></tr></thead><tbody><tr><td>Full virtualization</td><td>Hypervisor emulates the full hardware; <b>binary translation</b> for privileged instructions</td><td>No</td><td>Compatible, but slower</td></tr><tr><td>Para-virtualization</td><td>Guest knows it is virtual and calls the hypervisor directly (<b>hypercalls</b>)</td><td><b>Yes</b></td><td>Fast, needs a modified OS</td></tr><tr><td>Hardware-assisted</td><td>CPU extensions (<b>Intel VT-x, AMD-V</b>) trap privileged operations in hardware</td><td>No</td><td>Fast and compatible — <b>today&#39;s default</b></td></tr></tbody></table></div>
+<div class="sm-key">Lab check: if VT-x / AMD-V is <b>disabled in BIOS</b>, 64-bit guests may fail to start.</div>
+<p class="sm-q">Q/ What does the hypervisor virtualize ?</p>
+<ol><li><b>CPU</b>: schedules vCPUs onto physical cores. <b>Over-subscription</b> lets total vCPUs exceed cores (efficient, but can cause contention).</li><li><b>Memory</b>: maps guest memory to host memory; <b>ballooning</b> and <b>page sharing</b> reclaim unused RAM.</li><li><b>I/O</b>: presents virtual disks (often files on shared storage) and virtual NICs (connected to virtual switches).</li></ol>
+<div class="sm-key">Security consequence: <b>whoever controls the hypervisor controls every VM above it</b> — keep it minimal and patched.</div>
+</section>
+<section class="sm-sec" id="p3">
+<h2>Virtual machines</h2>
+<p class="sm-def"><b>VM</b> : mostly <b>files</b> — virtual disks plus a configuration — which is why VMs are easy to copy and recover.</p>
+<p class="sm-q">Q/ What is the VM lifecycle ?</p>
+<ol><li><b>Create</b>: pick vCPU, RAM, disk, network; install or use an image.</li><li><b>Run</b>: start, pause, suspend, resize.</li><li><b>Snapshot</b>: save the state at a point in time, to roll back after a mistake or failed update.</li><li><b>Clone</b>: copy a VM or a <b>golden template</b> to deploy many identical machines.</li><li><b>Retire</b>: delete the VM and <b>securely wipe</b> its disks.</li></ol>
+<div class="sm-key">Security: snapshots and clones keep <b>old data and old secrets</b> (keys, passwords, unpatched software). Protect them like backups.</div>
+<p class="sm-def"><b>VM Migration</b> : moving a VM between hosts to balance load, patch hosts, or evacuate failing hardware.</p>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Cold migration</th><th>Live migration</th></tr></thead><tbody><tr><td>Shut the VM down, copy it, start it on the new host</td><td>Move a <b>running</b> VM with almost no downtime</td></tr><tr><td>Simple, but there is downtime</td><td>Users usually don&#39;t notice</td></tr></tbody></table></div>
+<p class="sm-q">Q/ What are the steps of live migration (pre-copy method) ?</p>
+<ol><li>Copy all memory pages while the VM keeps running.</li><li>Re-copy pages that changed (repeat).</li><li>Pause briefly; send the last pages and CPU state.</li><li>Resume on the new host.</li></ol>
+<div class="sm-key">Memory travels over the network: <b>encrypt the migration channel</b>.</div>
+</section>
+<section class="sm-sec" id="p4">
+<h2>Containers</h2>
+<p class="sm-def"><b>Container</b> : an ordinary process on the <b>host kernel</b>, wrapped by Linux features that limit what it can see and use. No guest OS.</p>
+<p class="sm-def"><b>Namespaces</b> : control what a container can <b>SEE</b> — separate views of processes (PID), network, mounts, hostname and users.</p>
+<p class="sm-def"><b>cgroups (control groups)</b> : control what a container can <b>USE</b> — limits on CPU, memory and I/O so one container can&#39;t starve the others.</p>
+<div class="sm-key">Because there is no guest OS, a container starts in <b>seconds</b>, uses <b>megabytes</b>, and you can pack many more per host. The price is a <b>shared kernel</b>.</div>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Aspect</th><th>Virtual machine</th><th>Container</th></tr></thead><tbody><tr><td>Isolation</td><td><b>Strong</b>: separate kernel per VM</td><td><b>Weaker</b>: shared host kernel</td></tr><tr><td>Startup</td><td>Minutes</td><td>Seconds</td></tr><tr><td>Size</td><td>Gigabytes</td><td>Megabytes</td></tr><tr><td>Density per host</td><td>Tens</td><td>Hundreds</td></tr><tr><td>Guest OS</td><td>Any (Windows, Linux…)</td><td>Same kernel family as the host</td></tr><tr><td>Stack</td><td>App → Guest OS → Hypervisor → Hardware</td><td>App → Container engine → Host kernel → Hardware</td></tr><tr><td>Best for</td><td>Legacy apps, strong tenant separation</td><td>Microservices, CI/CD, scale-out</td></tr></tbody></table></div>
+<div class="sm-key">In practice they combine: <b>containers usually run inside VMs</b> in the cloud.</div>
+</section>
+<section class="sm-sec" id="p5">
+<h2>Docker</h2>
+<p class="sm-def"><b>Docker</b> : packages an application and everything it needs, so it runs the same on a laptop, a lab server or a cloud VM.</p>
+<p class="sm-q">Q/ What are Docker&#39;s components ?</p>
+<ol><li><b>Dockerfile</b>: a text recipe — base image, files, commands.</li><li><b>Image</b>: a read-only, <b>layered</b> template built from the Dockerfile.</li><li><b>Container</b>: a running instance of an image, with a thin writable layer.</li><li><b>Engine (daemon)</b>: builds images and runs containers on the host.</li><li><b>Registry</b>: stores and distributes images (Docker Hub, private registry).</li><li><b>Volume / Network</b>: persistent data outside the container; virtual networks between containers.</li></ol>
+<p class="sm-q">Q/ What is the Docker workflow ?</p>
+<ul><li><b>Build → Ship → Run</b>: Dockerfile —<code>docker build</code>→ Image —<code>docker push</code>→ Registry —<code>docker pull</code>/<code>docker run</code>→ Container.</li></ul>
+<pre class="sm-code">FROM nginx:alpine
+COPY index.html /usr/share/nginx/html/
+docker build -t mysite .
+docker run -d -p 8080:80 mysite</pre>
+<div class="sm-key"><code>-p 8080:80</code> maps <b>host port 8080</b> to <b>container port 80</b>.</div>
+</section>
+<section class="sm-sec" id="p6">
+<h2>Security lens</h2>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>VM risks</th><th>Container risks</th></tr></thead><tbody><tr><td><b>VM escape</b> through a hypervisor flaw</td><td><b>Kernel exploit</b> reaches every container</td></tr><tr><td>Side-channel attacks between co-located VMs</td><td><b>Privileged</b> containers</td></tr><tr><td>Stale snapshots</td><td>Vulnerable or untrusted images</td></tr><tr><td>VM sprawl</td><td><b>Secrets baked into images</b></td></tr></tbody></table></div>
+<p class="sm-q">Q/ What are the good security practices ?</p>
+<ol><li>Patch the hypervisor and host kernel; keep them minimal.</li><li>Use trusted, scanned images; pin versions; <b>never store secrets in an image</b>.</li><li>Don&#39;t run containers as <b>root</b> or with <code>--privileged</code>; drop capabilities.</li><li>Separate sensitive workloads on different hosts or inside VMs.</li></ol>
+<p class="sm-q">Q/ Mini case — VM or container ?</p>
+<ol><li>Old Windows-only grading system → <b>VM</b> (needs another OS).</li><li>Student portal with registration spikes → <b>containers</b> (fast scale-out).</li><li>Lab where outsiders run untrusted code → <b>VM</b> (strong isolation).</li></ol>
+<ul><li>They can be combined: containers inside VMs.</li></ul>
+</section>
+<p class="sm-src">Summary of Cloud Computing L3: Virtual Machines &amp; Containers. Built only from the lecture file; check the original slides for anything you're unsure about. <a href="../../read/cloud/lecture-3-vms-and-containers.html">Open the lecture →</a></p>
+</main>
+<script src="../../reader.js" defer></script>
+</body>
+</html>

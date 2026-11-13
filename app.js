@@ -111,13 +111,13 @@
     let list = r.out;
     if (examOnly) {
       const ok = new Set($$(".doc:not(.is-out) .doc-a").map((a) => a.getAttribute("href").replace(/^read\/|\.html$/g, "")));
-      list = list.filter((x) => ok.has(x.doc.id));
+      list = list.filter((x) => ok.has(x.doc.id.replace(/^sum:/, "")));
     }
     const qs = encodeURIComponent(raw.trim());
     const nPages = list.reduce((n, x) => n + x.pages.length, 0);
     results.innerHTML = list.length
       ? `<p class="results-h">${list.length} file${list.length > 1 ? "s" : ""} · ${nPages} page${nPages === 1 ? "" : "s"}${examOnly ? " · exam only" : ""}</p><ol role="list">${list.slice(0, 40).map((x) => {
-          const base = `read/${x.doc.id}.html?q=${qs}&hits=${x.pages.map((i) => i + 1).join(",")}`;
+          const base = `${x.doc.u || `read/${x.doc.id}.html`}?q=${qs}&hits=${x.pages.map((i) => i + 1).join(",")}`;
           const [course, ...rest] = x.doc.t.split(" · ");
           const pages = x.pages.slice(0, 3).map((i) =>
             `<a class="hit-p" href="${base}#p${i + 1}"><i>p.${i + 1}</i>${snippet(x.doc.p[i], x.doc.pl[i], r.terms)}</a>`).join("");

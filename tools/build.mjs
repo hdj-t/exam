@@ -63,6 +63,45 @@ function pageSizes(dir, count) {
   return out.trim().split("\n").map((l) => l.split(" ").map(Number));
 }
 
+// ---------------------------------------------------------------- summaries (markdown → html)
+// summaries/<course>/<file>.md: "# Arabic title", "## English title", "**Term** : def",
+// "Q/ question", lists, | tables |, > key points, --- = section/page break.
+function inline(t) {
+  return esc(t).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>").replace(/`([^`]+)`/g, "<code>$1</code>");
+}
+function mdToHtml(src) {
+  const L = src.replace(/\r/g, "").split("\n");
+  const out = [];
+  let i = 0, sec = 1;
+  const open = () => out.push(`<section class="sm-sec" id="p${sec}">`);
+  open();
+  while (i < L.length) {
+    const l = L[i];
+    if (!l.trim()) { i++; continue; }
+    if (l.startsWith("```")) { const buf = []; i++; while (i < L.length && !L[i].startsWith("```")) buf.push(L[i++]); i++; out.push(`<pre class="sm-code">${esc(buf.join("\n"))}</pre>`); continue; }
+    if (/^---\s*$/.test(l)) { out.push(`</section>`); sec++; open(); i++; continue; }
+    if (l.startsWith("# ")) { out.push(`<h1 class="sm-title" lang="ar" dir="rtl">${inline(l.slice(2))}</h1>`); i++; continue; }
+    if (l.startsWith("## ")) { out.push(`<h2>${inline(l.slice(3))}</h2>`); i++; continue; }
+    if (l.startsWith("> ")) { const buf = []; while (i < L.length && L[i].startsWith("> ")) buf.push(inline(L[i++].slice(2))); out.push(`<div class="sm-key">${buf.join("<br>")}</div>`); continue; }
+    if (l.startsWith("|")) {
+      const rows = [];
+      while (i < L.length && L[i].startsWith("|")) rows.push(L[i++]);
+      const cells = (r) => r.replace(/^\||\|\s*$/g, "").split(/(?<!\\)\|/).map((c) => inline(c.trim().replace(/\\\|/g, "|")));
+      const body = rows.filter((r, k) => !(k === 1 && /^\|[\s:|-]+\|?\s*$/.test(r)));
+      out.push(`<div class="tbl-wrap"><table class="sm-tbl"><thead><tr>${cells(body[0]).map((c) => `<th>${c}</th>`).join("")}</tr></thead><tbody>${body.slice(1).map((r) => `<tr>${cells(r).map((c) => `<td>${c}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`);
+      continue;
+    }
+    if (/^\d+\.\s/.test(l)) { const buf = []; while (i < L.length && /^\d+\.\s/.test(L[i])) buf.push(`<li>${inline(L[i++].replace(/^\d+\.\s/, ""))}</li>`); out.push(`<ol>${buf.join("")}</ol>`); continue; }
+    if (/^-\s/.test(l)) { const buf = []; while (i < L.length && /^-\s/.test(L[i])) buf.push(`<li>${inline(L[i++].slice(2))}</li>`); out.push(`<ul>${buf.join("")}</ul>`); continue; }
+    if (l.startsWith("Q/")) { out.push(`<p class="sm-q">${inline(l)}</p>`); i++; continue; }
+    if (/^\*\*[^*]+\*\*\s*:/.test(l)) { out.push(`<p class="sm-def">${inline(l)}</p>`); i++; continue; }
+    out.push(`<p>${inline(l)}</p>`); i++;
+  }
+  out.push("</section>");
+  return out.join("\n");
+}
+const mdText = (src) => src.replace(/\*\*|`|^#+\s|^>\s|^\|[\s:|-]+\|$/gm, "").replace(/\|/g, " ").split(/^---\s*$/m).map((x) => x.replace(/\s+/g, " ").trim());
+
 // ---------------------------------------------------------------- collect
 const search = [];
 for (const c of site.courses) {
@@ -80,6 +119,13 @@ for (const c of site.courses) {
     process.stdout.write(`render ${d.id} (${d.pages}p)\n`);
     render(pdf, dir);
     d.sizes = pageSizes(dir, d.pages);
+    const smd = path.join(ROOT, "summaries", c.id, d.file + ".md");
+    if (fs.existsSync(smd)) {
+      d.summary = fs.readFileSync(smd, "utf8");
+      d.sumTitle = (d.summary.match(/^# (.+)$/m) || [])[1] || "Summary";
+      d.sumUrl = `summary/${d.id}.html`;
+      search.push({ id: "sum:" + d.id, u: d.sumUrl, c: c.id, t: `${c.name} · ${docLabel(d)} · Summary — ${d.sumTitle}`, p: mdText(d.summary) });
+    }
     const text = run("pdftotext", ["-enc", "UTF-8", pdf, "-"]).split("\f").slice(0, d.pages);
     search.push({
       id: d.id,
@@ -137,6 +183,7 @@ for (const c of site.courses) {
 <div class="hits" id="hits" hidden></div>
 <main class="pages" id="main">
 <p class="rinfo">${tag}<span>${d.pages} pages · ${kb(d.size)}</span> <a href="${rel}${d.pdf}">Open original PDF ↗</a></p>
+${d.summary ? `<a class="labcta labcta--sum" href="${rel}${d.sumUrl}"><b>Σ Read the summary: <span lang="ar" dir="rtl">${esc(d.sumTitle)}</span></b><span>Definitions, Q/ questions and comparison tables</span></a>` : ""}
 ${d.lab ? `<a class="labcta" href="${rel}${d.labUrl}"><b>▶ Try it as an interactive lab</b><span>Run the commands in a simulator, check each step, then take the quiz</span></a>` : ""}
 ${pages}
 </main>
@@ -148,6 +195,37 @@ ${pages}
     fs.mkdirSync(path.join(ROOT, "read", c.id), { recursive: true });
     fs.writeFileSync(path.join(ROOT, "read", c.id, d.file + ".html"), html);
   });
+}
+
+// ---------------------------------------------------------------- summary pages (+ printable PDF)
+for (const c of site.courses) for (const d of c.docs) {
+  if (!d.summary) continue;
+  const rel = "../../";
+  const html = `${head(`${d.sumTitle} — ${docLabel(d)} summary`, rel, `${c.name} ${docLabel(d)} summary: ${d.title}`).replace("</head>", `<link rel="stylesheet" href="${rel}summary.css">\n</head>`)}
+<body class="summary">
+<header class="rbar">
+  <a class="icon-btn" href="${rel}index.html#${c.id}" aria-label="Back to ${esc(c.name)}"><span aria-hidden="true">←</span></a>
+  <div class="rbar-t"><span class="rbar-c">${esc(c.name)} · ${esc(docLabel(d))} · Summary</span><b>${esc(d.title)}</b></div>
+  <a class="icon-btn" href="${rel}read/${d.id}.html" aria-label="Open the lecture">Lec</a>
+  <a class="icon-btn icon-btn--pdf" href="${d.file}.pdf" download aria-label="Download summary PDF">PDF</a>
+</header>
+<main class="sm">
+${mdToHtml(d.summary)}
+<p class="sm-src">Summary of ${esc(c.name)} ${esc(docLabel(d))}: ${esc(d.title)}. Built only from the lecture file; check the original slides for anything you're unsure about. <a href="${rel}read/${d.id}.html">Open the lecture →</a></p>
+</main>
+<script src="${rel}reader.js" defer></script>
+</body>
+</html>
+`;
+  const dir = path.join(ROOT, "summary", c.id);
+  fs.mkdirSync(dir, { recursive: true });
+  const out = path.join(dir, d.file + ".html"), pdfOut = path.join(dir, d.file + ".pdf");
+  const changed = !fs.existsSync(out) || fs.readFileSync(out, "utf8") !== html || !fs.existsSync(pdfOut);
+  fs.writeFileSync(out, html);
+  if (changed && !process.env.NO_PDF) {
+    try { execFileSync("chromium", ["--headless=new", "--no-sandbox", "--disable-gpu", "--no-pdf-header-footer", `--print-to-pdf=${pdfOut}`, "file://" + out], { stdio: "ignore", timeout: 60000 }); }
+    catch (e) { console.warn("pdf failed for " + d.id); }
+  }
 }
 
 // ---------------------------------------------------------------- interactive labs
@@ -195,6 +273,7 @@ const courseHtml = sorted
           .map(
             (d) => `<li class="doc${d.exam === true ? " is-exam" : d.exam === false ? " is-out" : ""}" data-exam="${d.exam}">
 <a class="doc-a" href="read/${d.id}.html"><span class="num">${esc(docLabel(d))}</span><span class="doc-t"><b>${esc(d.title)}</b><small>${d.pages} pages${d.exam === true ? ' · <em class="tag tag--exam">In exam</em>' : d.exam === false ? ' · <em class="tag tag--out">Not in exam</em>' : ""}</small></span></a>
+${d.summary ? `<a class="doc-lab doc-sum" href="${d.sumUrl}" aria-label="Summary: ${esc(d.title)}"><span aria-hidden="true">Σ</span><small>SUM</small></a>` : ""}
 ${d.lab ? `<a class="doc-lab" href="${d.labUrl}" aria-label="Interactive lab: ${esc(d.title)}"><span aria-hidden="true">▶</span><small>LAB</small></a>` : ""}
 <a class="doc-dl" href="${d.pdf}" download aria-label="Download ${esc(d.title)} PDF, ${kb(d.size)}"><span aria-hidden="true">↓</span><small>PDF</small></a>
 </li>`

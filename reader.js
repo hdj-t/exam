@@ -3,6 +3,7 @@
 (() => {
   const body = document.body;
   const pages = [...document.querySelectorAll(".page")];
+  const isSummary = body.classList.contains("summary");
   const n = document.getElementById("pc-n");
   const bar = document.getElementById("progress");
   const total = +body.dataset.pages;
@@ -17,7 +18,7 @@
     } catch {}
   };
 
-  const io = new IntersectionObserver((es) => {
+  const io = isSummary ? null : new IntersectionObserver((es) => {
     for (const e of es) if (e.isIntersecting) {
       current = +e.target.id.slice(1);
       n.textContent = current;
@@ -25,16 +26,17 @@
       save();
     }
   }, { rootMargin: "-40% 0px -55% 0px" });
-  pages.forEach((p) => io.observe(p));
+  if (io) pages.forEach((p) => io.observe(p));
 
   // Pages above a #pN jump are lazy; load them so the jump doesn't drift.
-  if (location.hash) pages.forEach((p) => p.querySelector("img").loading = "eager");
+  if (location.hash) pages.forEach((p) => (p.querySelector("img").loading = "eager"));
 
   const params = new URLSearchParams(location.search);
   const q = params.get("q");
   const hits = (params.get("hits") || "").split(",").map(Number).filter(Boolean);
   if (q && hits.length) {
     const box = document.getElementById("hits");
+    if (!box) { hits.forEach((h) => document.getElementById("p" + h)?.classList.add("is-hit")); return; }
     const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
     box.innerHTML = `<b>“${esc(q)}”</b> on page${hits.length > 1 ? "s" : ""} ` +
       hits.map((h) => `<a href="#p${h}">${h}</a>`).join(" ") +

@@ -1,0 +1,36 @@
+/* Lecture summaries: definitions, Q/ questions, comparison tables. Extends styles.css. */
+@layer components {
+  .summary { --bar-h: 3.5rem; }
+  .sm { max-inline-size: 48rem; margin-inline: auto; padding: 0.75rem var(--gutter) 3rem; line-height: 1.6; font-size: 1rem; }
+  .sm-sec { padding-block: 0.5rem 1rem; border-block-end: 2px dashed var(--c-rule); scroll-margin-top: calc(var(--bar-h) + 1rem); }
+  .sm-sec:last-of-type { border: 0; }
+  .sm-sec.is-hit { background: var(--c-mark); }
+  .sm-title { font-family: var(--font-arabic); font-size: clamp(1.7rem, 1.3rem + 2vw, 2.4rem); line-height: 1.4; text-align: center; color: var(--c-accent); margin-block: 0.5rem 0.25rem; }
+  .sm h2 { font-family: var(--font-pixel); font-weight: 400; font-size: 1.05rem; margin-block: 1rem 0.5rem; }
+  .sm-sec:first-child h2 { text-align: center; color: var(--c-ink-muted); font-size: 0.95rem; margin-block-start: 0; }
+  .sm p { margin-block: 0.5rem; }
+  .sm-def { padding: 0.5rem 0.7rem; background: var(--c-card); border-inline-start: 4px solid var(--c-accent); }
+  .sm-def b { color: var(--c-accent); }
+  .sm-q { font-weight: 700; margin-block-start: 1.1rem !important; }
+  .sm ol, .sm ul { padding-inline-start: 1.6rem; display: grid; gap: 0.25rem; margin-block: 0.3rem 0.6rem; }
+  .sm-key { padding: 0.6rem 0.8rem; margin-block: 0.6rem; background: var(--c-mark); font-size: 0.95rem; }
+  .sm-tbl { inline-size: 100%; border-collapse: collapse; font-size: 0.88rem; background: var(--c-card); margin-block: 0.6rem; }
+  .sm-tbl th, .sm-tbl td { border: 1px solid var(--c-rule); padding: 0.4rem 0.55rem; text-align: start; vertical-align: top; }
+  .sm-tbl th { background: var(--c-well); font-weight: 700; }
+  .sm-tbl td:first-child { font-weight: 600; }
+  .sm-code { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 0.82rem; background: var(--c-well); padding: 0.6rem; overflow-x: auto; }
+  .sm code { background: var(--c-well); padding: 0.05em 0.3em; font-size: 0.88em; }
+  .sm-src { font-size: 0.8rem; color: var(--c-ink-muted); }
+  .tbl-wrap { overflow-x: auto; }
+  .doc-sum { color: var(--c-ink); }
+  .labcta--sum { background: var(--c-ink); color: var(--c-page); }
+  @media print {
+    :root { --c-page: #fff; --c-card: #fff; --c-well: #f1f1f1; --c-ink: #000; --c-accent: #1F6B45; --c-mark: #eef6f0; }
+    .rbar, .sm-src a { display: none; }
+    .sm { max-inline-size: none; padding: 0; font-size: 11pt; }
+    .sm-sec { border: 0; padding-block: 0.2rem; }
+    .sm-def, .sm-key, tr, .sm-q { break-inside: avoid; } .sm-q, .sm h2 { break-after: avoid; }
+    .tbl-wrap { overflow: visible; }
+    @page { margin: 16mm 14mm; }
+  }
+}

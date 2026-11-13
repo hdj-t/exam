@@ -100,37 +100,61 @@
           "nums": [
             1,
             2
+          ],
+          "lab": [
+            "kit",
+            "webkit"
           ]
         },
         {
           "kind": "lecture",
           "n": 3,
           "title": "Authentication & Session Management",
-          "file": "lecture-3-authentication-and-sessions"
+          "file": "lecture-3-authentication-and-sessions",
+          "lab": [
+            "kit",
+            "webkit"
+          ]
         },
         {
           "kind": "lecture",
           "n": 4,
           "title": "Web Application Architecture",
-          "file": "lecture-4-web-app-architecture"
+          "file": "lecture-4-web-app-architecture",
+          "lab": [
+            "kit",
+            "webkit"
+          ]
         },
         {
           "kind": "lecture",
           "n": 5,
           "title": "Securing Web Application Data",
-          "file": "lecture-5-securing-web-app-data"
+          "file": "lecture-5-securing-web-app-data",
+          "lab": [
+            "kit",
+            "webkit"
+          ]
         },
         {
           "kind": "lecture",
           "n": 6,
           "title": "Cross-Site Scripting (XSS)",
-          "file": "lecture-6-xss"
+          "file": "lecture-6-xss",
+          "lab": [
+            "kit",
+            "webkit"
+          ]
         },
         {
           "kind": "lecture",
           "n": 7,
           "title": "Cross-Site Request Forgery (CSRF)",
-          "file": "lecture-7-csrf"
+          "file": "lecture-7-csrf",
+          "lab": [
+            "kit",
+            "webkit"
+          ]
         }
       ]
     },

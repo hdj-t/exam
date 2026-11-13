@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>الغيوم في حوسبة القوم — L1 summary</title>
+<meta name="description" content="Cloud Computing L1 summary: The Era of Cloud Computing">
+<meta name="theme-color" content="#F6F3EC" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#171513" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../../fonts/GeistPixel-Square.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../../styles.css">
+<link rel="stylesheet" href="../../summary.css">
+</head>
+<body class="summary">
+<header class="rbar">
+  <a class="icon-btn" href="../../index.html#cloud" aria-label="Back to Cloud Computing"><span aria-hidden="true">←</span></a>
+  <div class="rbar-t"><span class="rbar-c">Cloud Computing · L1 · Summary</span><b>The Era of Cloud Computing</b></div>
+  <a class="icon-btn" href="../../read/cloud/lecture-1-era-of-cloud-computing.html" aria-label="Open the lecture">Lec</a>
+  <a class="icon-btn icon-btn--pdf" href="lecture-1-era-of-cloud-computing.pdf" download aria-label="Download summary PDF">PDF</a>
+</header>
+<main class="sm">
+<section class="sm-sec" id="p1">
+<h1 class="sm-title" lang="ar" dir="rtl">الغيوم في حوسبة القوم</h1>
+<h2>Lecture 1 — The Era of Cloud Computing</h2>
+<p class="sm-def"><b>Cloud Computing</b> : renting computing (servers, storage, networks, software) from a provider over the internet, on demand, instead of buying and running your own machines.</p>
+<p class="sm-def"><b>Bare-metal era</b> : one organization buys, owns, cools, patches and physically secures its own servers in its own data room.</p>
+<p class="sm-q">Q/ What were the problems of the bare-metal era ?</p>
+<ol><li>High <b>CAPEX</b>: hardware is bought up front, before demand is known.</li><li><b>Fixed capacity</b>: you either over-provision (waste) or under-provision (outage).</li><li>Every patch, backup and physical control is the owner&#39;s job alone.</li><li>Scaling means buying, shipping and racking new machines: <b>weeks, not minutes</b>.</li></ol>
+</section>
+<section class="sm-sec" id="p2">
+<p class="sm-def"><b>The Power Wall</b> : around the mid-2000s chips could no longer get meaningfully faster, because higher clock speeds mean exponentially more <b>heat and power</b> draw.</p>
+<p class="sm-q">Q/ What was the industry&#39;s answer to the Power Wall ?</p>
+<ul><li>Stop chasing raw speed: add <b>more cores</b> and <b>more machines</b>.</li><li>Spread the work across them: <b>parallel and distributed computing</b>.</li><li>This is why cloud data centers are built from <b>thousands of ordinary machines</b>, not one extraordinary one.</li></ul>
+<p class="sm-q">Q/ What is &quot;scaling out&quot; (horizontal scaling) and what are its building blocks ?</p>
+<ol><li><b>Server</b>: one physical machine (CPU, RAM, disk, NIC).</li><li><b>Rack</b>: 10–40+ servers in one cabinet, sharing power and networking.</li><li><b>Aisle / Pod</b>: rows of racks grouped for airflow, power and network design.</li><li><b>Data center</b>: thousands of racks, the physical body of &quot;the cloud&quot;.</li></ol>
+</section>
+<section class="sm-sec" id="p3">
+<p class="sm-def"><b>Elastic Computing</b> : the ability to automatically <b>acquire</b> more computing resources when demand rises and <b>release</b> them when demand falls, paying only for what is actually used.</p>
+<div class="sm-key">Example: an exam-result portal scales up for the result-day spike, then scales back down: no manual purchase and no idle hardware afterward.</div>
+<p class="sm-def"><b>Multi-tenant cloud</b> : many independent customers (<b>tenants</b>) share the same physical hardware, while each tenant&#39;s data and workloads stay <b>logically isolated</b>.</p>
+<p class="sm-q">Q/ Who enforces isolation in a multi-tenant cloud ?</p>
+<ul><li><b>Software</b>: the hypervisor or the container runtime. Its correctness is now a <b>core security control</b>.</li></ul>
+<p class="sm-q">Q/ What new attack surface does multi-tenancy create ?</p>
+<ol><li><b>Hypervisor escape</b> (breaking out of a VM).</li><li><b>Side-channel attacks</b> (e.g. cache timing between neighbours).</li><li><b>Noisy-neighbour</b> resource abuse.</li></ol>
+<p>None of these exist in a single-tenant bare-metal setup.</p>
+</section>
+<section class="sm-sec" id="p4">
+<h2>Service models</h2>
+<p class="sm-def"><b>IaaS (Infrastructure as a Service)</b> : the provider supplies raw virtualized compute, storage and networking; you install and manage everything above it.</p>
+<p class="sm-def"><b>PaaS (Platform as a Service)</b> : the provider manages the OS, runtime and middleware; you deploy only your code and data.</p>
+<p class="sm-def"><b>SaaS (Software as a Service)</b> : the provider runs the whole application; you just use it (usually in a browser) and manage your data and user access.</p>
+<p class="sm-def"><b>DaaS (Desktop as a Service)</b> : a complete virtual desktop (OS, apps, user profile) streamed from the cloud to any device. It is really <b>SaaS applied to the desktop</b>.</p>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th></th><th>IaaS</th><th>PaaS</th><th>SaaS</th><th>DaaS</th></tr></thead><tbody><tr><td>You manage</td><td>OS, runtime, apps, data</td><td>Apps &amp; data only</td><td>Your data &amp; access</td><td>Your files &amp; profile</td></tr><tr><td>Provider manages</td><td>Virtualization, servers, storage, network</td><td>+ OS, runtime, middleware</td><td>The entire stack</td><td>Full OS + app stack</td></tr><tr><td>Examples</td><td>Amazon EC2, Azure VMs, Google Compute Engine</td><td>Azure App Service, Google App Engine, Heroku</td><td>Google Workspace, Microsoft 365, Salesforce, Zoom</td><td>Amazon WorkSpaces, Windows 365, Citrix DaaS</td></tr><tr><td>Typical users</td><td>Sysadmins, DevOps, infrastructure engineers</td><td>Application developers, small teams</td><td>Everyone</td><td>Remote workforces, call centers, students</td></tr><tr><td>Control</td><td>Maximum</td><td>Medium</td><td>Minimum</td><td>Minimum</td></tr></tbody></table></div>
+<div class="sm-key">Rule: moving <b>left → right</b>, the provider takes more of the <b>management burden</b> and more of the <b>security responsibility</b>.</div>
+<p class="sm-q">Q/ In SaaS, what does the customer still own ?</p>
+<ol><li>Identity and access management (account security).</li><li>Data classification and the data you upload.</li><li>End-user device security.</li></ol>
+<p class="sm-q">Q/ Why do organizations use DaaS ?</p>
+<ul><li>Consistent, centrally-managed desktops for remote or contract staff.</li><li>Sensitive data <b>never leaves the data center</b>: the endpoint only displays pixels, so a lost laptop does not mean lost data.</li></ul>
+</section>
+<section class="sm-sec" id="p5">
+<h2>Why it matters for a security engineer</h2>
+<p class="sm-def"><b>Shared Responsibility</b> : every cloud service has a line between what the <b>provider</b> secures and what <b>you</b> secure. The line <b>moves with the service model</b>.</p>
+<p class="sm-q">Q/ What are the three security takeaways of Lecture 1 ?</p>
+<ol><li><b>Shared responsibility</b>: know exactly where the line sits before designing a control.</li><li><b>New attack surface</b>: multi-tenancy, hypervisors and APIs did not exist in the bare-metal era.</li><li><b>Elasticity cuts both ways</b>: auto-scaling defends against load spikes, but a misconfigured resource can also scale an attacker&#39;s <b>cost abuse or cryptomining</b>.</li></ol>
+<p class="sm-q">Q/ Bare metal vs cloud — compare.</p>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Point</th><th>Bare metal</th><th>Cloud</th></tr></thead><tbody><tr><td>Cost</td><td>CAPEX, paid up front</td><td>Pay for what you use</td></tr><tr><td>Capacity</td><td>Fixed at purchase</td><td>Elastic, on demand</td></tr><tr><td>Time to scale</td><td>Weeks</td><td>Minutes</td></tr><tr><td>Hardware</td><td>Owned by one organization</td><td>Shared by many tenants</td></tr><tr><td>Security duty</td><td>All on the owner</td><td>Shared with the provider</td></tr></tbody></table></div>
+<div class="sm-key">One-sentence summary: the Power Wall forced computing to scale horizontally, giving rise to elastic, multi-tenant clouds offered at four levels — IaaS, PaaS, SaaS, DaaS — each shifting the security boundary.</div>
+<p class="sm-q">Q/ (Discussion) A bank moves its core app from bare metal to SaaS. What controls does it lose direct control over ?</p>
+<ul><li>OS and patching, the runtime, the application code, physical security and network controls: all move to the provider. The bank keeps identity/access, its data, and its users&#39; devices.</li></ul>
+</section>
+<p class="sm-src">Summary of Cloud Computing L1: The Era of Cloud Computing. Built only from the lecture file; check the original slides for anything you're unsure about. <a href="../../read/cloud/lecture-1-era-of-cloud-computing.html">Open the lecture →</a></p>
+</main>
+<script src="../../reader.js" defer></script>
+</body>
+</html>

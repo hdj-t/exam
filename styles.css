@@ -401,3 +401,4 @@
   .labcta b { font-family: var(--font-pixel); font-weight: 400; font-size: 0.95rem; }
   .labcta span { font-size: 0.82rem; opacity: 0.9; }
 }
+@layer components { .doc-sum { color: var(--c-ink); } .labcta--sum { background: var(--c-ink); color: var(--c-page); } }

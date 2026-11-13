@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>الشبكات الوهمية والخزانات الخفية — L4 summary</title>
+<meta name="description" content="Cloud Computing L4 summary: Virtual Networks &amp; Virtual Storage">
+<meta name="theme-color" content="#F6F3EC" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#171513" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../../fonts/GeistPixel-Square.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../../styles.css">
+<link rel="stylesheet" href="../../summary.css">
+</head>
+<body class="summary">
+<header class="rbar">
+  <a class="icon-btn" href="../../index.html#cloud" aria-label="Back to Cloud Computing"><span aria-hidden="true">←</span></a>
+  <div class="rbar-t"><span class="rbar-c">Cloud Computing · L4 · Summary</span><b>Virtual Networks &amp; Virtual Storage</b></div>
+  <a class="icon-btn" href="../../read/cloud/lecture-4-virtual-networks-and-storage.html" aria-label="Open the lecture">Lec</a>
+  <a class="icon-btn icon-btn--pdf" href="lecture-4-virtual-networks-and-storage.pdf" download aria-label="Download summary PDF">PDF</a>
+</header>
+<main class="sm">
+<section class="sm-sec" id="p1">
+<h1 class="sm-title" lang="ar" dir="rtl">الشبكات الوهمية والخزانات الخفية</h1>
+<h2>Lecture 4 — Virtual Networks and Virtual Storage</h2>
+<p class="sm-q">Q/ Why must the network be built in software in the cloud ?</p>
+<ol><li><b>Isolation per tenant</b>: each customer needs a private network others can&#39;t see, even on the same physical switches.</li><li><b>Agility</b>: a network, subnet or firewall rule is created in seconds by an <b>API call</b>, not by a technician with a cable.</li><li><b>Mobility</b>: when a VM live-migrates it keeps its IP and network policy — the network must <b>follow the VM</b>.</li></ol>
+</section>
+<section class="sm-sec" id="p2">
+<h2>Virtual NICs and switches</h2>
+<p class="sm-def"><b>Virtual NIC (vNIC)</b> : a software network card given to a VM, with its own MAC address.</p>
+<p class="sm-def"><b>Virtual switch (vSwitch)</b> : forwards frames between VMs on the same host <b>in software</b>; frames for other hosts leave through the physical uplink.</p>
+<div class="sm-key">Examples: VMware vSwitch, Hyper-V vSwitch, Linux bridge, <b>Open vSwitch (OVS)</b>, Docker bridge.<br>Security: traffic between two VMs on one vSwitch <b>never meets the physical firewall</b> — use port security and limit promiscuous mode.</div>
+<p class="sm-q">Q/ Compare the VM network modes.</p>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Mode</th><th>How the VM connects</th><th>Reaches the internet</th><th>Reachable from the LAN</th><th>Typical use</th></tr></thead><tbody><tr><td><b>Bridged</b></td><td>A separate device on your real network with its own LAN address</td><td>Yes</td><td>Yes</td><td>Servers other machines must reach</td></tr><tr><td><b>NAT</b> (Lab 3)</td><td>Shares the host&#39;s address; VMware translates</td><td>Yes</td><td>No (unless port forwarding)</td><td>Labs, safe default</td></tr><tr><td><b>Host-only</b></td><td>Private network between VM and host only</td><td>No</td><td>No</td><td>Isolated testing, malware analysis</td></tr></tbody></table></div>
+<div class="sm-key">Rule: choose the <b>least exposed</b> mode that works. Bridged puts the VM directly on your LAN.</div>
+</section>
+<section class="sm-sec" id="p3">
+<h2>VLAN</h2>
+<p class="sm-def"><b>VLAN (Virtual LAN)</b> : splits one physical switch into several separate <b>broadcast domains</b>.</p>
+<p class="sm-q">Q/ How does a VLAN work ?</p>
+<ol><li><b>Access ports</b> belong to one VLAN.</li><li><b>Trunk ports</b> carry several VLANs; each frame is tagged with <b>802.1Q (4 bytes)</b>.</li><li>The VLAN ID is <b>12 bits → 1 to 4094 usable</b>.</li><li>Different VLANs talk only through a <b>router or Layer 3 switch</b>.</li></ol>
+<p class="sm-q">Q/ Why are VLANs not enough for the cloud ?</p>
+<ol><li>Only <b>4094</b> IDs — a cloud has thousands of tenants.</li><li>Each VLAN is a flat <b>Layer 2</b> domain tied to one switched network.</li></ol>
+</section>
+<section class="sm-sec" id="p4">
+<h2>Underlay and overlay</h2>
+<p class="sm-def"><b>Underlay</b> : the real, physical routed IP network (e.g. leaf-spine).</p>
+<p class="sm-def"><b>Overlay</b> : the virtual network the tenant sees, built <b>on top of</b> the underlay with tunnels.</p>
+<div class="sm-key">Like a letter in an envelope: the postal network reads only the <b>outer</b> address. Two tenants can even reuse the same 10.0.0.0/24 without conflict.</div>
+<p class="sm-q">Q/ What are the four steps of an overlay (VXLAN) ?</p>
+<ol><li><b>Send</b>: VM A sends a normal frame to VM B (it doesn&#39;t know a tunnel exists).</li><li><b>Wrap</b>: the VTEP on Host 1 looks up (VNI, MAC B), finds Host 2, and adds outer Ethernet + IP + <b>UDP 4789</b> + VXLAN headers (~50 bytes).</li><li><b>Route</b>: the underlay routes by the <b>outer IP only</b>; tenant addresses stay hidden.</li><li><b>Unwrap</b>: the VTEP on Host 2 reads the VNI, removes the outer headers, and delivers the original frame to VM B.</li></ol>
+<p class="sm-def"><b>VXLAN</b> : wraps the tenant&#39;s whole Ethernet frame inside a <b>UDP</b> packet — &quot;Layer 2 over Layer 3&quot;.</p>
+<p class="sm-def"><b>VNI (VXLAN Network Identifier)</b> : 24 bits → about <b>16 million</b> virtual networks (2²⁴).</p>
+<p class="sm-def"><b>VTEP (VXLAN Tunnel Endpoint)</b> : sits in the host&#39;s vSwitch or a leaf switch, and wraps/unwraps frames.</p>
+<p class="sm-q">Q/ What is the VXLAN header layout ?</p>
+<ul><li>Outer Ethernet <b>14 B</b> · Outer IP <b>20 B</b> · UDP <b>8 B (port 4789)</b> · VXLAN header <b>8 B (carries the VNI)</b> · inner Ethernet frame → ≈ <b>50 B overhead</b>.</li></ul>
+<p class="sm-def"><b>MTU pitfall</b> : the 50 extra bytes can push packets over 1500 → raise the underlay MTU (e.g. <b>9000</b>) or lower the VM MTU to about <b>1450</b>.</p>
+<div class="sm-key">Security: <b>VXLAN does not encrypt or authenticate</b>. The VNI separates tenants only logically — protect the underlay and use IPsec or WireGuard for sensitive traffic.</div>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Aspect</th><th>VLAN</th><th>VXLAN</th></tr></thead><tbody><tr><td>Segment ID</td><td>12 bits: 4094 usable</td><td>24-bit VNI: ~16 million</td></tr><tr><td>How it isolates</td><td>A tag on the Ethernet frame (802.1Q)</td><td>The frame is wrapped in UDP/IP (tunnel)</td></tr><tr><td>Reach</td><td>Within one switched Layer 2 network</td><td>Across a routed IP network, even between sites</td></tr><tr><td>Overhead</td><td>4 bytes</td><td>~50 bytes</td></tr><tr><td>Configuration</td><td>Switch ports and trunks, often manual</td><td>Tunnel endpoints + control plane (e.g. BGP EVPN), automated</td></tr><tr><td>Best for</td><td>Campus, small or fixed data centers</td><td>Multi-tenant clouds, large data centers</td></tr></tbody></table></div>
+<div class="sm-key">In practice: VLANs inside a rack/campus, VXLAN across the data-center fabric.</div>
+<p class="sm-q">Q/ Map the public-cloud network building blocks.</p>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Building block</th><th>Does</th><th>AWS</th><th>Azure</th></tr></thead><tbody><tr><td>Virtual network</td><td>Your private address space</td><td>VPC</td><td>VNet</td></tr><tr><td>Subnet</td><td>A slice, public or private</td><td>Subnet</td><td>Subnet</td></tr><tr><td>Route table</td><td>Where traffic goes next</td><td>Route table</td><td>Route table (UDR)</td></tr><tr><td>Internet access</td><td>In/outbound paths</td><td>Internet gateway, NAT gateway</td><td>Public IP, NAT Gateway</td></tr><tr><td>Firewall rules</td><td>Allow/deny by port, protocol, source</td><td>Security group (<b>stateful</b>), NACL (<b>stateless</b>)</td><td>NSG</td></tr></tbody></table></div>
+<div class="sm-key">Default deny. <b>Never</b> allow SSH (22) or RDP (3389) from <b>0.0.0.0/0</b>. Keep databases in <b>private</b> subnets.</div>
+</section>
+<section class="sm-sec" id="p5">
+<h2>SDN</h2>
+<p class="sm-def"><b>SDN (Software-Defined Networking)</b> : separates the <b>control plane</b> (decides the rules, centralized in a controller) from the <b>data plane</b> (switches that only forward packets by the rules).</p>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Traditional network</th><th>SDN</th></tr></thead><tbody><tr><td>Every switch runs its own control logic, configured one by one</td><td>Logic centralized in software (the controller)</td></tr><tr><td>Hard to change and automate</td><td>One policy change reaches every switch in seconds, via API</td></tr></tbody></table></div>
+<p class="sm-q">Q/ What are the SDN layers and APIs ?</p>
+<ol><li><b>Applications</b> (routing, firewall, load balancing, monitoring) — talk to the controller through the <b>Northbound API (REST)</b>.</li><li><b>SDN controller</b> = control plane, global view.</li><li><b>Switches</b> = data plane — controlled through the <b>Southbound API (OpenFlow)</b>.</li></ol>
+<p class="sm-def"><b>OpenFlow</b> : a southbound protocol; the switch keeps <b>flow tables</b> — if a packet <b>matches</b> these fields, perform this <b>action</b>.</p>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Priority</th><th>Match</th><th>Action</th></tr></thead><tbody><tr><td>300</td><td>src 10.0.1.5, TCP 22</td><td>Drop</td></tr><tr><td>200</td><td>dst 10.0.2.0/24</td><td>Forward to port 3</td></tr><tr><td>100</td><td>VLAN 20</td><td>Forward to port 5</td></tr><tr><td>0</td><td>anything else (<b>table-miss</b>)</td><td>Send to controller</td></tr></tbody></table></div>
+<p class="sm-q">Q/ What happens when no flow entry matches ?</p>
+<ol><li>The switch sends a <b>packet-in</b> message to the controller.</li><li>The controller decides and replies with a <b>flow-mod</b>.</li><li>Later packets of that flow match the new entry and are forwarded at full speed.</li></ol>
+<div class="sm-key">OVS is the most common OpenFlow software switch; <b>P4</b> goes further and programs how the switch parses packets.<br>Security: the controller is a <b>high-value target</b> — whoever controls it controls the network. Isolate it, authenticate switches, use TLS, restrict API access.</div>
+</section>
+<section class="sm-sec" id="p6">
+<h2>Storage</h2>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th></th><th>Block</th><th>File</th><th>Object</th></tr></thead><tbody><tr><td>Data unit</td><td>Fixed-size blocks</td><td>Files in folders</td><td>Object + metadata + ID</td></tr><tr><td>Access</td><td>Raw disk: iSCSI, Fibre Channel</td><td>NFS, SMB over the network</td><td>HTTP <b>REST API</b></td></tr><tr><td>Examples</td><td>AWS EBS, Azure Disk, SAN</td><td>AWS EFS, Azure Files, NAS</td><td>AWS <b>S3</b>, Azure Blob, MinIO</td></tr><tr><td>Strength</td><td>Low latency, high speed</td><td>Familiar, shared by many users</td><td>Huge scale, cheap, durable</td></tr><tr><td>Limit</td><td>One VM at a time, no sharing</td><td>Scaling and locking get harder</td><td>Not for databases or editing in place</td></tr><tr><td>Best for</td><td>VM disks, databases</td><td>Shared folders, home directories</td><td>Backups, media, logs, big data</td></tr></tbody></table></div>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Traditional storage</th><th>Software-defined storage</th></tr></thead><tbody><tr><td><b>DAS</b> (disks in one server), <b>NAS</b> (file server), <b>SAN</b> (dedicated block network)</td><td>Software on commodity servers</td></tr><tr><td><b>Scale-up</b>: buy a bigger, costlier array</td><td><b>Scale-out</b>: add nodes, capacity and speed grow</td></tr><tr><td>Vendor hardware and tools</td><td>Pools many disks into one logical store; policies by API</td></tr><tr><td></td><td>Examples: <b>Ceph, HDFS, VMware vSAN, MinIO</b></td></tr></tbody></table></div>
+<p class="sm-def"><b>Replication</b> : 3 full copies on different nodes — simple and fast, but <b>3× the space</b>.</p>
+<p class="sm-def"><b>Erasure coding</b> : data split into 4 pieces + 2 parity — survives <b>2 failures at 1.5× space</b>.</p>
+<div class="sm-key">Replication protects against <b>failure</b>, not against <b>deletion or ransomware</b>: keep separate backups.</div>
+</section>
+<section class="sm-sec" id="p7">
+<h2>Security lens</h2>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Area</th><th>Typical risk</th><th>Good practice</th></tr></thead><tbody><tr><td>VLAN &amp; vSwitch</td><td>VLAN hopping via trunk misconfiguration; unseen east-west traffic</td><td>Disable unused ports, fix native VLAN, micro-segmentation</td></tr><tr><td>Overlay (VXLAN)</td><td>Unencrypted tunnels; attacker on the underlay reads/injects</td><td>Secure the underlay; IPsec or WireGuard</td></tr><tr><td>Cloud network rules</td><td>Security groups open to 0.0.0.0/0; exposed databases</td><td>Least privilege, private subnets, rule audits</td></tr><tr><td>SDN controller</td><td>Single point of control and failure; rogue switches</td><td>Isolate, TLS, authenticate, redundant controllers</td></tr><tr><td>Storage</td><td>Public buckets, unencrypted data, leaked snapshots/backups</td><td>Block public access, encrypt at rest &amp; in transit, manage keys, versioning</td></tr></tbody></table></div>
+<p class="sm-q">Q/ Mini case — university private cloud (Teaching, Research, Administration): which storage for each need ?</p>
+<ol><li>Exam PDFs for 2,000 students → <b>object</b> (scale, cheap, read-mostly).</li><li>Lab VM disks → <b>block</b> (low latency, one VM per disk).</li><li>Shared Linux home folder → <b>file</b> (NFS/SMB, shared).</li></ol>
+<ul><li>Keep student VMs away from admin: separate segments (VLAN/VXLAN per tenant) + default-deny firewall rules. VLANs may be enough for 3 tenants; move to <b>VXLAN</b> when tenants/segments grow or span sites.</li></ul>
+</section>
+<p class="sm-src">Summary of Cloud Computing L4: Virtual Networks &amp; Virtual Storage. Built only from the lecture file; check the original slides for anything you're unsure about. <a href="../../read/cloud/lecture-4-virtual-networks-and-storage.html">Open the lecture →</a></p>
+</main>
+<script src="../../reader.js" defer></script>
+</body>
+</html>

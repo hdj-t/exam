@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>التوزيع والتجميع في سحاب الجميع — L5 summary</title>
+<meta name="description" content="Cloud Computing L5 summary: Distributed Systems &amp; Cloud-Native">
+<meta name="theme-color" content="#F6F3EC" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#171513" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../../fonts/GeistPixel-Square.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../../styles.css">
+<link rel="stylesheet" href="../../summary.css">
+</head>
+<body class="summary">
+<header class="rbar">
+  <a class="icon-btn" href="../../index.html#cloud" aria-label="Back to Cloud Computing"><span aria-hidden="true">←</span></a>
+  <div class="rbar-t"><span class="rbar-c">Cloud Computing · L5 · Summary</span><b>Distributed Systems &amp; Cloud-Native</b></div>
+  <a class="icon-btn" href="../../read/cloud/lecture-5-distributed-systems-and-cloud-native.html" aria-label="Open the lecture">Lec</a>
+  <a class="icon-btn icon-btn--pdf" href="lecture-5-distributed-systems-and-cloud-native.pdf" download aria-label="Download summary PDF">PDF</a>
+</header>
+<main class="sm">
+<section class="sm-sec" id="p1">
+<h1 class="sm-title" lang="ar" dir="rtl">التوزيع والتجميع في سحاب الجميع</h1>
+<h2>Lecture 5 — Distributed Systems and Cloud-Native Software</h2>
+<p class="sm-q">Q/ Why distribute ?</p>
+<ol><li><b>Scale</b>: data and traffic exceed what one server can store or process.</li><li><b>Availability</b>: if one machine dies, another continues.</li><li><b>Locality</b>: place data near users and near the computation to cut latency.</li></ol>
+<div class="sm-key">The price: machines fail independently, messages are delayed or lost, and clocks disagree.</div>
+<p class="sm-q">Q/ What can go wrong in a distributed system ?</p>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Failure</th><th>Meaning</th><th>Example</th></tr></thead><tbody><tr><td>Crash</td><td>A node stops and may restart</td><td>Power loss, kernel panic</td></tr><tr><td>Message loss / delay</td><td>Arrives late, twice, or never</td><td>Congested link</td></tr><tr><td>Network partition</td><td>Cluster splits into groups that can&#39;t talk</td><td>Switch or inter-site link fails</td></tr><tr><td>Clock skew</td><td>Nodes disagree about time</td><td>Drifting clocks</td></tr><tr><td><b>Byzantine</b></td><td>A node lies or behaves arbitrarily</td><td>Compromised or buggy node</td></tr></tbody></table></div>
+<div class="sm-key">Raft and Paxos tolerate crashes and lost messages, <b>not Byzantine nodes</b> — authenticate membership.</div>
+</section>
+<section class="sm-sec" id="p2">
+<h2>Consensus</h2>
+<p class="sm-def"><b>Consensus</b> : a group of nodes agrees on a <b>single value</b>, even when some nodes fail.</p>
+<p class="sm-q">Q/ Where is consensus needed ?</p>
+<ol><li>Electing <b>one leader</b>.</li><li>A <b>replicated log</b> of operations in the same order.</li><li>Distributed locks and configuration.</li><li>Committing a transaction across nodes.</li></ol>
+<p class="sm-q">Q/ What are the required properties of consensus ?</p>
+<ol><li><b>Agreement</b>: no two nodes decide differently.</li><li><b>Validity</b>: the decided value was proposed by someone.</li><li><b>Termination</b>: every working node eventually decides.</li></ol>
+<p class="sm-def"><b>FLP result</b> : no algorithm can guarantee agreement in a fully asynchronous network with even one crash — real protocols use <b>timeouts</b>.</p>
+<p class="sm-def"><b>Quorum (majority)</b> : any two majorities share at least one node, so two groups can never decide differently.</p>
+<div class="sm-key">Formula: <b>N = 2f + 1</b> nodes survive <b>f</b> crashes.</div>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Nodes (N)</th><th>Majority</th><th>Failures tolerated</th></tr></thead><tbody><tr><td>3</td><td>2</td><td>1</td></tr><tr><td>4</td><td>3</td><td>1</td></tr><tr><td>5</td><td>3</td><td>2</td></tr><tr><td>7</td><td>4</td><td>3</td></tr></tbody></table></div>
+<div class="sm-key">Use an <b>odd</b> number: 4 nodes tolerate only 1 failure, same as 3, and cost more. A partition leaves at most <b>one</b> side with a majority.</div>
+</section>
+<section class="sm-sec" id="p3">
+<h2>Paxos and Raft</h2>
+<p class="sm-def"><b>Paxos (Lamport)</b> : the classic consensus algorithm — proven correct but famously hard to understand.</p>
+<p class="sm-q">Q/ What are the Paxos roles ?</p>
+<ol><li><b>Proposer</b>: suggests a value and drives the protocol.</li><li><b>Acceptor</b>: votes; a value is chosen when a <b>majority</b> of acceptors accept it.</li><li><b>Learner</b>: finds out which value was chosen and applies it.</li></ol>
+<p class="sm-q">Q/ What are the two Paxos phases ?</p>
+<ol><li><b>Prepare</b>: proposer sends Prepare(n); acceptors reply <b>Promise(n)</b> — ignore lower numbers, report any value already accepted.</li><li><b>Accept</b>: with a majority of promises, proposer sends Accept(n, v); a majority of accepts → v is chosen.</li></ol>
+<div class="sm-key">Multi-Paxos (stable leader) is used in Google <b>Chubby</b> and <b>Spanner</b>, and <b>Ceph</b> monitors.</div>
+<p class="sm-def"><b>Raft</b> : consensus designed to be <b>understandable</b>, with <b>one strong leader</b> that replicates every change to followers.</p>
+<p class="sm-q">Q/ What are the three parts of Raft ?</p>
+<ol><li><b>Leader election</b>. 2. <b>Log replication</b>. 3. <b>Safety</b>.</li></ol>
+<p class="sm-def"><b>Term</b> : a logical clock — each election starts a new term.</p>
+<p class="sm-def"><b>Heartbeat</b> : an empty AppendEntries the leader sends regularly to stay in charge.</p>
+<p class="sm-q">Q/ What are Raft&#39;s two RPCs ?</p>
+<ul><li><b>RequestVote</b> (elections) and <b>AppendEntries</b> (replication + heartbeat).</li></ul>
+<p class="sm-q">Q/ What are the Raft node states and transitions ?</p>
+<ul><li><b>Follower</b> → (election timeout) → <b>Candidate</b> → (majority of votes) → <b>Leader</b>; a leader/candidate that sees a <b>higher term</b> steps down to follower.</li></ul>
+<p class="sm-q">Q/ How does leader election work ?</p>
+<ol><li><b>Timeout</b>: the leader goes silent; followers wait a <b>random</b> timeout (~150–300 ms).</li><li><b>Candidate</b>: the first to time out increments the term, votes for itself, asks for votes.</li><li><b>Vote</b>: each node votes at most <b>once per term</b>.</li><li><b>Leader</b>: with a majority (e.g. 3 of 5) it becomes leader and sends heartbeats.</li></ol>
+<div class="sm-key"><b>Split vote</b> → nobody wins → new election; random timeouts make another tie unlikely.</div>
+<p class="sm-q">Q/ How does log replication work ?</p>
+<ol><li>Client sends a command to the leader.</li><li>Leader appends it to its own log.</li><li>Leader sends <b>AppendEntries</b> to followers.</li><li>When a <b>majority</b> has stored it → <b>commit</b>.</li><li>Apply to the state machine and reply to the client.</li></ol>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Raft under failure</th><th>What happens</th><th>Why safe</th></tr></thead><tbody><tr><td>Leader crashes</td><td>Followers time out, elect a new leader in a higher term</td><td>Committed entries are on a majority</td></tr><tr><td>Follower crashes</td><td>Leader continues while a majority lives; follower catches up later</td><td>No decision needs every node</td></tr><tr><td>Partition 3 | 2</td><td>3-side keeps a leader; 2-side can&#39;t commit</td><td>Only one side has a majority → <b>no split brain</b></td></tr><tr><td>Old leader returns</td><td>Sees a higher term, steps down</td><td>Stale leaders can&#39;t commit</td></tr></tbody></table></div>
+<p class="sm-def"><b>Election restriction</b> : a candidate whose log is behind <b>cannot win</b>, protecting committed data.</p>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>System</th><th>Protocol</th><th>Keeps in agreement</th></tr></thead><tbody><tr><td><b>etcd</b></td><td>Raft</td><td>All Kubernetes cluster state, including Secrets</td></tr><tr><td>Consul</td><td>Raft</td><td>Service discovery and configuration</td></tr><tr><td>ZooKeeper</td><td>ZAB (Paxos-like)</td><td>Coordination for Hadoop, Kafka, HBase</td></tr><tr><td>Ceph</td><td>Paxos</td><td>Cluster map held by monitors</td></tr><tr><td>Spanner, CockroachDB</td><td>Paxos, Raft</td><td>Replicated data in global SQL</td></tr></tbody></table></div>
+<div class="sm-key">Use a proven system (e.g. etcd) — <b>don&#39;t write your own consensus</b>.</div>
+</section>
+<section class="sm-sec" id="p4">
+<h2>Consistency and CAP</h2>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Level</th><th>Guarantee</th><th>Example</th><th>Cost</th></tr></thead><tbody><tr><td><b>Strong</b> (linearizable)</td><td>Every read returns the latest write</td><td>Bank balance, leader lock</td><td>Highest latency; may refuse requests in a partition</td></tr><tr><td><b>Sequential</b></td><td>Same order for everyone, not necessarily real time</td><td>Replicated log</td><td>Slightly cheaper</td></tr><tr><td><b>Causal</b></td><td>If A caused B, everyone sees A before B</td><td>Comment after its post</td><td>Moderate</td></tr><tr><td><b>Eventual</b></td><td>Replicas converge when writes stop; reads may be stale</td><td>DNS, like counters, cart</td><td>Fastest, most available</td></tr></tbody></table></div>
+<div class="sm-key">Security: with eventual consistency a <b>revoked permission</b> can still be honored by a lagging replica — use <b>strong reads for authorization</b>.</div>
+<p class="sm-def"><b>CAP theorem</b> : in a network <b>Partition</b>, you must choose <b>Consistency</b> (reject some requests) or <b>Availability</b> (answer, maybe stale).</p>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Choice</th><th>During a partition</th><th>Examples</th></tr></thead><tbody><tr><td><b>CP</b></td><td>Minority side refuses requests</td><td>etcd, ZooKeeper, HBase</td></tr><tr><td><b>AP</b></td><td>Every side answers; reconcile later</td><td>Cassandra, DynamoDB, CouchDB</td></tr></tbody></table></div>
+<p class="sm-def"><b>PACELC</b> : without a partition, the trade-off is <b>latency vs consistency</b>.</p>
+</section>
+<section class="sm-sec" id="p5">
+<h2>Cloud-native software</h2>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Aspect</th><th>Conventional</th><th>Cloud-native</th></tr></thead><tbody><tr><td>Architecture</td><td>One large <b>monolith</b></td><td>Small independent <b>microservices</b></td></tr><tr><td>Runtime</td><td>Installed on a specific server/VM</td><td>Containers managed by an orchestrator (Kubernetes)</td></tr><tr><td>Scaling</td><td>Scale <b>up</b> (bigger server)</td><td>Scale <b>out</b> (more small instances, automatic)</td></tr><tr><td>Failure</td><td>Avoided; assumes reliable hardware</td><td><b>Expected</b>; designed to self-heal</td></tr><tr><td>State</td><td>Stored on the local server</td><td>Services <b>stateless</b>; state in external stores</td></tr><tr><td>Releases</td><td>Rare, large, manual</td><td>Frequent, small, automated (<b>CI/CD</b>)</td></tr></tbody></table></div>
+<div class="sm-key">Cloud-native ≠ &quot;running in the cloud&quot;. It means <b>designed to exploit</b> the cloud: elastic, resilient, automated.</div>
+</section>
+<section class="sm-sec" id="p6">
+<h2>MapReduce and Hadoop</h2>
+<p class="sm-def"><b>MapReduce</b> : a programming model — split huge data, process pieces in parallel (<b>map</b>), group by key (<b>shuffle and sort</b>), then combine (<b>reduce</b>).</p>
+<div class="sm-key">map: (k1, v1) → list(k2, v2) · reduce: (k2, list(v2)) → list(v3)</div>
+<p class="sm-q">Q/ Word count example — lines &quot;cloud is big&quot;, &quot;cloud is shared&quot;, &quot;big data is big&quot; ?</p>
+<ol><li><b>Map</b> emits (word, 1) for every word.</li><li><b>Shuffle</b> groups: big:[1,1,1] cloud:[1,1] data:[1] is:[1,1,1] shared:[1].</li><li><b>Reduce</b> sums: big 3, cloud 2, data 1, is 3, shared 1 (total 10).</li></ol>
+<p class="sm-q">Q/ What are two key ideas of MapReduce ?</p>
+<ol><li><b>Bring computation to the data</b>: map tasks run on the machines that already store the block.</li><li><b>Failures are handled</b>: a failed or slow task is simply re-run elsewhere.</li></ol>
+<p class="sm-def"><b>Amdahl&#39;s law</b> : S(N) = 1 / ((1 − p) + p / N), p = parallel fraction, N = machines.</p>
+<div class="sm-key">Example: p = 0.95, N = 100 → S ≈ <b>16.8</b>, not 100. Job time ≈ T_map/N + T_shuffle + T_reduce/R — the <b>shuffle and serial part don&#39;t shrink</b>.</div>
+<p class="sm-def"><b>Hadoop</b> : three layers — <b>HDFS</b> (distributed storage), <b>YARN</b> (resource scheduling), <b>MapReduce</b> (processing engine).</p>
+<p class="sm-def"><b>HDFS</b> : files cut into <b>128 MB blocks</b>, each stored on <b>3 DataNodes</b>; the <b>NameNode</b> holds metadata (file → blocks → DataNodes); clients read directly from DataNodes.</p>
+<p class="sm-q">Q/ How is the NameNode single point of failure solved ?</p>
+<ul><li><b>Active + standby</b> NameNode, edits kept in a quorum of <b>JournalNodes</b>, failover coordinated by <b>ZooKeeper</b> (consensus again).</li></ul>
+<div class="sm-key">Languages: Java natively; <b>Hadoop Streaming</b> lets any stdin/stdout program (Python, Perl) be a mapper/reducer; <b>Hive</b> (SQL-like) and <b>Pig</b> (scripting) add layers.</div>
+</section>
+<section class="sm-sec" id="p7">
+<h2>Security lens</h2>
+<div class="tbl-wrap"><table class="sm-tbl"><thead><tr><th>Area</th><th>Typical risk</th><th>Good practice</th></tr></thead><tbody><tr><td>Consensus cluster (etcd, ZooKeeper)</td><td>Unauthenticated members; whoever controls a majority controls the state (incl. Kubernetes Secrets)</td><td>Mutual TLS, client auth, encryption at rest, isolation</td></tr><tr><td>Consistency &amp; CAP</td><td>Stale reads honour revoked permissions; split brain</td><td>Strong reads for authz, short token lifetimes, fencing tokens</td></tr><tr><td>Hadoop &amp; HDFS</td><td>Open web UIs/RPC ports, weak default auth</td><td><b>Kerberos</b>, ACLs, encryption zones, audit logs</td></tr><tr><td>Cloud-native apps</td><td>Vulnerable images, secrets in code, over-privileged accounts, supply chain</td><td>Image scanning &amp; signing, secret managers, least privilege</td></tr><tr><td>MapReduce jobs</td><td>Untrusted code; poisoned input</td><td>Tenant isolation, quotas, input validation, sandboxing</td></tr></tbody></table></div>
+<p class="sm-q">Q/ Mini case — exam results replicated across three sites: grades vs &quot;last login&quot; ?</p>
+<ol><li>Grades → <b>strong / CP</b> (must never be stale or conflicting).</li><li>Last login → <b>eventual / AP</b> is acceptable.</li><li>Raft with <b>3 nodes, one per site</b> (or 5 across sites): if one site is cut off, the other two keep a majority and continue; the isolated site can&#39;t commit.</li><li>Failed logins with MapReduce: <b>map</b> emits (studentId, 1) for each failed-login line; <b>reduce</b> sums per student and outputs those above a threshold.</li></ol>
+</section>
+<p class="sm-src">Summary of Cloud Computing L5: Distributed Systems &amp; Cloud-Native. Built only from the lecture file; check the original slides for anything you're unsure about. <a href="../../read/cloud/lecture-5-distributed-systems-and-cloud-native.html">Open the lecture →</a></p>
+</main>
+<script src="../../reader.js" defer></script>
+</body>
+</html>

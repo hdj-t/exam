@@ -56,28 +56,36 @@
           "n": 1,
           "title": "Exploring Cloud Hosting Platforms",
           "file": "lab-1-hosting-platforms",
-          "lab": []
+          "lab": [
+            "kit"
+          ]
         },
         {
           "kind": "lab",
           "n": 2,
           "title": "Hosting Specs & Pricing",
           "file": "lab-2-hosting-specs-and-pricing",
-          "lab": []
+          "lab": [
+            "kit"
+          ]
         },
         {
           "kind": "lab",
           "n": 3,
           "title": "Ubuntu Server VM Tutorial (Parts 1–6)",
           "file": "lab-3-ubuntu-server-vm-tutorial",
-          "lab": []
+          "lab": [
+            "kit"
+          ]
         },
         {
           "kind": "lab",
           "n": 4,
           "title": "Clone, Export & Import VMs",
           "file": "lab-4-clone-export-import-vms",
-          "lab": []
+          "lab": [
+            "kit"
+          ]
         }
       ]
     },

@@ -129,7 +129,7 @@
         if (n.nodeType === 3) { parent.append(n.data); continue; }
         if (n.nodeType !== 1) continue;
         const tag = n.tagName.toLowerCase();
-        if (tag === "script") { pending.push(() => simulate(n.textContent, ctx)); continue; }
+        if (tag === "script") { const src = n.getAttribute("src"); pending.push(src ? () => ctx.script?.(src) : () => simulate(n.textContent, ctx)); continue; }
         if (tag === "style" || tag === "link") continue;
         if (tag === "meta" && /^referrer$/i.test(n.getAttribute("name") || "") && /no-referrer/i.test(n.getAttribute("content") || "")) { ctx.noReferrer?.(); continue; }
         if (tag === "meta") { const c = n.getAttribute("content") || ""; const r = /url=(.+)$/i.exec(c); if (/refresh/i.test(n.getAttribute("http-equiv") || "") && r) pending.push(() => ctx.navigate?.(r[1].replace(/^['"]|['"]$/g, ""))); continue; }
@@ -260,6 +260,14 @@
         },
         exfil: (toHost, data) => fetchReq({ method: "GET", url: `https://${toHost}/?${encodeURIComponent(data)}`, cross: true, nav: false }),
         navigate: (href) => go(new URL(href, st.url || "https://" + HOST).href, { cross: !!st.url && new URL(st.url).host !== new URL(href, st.url).host, initiator: st.url }),
+        script: (src) => {
+          try {
+            const u = new URL(src.startsWith("//") ? "https:" + src : src, st.url);
+            if (u.host !== HOST && u.host !== EXP) return;
+            const r = fetchReq({ method: "GET", url: u.href, cross: new URL(st.url).host !== u.host, nav: false, quiet: true });
+            if (r.status === 200) simulate(r.body || "", ctxFor(host));
+          } catch {}
+        },
         subresource: (src, kind) => { try { const u = new URL(src, st.url); if (u.host === HOST || u.host === EXP) fetchReq({ method: "GET", url: u.href, cross: new URL(st.url).host !== u.host, nav: false, quiet: true }); } catch {} },
         submit: (form, submitter) => {
           const method = (form.getAttribute("method") || "GET").toUpperCase();

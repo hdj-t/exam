@@ -195,7 +195,7 @@
   .bar-row { display: flex; align-items: center; gap: 0.6rem; margin-block-start: 0.7rem; }
   .chips {
     display: flex; gap: 0.6rem; overflow-x: auto; flex: 1; min-inline-size: 0;
-    padding: 3px 3px 5px; margin: -3px; scrollbar-width: none; scroll-snap-type: x proximity;
+    padding: 3px; margin: -3px; scroll-padding-inline: 3px; scrollbar-width: none; scroll-snap-type: x proximity;
   }
   .chips::-webkit-scrollbar { display: none; }
   .chip {

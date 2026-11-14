@@ -94,10 +94,11 @@
       "code": "CSTE4107",
       "name": "Web Applications Security",
       "ar": "أمن تطبيقات الويب",
-      "exam": "2026-11-18",
+      "exam": "2026-11-19",
       "scope": {
-        "confirmed": false,
-        "note": "Exam scope not announced yet."
+        "confirmed": true,
+        "lectures": [1, 2, 3, 4, 5, 6],
+        "note": "Lectures 1–6."
       },
       "docs": [
         {

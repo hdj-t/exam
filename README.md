@@ -7,7 +7,7 @@ Midterm material for 4th stage Cybersecurity Engineering: lectures, labs and ass
 | Exam | Date | Scope |
 |---|---|---|
 | Cloud Computing (CSTE4103) | Tue 17 Nov | Lectures 1–5, no labs |
-| Web Applications Security (CSTE4107) | Wed 18 Nov | not announced |
+| Web Applications Security (CSTE4107) | Thu 19 Nov | Lectures 1–6 |
 | Advanced Cybersecurity (CSTE4101) | Wed 25 Nov | Lectures 1–3 |
 | Network Security (CSTE4102) | Thu 26 Nov | Lectures 1–4 |
 | Cybersecurity Governance (CSTE4104) | Thu 3 Dec | not announced |
